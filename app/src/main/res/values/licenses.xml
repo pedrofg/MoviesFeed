@@ -1,0 +1,164 @@
+<resources>
+    <string name="used_apis">
+        That application makes use of the follow third party apis:
+        \r\n
+        \r\n
+        <b>Nucelus</b>
+        \r\n
+        \r\n
+        info.android15.nucleus:nucleus:4.0.0
+        \r\n
+        info.android15.nucleus:nucleus-support-v7:4.0.0
+        \r\n
+        \r\n
+        The MIT License (MIT)
+        \r\n
+        \r\n
+        Copyright (c) 2014-2016 Konstantin Mikheev sirstripy-at-gmail-com
+        \r\n
+        \r\n
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        \r\n
+        \r\n
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        \r\n
+        \r\n
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        \r\n
+        \r\n
+        <b>Retrofit</b>
+        \r\n
+        \r\n
+        com.squareup.retrofit2:retrofit:2.1.0
+        \r\n
+        com.squareup.retrofit2:converter-gson:2.1.0
+        \r\n
+        com.squareup.retrofit2:adapter-rxjava:2.1.0
+        \r\n
+        \r\n
+        Copyright 2013 Square, Inc.
+        \r\n
+        \r\n
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+        \r\n
+        \r\n
+        http://www.apache.org/licenses/LICENSE-2.0
+        \r\n
+        \r\n
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+        \r\n
+        \r\n
+        <b>RxAndroid and RxJava</b>
+        \r\n
+        \r\n
+        io.reactivex:rxandroid:1.2.1
+        \r\n
+        io.reactivex:rxjava:1.1.6
+        \r\n
+        \r\n
+        Copyright 2015 The RxAndroid authors
+        \r\n
+        \r\n
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+        \r\n
+        \r\n
+        http://www.apache.org/licenses/LICENSE-2.0
+        \r\n
+        \r\n
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+        \r\n
+        \r\n
+        <b>Icepick</b>
+        \r\n
+        \r\n
+        frankiesardo:icepick:3.2.0
+        \r\n
+        frankiesardo:icepick-processor:3.2.0
+        \r\n
+        \r\n
+        Eclipse Public License -v 1.0
+        \r\n
+        \r\n
+       <b>Butter Knife</b>
+        \r\n
+        \r\n
+        com.jakewharton:butterknife:8.2.1
+        \r\n
+        com.jakewharton:butterknife-compiler:8.2.1
+        \r\n
+        \r\n
+        Copyright 2013 Jake Wharton
+        \r\n
+        \r\n
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+        \r\n
+        \r\n
+        http://www.apache.org/licenses/LICENSE-2.0
+        \r\n
+        \r\n
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+        \r\n
+        \r\n
+        <b>Picasso</b>
+        \r\n
+        \r\n
+        com.squareup.picasso:picasso:2.5.2
+        \r\n
+        \r\n
+        Copyright 2013 Square, Inc.
+        \r\n
+        \r\n
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+        \r\n
+        \r\n
+        http://www.apache.org/licenses/LICENSE-2.0
+        \r\n
+        \r\n
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+        \r\n
+        \r\n
+        <b>TMDb</b>
+        \r\n
+        \r\n
+        This product uses the TMDb API but is not endorsed or certified by TMDb.
+        \r\n
+        \r\n
+        TMDb respects the rights of copyright holders and publishers and requires all users to confirm they own the copyright or have permission from the copyright holder to upload content. We comply with the Digital Millennium Copyright Act (DMCA) and expeditiously remove content when properly notified, unless it reasonably appears to us that the content does not infringe upon copyright. Please note, however, that under Section 512(f) any person who knowingly materially misrepresents that material or activity is a copyright infringement may be subject to liability for damages. You should educate yourself as to whether content does, in fact infringe upon your copyright, or whether, for instance "fair use" under 17 U.S.C. §107 applies. If you are unsure whether the content you are reporting is infringing your legal rights, you may wish to seek legal guidance. Keep in mind that submitting intentionally misleading reports of infringement may be punishable under the Digital Millennium Copyright Act (DMCA) in the United States or similar laws in other countries.
+    </string>
+</resources>
