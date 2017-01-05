@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.FeedActivity">
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_about"
+        app:showAsAction="never" />
+
+    <!--<item-->
+    <!--android:id="@+id/action_order_by"-->
+    <!--android:orderInCategory="100"-->
+    <!--android:icon="@drawable/orderby"-->
+    <!--android:title="Order By"-->
+    <!--app:showAsAction="ifRoom" />-->
+</menu>

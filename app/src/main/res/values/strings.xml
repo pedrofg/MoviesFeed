@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Movies Feed</string>
+    <string name="action_about">About</string>
+    <string name="email_creator">pedro92.gf@gmail.com</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+</resources>
