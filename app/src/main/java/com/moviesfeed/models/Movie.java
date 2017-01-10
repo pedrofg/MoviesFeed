@@ -3,57 +3,47 @@ package com.moviesfeed.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
 
-/**
- * Created by Pedro on 8/17/2016.
- */
-public class Movie implements Serializable{
+import org.greenrobot.greendao.annotation.Generated;
 
+@Entity
+public class Movie {
+
+    @Id(autoincrement = true)
+    private Long idDb;
+    @SerializedName("id")
+    @Expose
+    private int idTmdb;
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
-    @SerializedName("adult")
-    @Expose
-    private boolean adult;
-    @SerializedName("overview")
-    @Expose
-    private String overview;
-    @SerializedName("release_date")
-    @Expose
-    private String releaseDate;
-    @SerializedName("genre_ids")
-    @Expose
-    private List<Integer> genreIds = new ArrayList<Integer>();
-    @SerializedName("id")
-    @Expose
-    private int id;
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
-    @SerializedName("original_language")
-    @Expose
-    private String originalLanguage;
     @SerializedName("title")
     @Expose
     private String title;
-    @SerializedName("backdrop_path")
-    @Expose
-    private String backdropPath;
-    @SerializedName("popularity")
-    @Expose
-    private double popularity;
-    @SerializedName("vote_count")
-    @Expose
-    private int voteCount;
-    @SerializedName("video")
-    @Expose
-    private boolean video;
-    @SerializedName("vote_average")
-    @Expose
-    private double voteAverage;
+    private long moviesFeedKey;
+
+
+    @Generated(hash = 1263461133)
+    public Movie() {
+    }
+
+
+    @Generated(hash = 1419433394)
+    public Movie(Long idDb, int idTmdb, String posterPath, String originalTitle,
+            String title, long moviesFeedKey) {
+        this.idDb = idDb;
+        this.idTmdb = idTmdb;
+        this.posterPath = posterPath;
+        this.originalTitle = originalTitle;
+        this.title = title;
+        this.moviesFeedKey = moviesFeedKey;
+    }
+
 
     public String getPosterPath() {
         return posterPath;
@@ -63,45 +53,6 @@ public class Movie implements Serializable{
         this.posterPath = posterPath;
     }
 
-    public boolean isAdult() {
-        return adult;
-    }
-
-    public void setAdult(boolean adult) {
-        this.adult = adult;
-    }
-
-    public String getOverview() {
-        return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-
-    public void setGenreIds(List<Integer> genreIds) {
-        this.genreIds = genreIds;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getOriginalTitle() {
         return originalTitle;
@@ -109,14 +60,6 @@ public class Movie implements Serializable{
 
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
-    }
-
-    public String getOriginalLanguage() {
-        return originalLanguage;
-    }
-
-    public void setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage = originalLanguage;
     }
 
     public String getTitle() {
@@ -127,43 +70,31 @@ public class Movie implements Serializable{
         this.title = title;
     }
 
-    public String getBackdropPath() {
-        return backdropPath;
+    public long getMoviesFeedKey() {
+        return this.moviesFeedKey;
     }
 
-    public void setBackdropPath(String backdropPath) {
-        this.backdropPath = backdropPath;
+    public void setMoviesFeedKey(long moviesFeedKey) {
+        this.moviesFeedKey = moviesFeedKey;
     }
 
-    public double getPopularity() {
-        return popularity;
+
+    public int getIdTmdb() {
+        return idTmdb;
     }
 
-    public void setPopularity(double popularity) {
-        this.popularity = popularity;
+
+    public Long getIdDb() {
+        return this.idDb;
     }
 
-    public int getVoteCount() {
-        return voteCount;
+
+    public void setIdDb(Long idDb) {
+        this.idDb = idDb;
     }
 
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-    }
 
-    public boolean isVideo() {
-        return video;
-    }
-
-    public void setVideo(boolean video) {
-        this.video = video;
-    }
-
-    public double getVoteAverage() {
-        return voteAverage;
-    }
-
-    public void setVoteAverage(double voteAverage) {
-        this.voteAverage = voteAverage;
+    public void setIdTmdb(int idTmdb) {
+        this.idTmdb = idTmdb;
     }
 }

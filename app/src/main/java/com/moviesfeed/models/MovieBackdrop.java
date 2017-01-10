@@ -3,45 +3,29 @@ package com.moviesfeed.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by Pedro on 8/28/2016.
- */
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
+
+@Entity
 public class MovieBackdrop {
 
-    @SerializedName("aspect_ratio")
-    @Expose
-    private double aspectRatio;
+    @Id(autoincrement = true)
+    private Long id;
     @SerializedName("file_path")
     @Expose
     private String filePath;
-    @SerializedName("height")
-    @Expose
-    private int height;
-    @SerializedName("iso_639_1")
-    @Expose
-    private Object iso6391;
-    @SerializedName("vote_average")
-    @Expose
-    private double voteAverage;
-    @SerializedName("vote_count")
-    @Expose
-    private int voteCount;
-    @SerializedName("width")
-    @Expose
-    private int width;
+    private long movieDetailId;
 
-    /**
-     * @return The aspectRatio
-     */
-    public double getAspectRatio() {
-        return aspectRatio;
+    @Generated(hash = 1056359085)
+    public MovieBackdrop(Long id, String filePath, long movieDetailId) {
+        this.id = id;
+        this.filePath = filePath;
+        this.movieDetailId = movieDetailId;
     }
 
-    /**
-     * @param aspectRatio The aspect_ratio
-     */
-    public void setAspectRatio(double aspectRatio) {
-        this.aspectRatio = aspectRatio;
+    @Generated(hash = 20645344)
+    public MovieBackdrop() {
     }
 
     /**
@@ -58,74 +42,23 @@ public class MovieBackdrop {
         this.filePath = filePath;
     }
 
-    /**
-     * @return The height
-     */
-    public int getHeight() {
-        return height;
+
+
+
+    public long getMovieDetailId() {
+        return movieDetailId;
     }
 
-    /**
-     * @param height The height
-     */
-    public void setHeight(int height) {
-        this.height = height;
+    public void setMovieDetailId(long movieDetailId) {
+        this.movieDetailId = movieDetailId;
     }
 
-    /**
-     * @return The iso6391
-     */
-    public Object getIso6391() {
-        return iso6391;
+    public Long getId() {
+        return this.id;
     }
 
-    /**
-     * @param iso6391 The iso_639_1
-     */
-    public void setIso6391(Object iso6391) {
-        this.iso6391 = iso6391;
-    }
-
-    /**
-     * @return The voteAverage
-     */
-    public double getVoteAverage() {
-        return voteAverage;
-    }
-
-    /**
-     * @param voteAverage The vote_average
-     */
-    public void setVoteAverage(double voteAverage) {
-        this.voteAverage = voteAverage;
-    }
-
-    /**
-     * @return The voteCount
-     */
-    public int getVoteCount() {
-        return voteCount;
-    }
-
-    /**
-     * @param voteCount The vote_count
-     */
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-    }
-
-    /**
-     * @return The width
-     */
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * @param width The width
-     */
-    public void setWidth(int width) {
-        this.width = width;
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

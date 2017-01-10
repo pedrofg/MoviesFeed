@@ -9,7 +9,7 @@ import com.moviesfeed.activities.MovieDetailActivity;
 import com.moviesfeed.models.MovieDetail;
 import com.moviesfeed.models.MoviesFeed;
 
-import icepick.State;
+import nucleus.presenter.RxPresenter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -22,10 +22,9 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Pedro on 8/24/2016.
  */
-public class MovieDetailPresenter extends BasePresenter<MovieDetailActivity> {
+public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
 
     private static final int REQUEST_MOVIE_DETAIL = 2;
-    @State
     int movieId;
 
     private void createRequestMovieDetail() {
@@ -42,7 +41,6 @@ public class MovieDetailPresenter extends BasePresenter<MovieDetailActivity> {
             @Override
             public MovieDetail call(MovieDetail movieDetail, MovieDetail movieImage) {
                 movieDetail.setBackdrops(movieImage.getBackdrops());
-                movieDetail.setPosters(movieImage.getPosters());
                 return movieDetail;
             }
         });
