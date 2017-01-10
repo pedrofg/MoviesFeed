@@ -6,6 +6,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +17,6 @@ import com.moviesfeed.R;
 import com.moviesfeed.activities.uicomponents.EndlessScrollListener;
 import com.moviesfeed.adapters.FeedAdapter;
 import com.moviesfeed.api.Filters;
-import com.moviesfeed.api.FiltersType;
 
 import android.support.design.widget.NavigationView;
 
@@ -32,7 +32,6 @@ import nucleus.view.NucleusAppCompatActivity;
 
 @RequiresPresenter(FeedPresenter.class)
 public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implements NavigationView.OnNavigationItemSelectedListener, EndlessScrollListener.RefreshList {
-
     public static final String INTENT_MOVIE_DETAIL_ID = "INTENT_MOVIE_DETAIL_ID";
     @BindView(R.id.gridMoviesFeed)
     GridView gridMoviesFeed;
@@ -51,6 +50,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(FeedActivity.class.getName(), "onCreate()");
         setContentView(R.layout.activity_feed_root);
         ButterKnife.bind(this);
 
@@ -61,8 +61,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         this.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        this.adapter = new FeedAdapter(this);
-        this.gridMoviesFeed.setAdapter(adapter);
+        setUpAdapter();
 
         this.scrollListener = new EndlessScrollListener(this.gridMoviesFeed, this);
         this.gridMoviesFeed.setOnScrollListener(scrollListener);
@@ -71,26 +70,34 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         navigationView.setNavigationItemSelectedListener(this);
 
         if (savedInstanceState == null)
-            requestMoviesFeed(Filters.POPULARITY, FiltersType.DESC);
+            requestMoviesFeed(Filters.POPULARITY);
+    }
+
+    private void setUpAdapter() {
+        Log.i(FeedActivity.class.getName(), "setUpAdapter()");
+        this.adapter = new FeedAdapter(this);
+        this.gridMoviesFeed.setAdapter(adapter);
     }
 
     public void requestMoviesFeedCallback(MoviesFeed moviesFeed, boolean isNextPage) {
+        Log.i(FeedActivity.class.getName(), "requestMoviesFeedCallback() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage);
+        this.progressBar.setVisibility(View.GONE);
+        this.gridMoviesFeed.setVisibility(View.VISIBLE);
+
         this.adapter.setMoviesFeed(moviesFeed);
         this.adapter.notifyDataSetChanged();
 
-        this.gridMoviesFeed.setVisibility(View.VISIBLE);
-        this.progressBar.setVisibility(View.INVISIBLE);
-
         if (isNextPage) {
+            Log.i(FeedActivity.class.getName(), "requestMoviesFeedCallback() notifyMorePages");
             this.scrollListener.notifyMorePages();
         }
     }
 
-    private void requestMoviesFeed(Filters filter, FiltersType type) {
-        this.gridMoviesFeed.setVisibility(View.INVISIBLE);
+    private void requestMoviesFeed(Filters filter) {
+        this.gridMoviesFeed.setVisibility(View.GONE);
         this.progressBar.setVisibility(View.VISIBLE);
 
-        getPresenter().requestMoviesFeed(filter, type);
+        getPresenter().requestMoviesFeed(this, filter);
     }
 
     @Override
@@ -123,9 +130,10 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         } else if (id == R.id.nav_upcoming) {
             filter = Filters.UPCOMING;
         }
-
+        Log.i(FeedActivity.class.getName(), "onNavigationItemSelected() filter: " + filter.toString());
         drawerLayout.closeDrawer(GravityCompat.START);
-        requestMoviesFeed(filter, FiltersType.DESC);
+        setUpAdapter();
+        requestMoviesFeed(filter);
         return true;
     }
 
@@ -140,14 +148,16 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
     @Override
     public void onRefresh(int pageNumber) {
+        Log.i(FeedActivity.class.getName(), "onRefresh() - page number: " + pageNumber);
         getPresenter().requestNextPage();
     }
 
     @OnItemClick(R.id.gridMoviesFeed)
     public void onItemClick(int position) {
         Movie movie = this.adapter.getItem(position);
+        Log.i(FeedActivity.class.getName(), "onItemClick, Movie Title: " + movie.getTitle());
         Intent intent = new Intent(this, MovieDetailActivity.class);
-        intent.putExtra(INTENT_MOVIE_DETAIL_ID, movie.getId());
+        intent.putExtra(INTENT_MOVIE_DETAIL_ID, movie.getIdTmdb());
         startActivity(intent);
     }
 

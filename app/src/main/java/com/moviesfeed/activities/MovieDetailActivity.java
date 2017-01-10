@@ -117,7 +117,6 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
 
         //Fill Genres
         if (this.movieDetail.getGenres().size() > 0) {
-            StringBuilder formatedGenre = new StringBuilder();
             String[] genreNames = new String[this.movieDetail.getGenres().size()];
             for (int i = 0; i < this.movieDetail.getGenres().size(); i++) {
                 genreNames[i] = this.movieDetail.getGenres().get(i).getName();

@@ -1,61 +1,39 @@
 package com.moviesfeed.models;
 
+import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.ToMany;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Pedro on 8/24/2016.
- */
+@Entity
 public class MovieDetail {
 
-    @SerializedName("adult")
-    @Expose
-    private boolean adult;
-    @SerializedName("backdrop_path")
-    @Expose
-    private String backdropPath;
-    @SerializedName("belongs_to_collection")
-    @Expose
-    private BelongsToCollection belongsToCollection;
     @SerializedName("budget")
     @Expose
     private int budget;
-    @SerializedName("genres")
-    @Expose
-    private List<Genre> genres = new ArrayList<Genre>();
     @SerializedName("homepage")
     @Expose
     private String homepage;
+    @Id(autoincrement = true)
     @SerializedName("id")
     @Expose
-    private int id;
+    private Long id;
     @SerializedName("imdb_id")
     @Expose
     private String imdbId;
-    @SerializedName("original_language")
-    @Expose
-    private String originalLanguage;
-    @SerializedName("original_title")
-    @Expose
-    private String originalTitle;
     @SerializedName("overview")
     @Expose
     private String overview;
-    @SerializedName("popularity")
-    @Expose
-    private double popularity;
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
-    @SerializedName("production_companies")
-    @Expose
-    private List<ProductionCompany> productionCompanies = new ArrayList<ProductionCompany>();
-    @SerializedName("production_countries")
-    @Expose
-    private List<ProductionCountry> productionCountries = new ArrayList<ProductionCountry>();
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
@@ -65,74 +43,46 @@ public class MovieDetail {
     @SerializedName("runtime")
     @Expose
     private int runtime;
-    @SerializedName("spoken_languages")
-    @Expose
-    private List<SpokenLanguage> spokenLanguages = new ArrayList<SpokenLanguage>();
-    @SerializedName("status")
-    @Expose
-    private String status;
-    @SerializedName("tagline")
-    @Expose
-    private String tagline;
     @SerializedName("title")
     @Expose
     private String title;
-    @SerializedName("video")
-    @Expose
-    private boolean video;
     @SerializedName("vote_average")
     @Expose
     private double voteAverage;
-    @SerializedName("vote_count")
-    @Expose
-    private long voteCount;
+    @ToMany(referencedJoinProperty = "movieDetailId")
     @SerializedName("backdrops")
     @Expose
     private List<MovieBackdrop> backdrops = new ArrayList<MovieBackdrop>();
-    @SerializedName("posters")
+    @ToMany(referencedJoinProperty = "movieDetailId")
+    @SerializedName("genres")
     @Expose
-    private List<MoviePoster> posters = new ArrayList<MoviePoster>();
+    private List<Genre> genres = new ArrayList<Genre>();
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 275808995)
+    private transient MovieDetailDao myDao;
 
-    /**
-     * @return The adult
-     */
-    public boolean isAdult() {
-        return adult;
+    @Generated(hash = 1391283944)
+    public MovieDetail(int budget, String homepage, Long id, String imdbId, String overview,
+            String posterPath, String releaseDate, long revenue, int runtime, String title,
+            double voteAverage) {
+        this.budget = budget;
+        this.homepage = homepage;
+        this.id = id;
+        this.imdbId = imdbId;
+        this.overview = overview;
+        this.posterPath = posterPath;
+        this.releaseDate = releaseDate;
+        this.revenue = revenue;
+        this.runtime = runtime;
+        this.title = title;
+        this.voteAverage = voteAverage;
     }
 
-    /**
-     * @param adult The adult
-     */
-    public void setAdult(boolean adult) {
-        this.adult = adult;
-    }
-
-    /**
-     * @return The backdropPath
-     */
-    public String getBackdropPath() {
-        return backdropPath;
-    }
-
-    /**
-     * @param backdropPath The backdrop_path
-     */
-    public void setBackdropPath(String backdropPath) {
-        this.backdropPath = backdropPath;
-    }
-
-    /**
-     * @return The belongsToCollection
-     */
-    public BelongsToCollection getBelongsToCollection() {
-        return belongsToCollection;
-    }
-
-    /**
-     * @param belongsToCollection The belongs_to_collection
-     */
-    public void setBelongsToCollection(BelongsToCollection belongsToCollection) {
-        this.belongsToCollection = belongsToCollection;
+    @Generated(hash = 850277392)
+    public MovieDetail() {
     }
 
     /**
@@ -149,19 +99,6 @@ public class MovieDetail {
         this.budget = budget;
     }
 
-    /**
-     * @return The genres
-     */
-    public List<Genre> getGenres() {
-        return genres;
-    }
-
-    /**
-     * @param genres The genres
-     */
-    public void setGenres(List<Genre> genres) {
-        this.genres = genres;
-    }
 
     /**
      * @return The homepage
@@ -177,19 +114,6 @@ public class MovieDetail {
         this.homepage = homepage;
     }
 
-    /**
-     * @return The id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id The id
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
 
     /**
      * @return The imdbId
@@ -205,33 +129,6 @@ public class MovieDetail {
         this.imdbId = imdbId;
     }
 
-    /**
-     * @return The originalLanguage
-     */
-    public String getOriginalLanguage() {
-        return originalLanguage;
-    }
-
-    /**
-     * @param originalLanguage The original_language
-     */
-    public void setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage = originalLanguage;
-    }
-
-    /**
-     * @return The originalTitle
-     */
-    public String getOriginalTitle() {
-        return originalTitle;
-    }
-
-    /**
-     * @param originalTitle The original_title
-     */
-    public void setOriginalTitle(String originalTitle) {
-        this.originalTitle = originalTitle;
-    }
 
     /**
      * @return The overview
@@ -247,19 +144,6 @@ public class MovieDetail {
         this.overview = overview;
     }
 
-    /**
-     * @return The popularity
-     */
-    public double getPopularity() {
-        return popularity;
-    }
-
-    /**
-     * @param popularity The popularity
-     */
-    public void setPopularity(double popularity) {
-        this.popularity = popularity;
-    }
 
     /**
      * @return The posterPath
@@ -275,33 +159,6 @@ public class MovieDetail {
         this.posterPath = posterPath;
     }
 
-    /**
-     * @return The productionCompanies
-     */
-    public List<ProductionCompany> getProductionCompanies() {
-        return productionCompanies;
-    }
-
-    /**
-     * @param productionCompanies The production_companies
-     */
-    public void setProductionCompanies(List<ProductionCompany> productionCompanies) {
-        this.productionCompanies = productionCompanies;
-    }
-
-    /**
-     * @return The productionCountries
-     */
-    public List<ProductionCountry> getProductionCountries() {
-        return productionCountries;
-    }
-
-    /**
-     * @param productionCountries The production_countries
-     */
-    public void setProductionCountries(List<ProductionCountry> productionCountries) {
-        this.productionCountries = productionCountries;
-    }
 
     /**
      * @return The releaseDate
@@ -345,47 +202,6 @@ public class MovieDetail {
         this.runtime = runtime;
     }
 
-    /**
-     * @return The spokenLanguages
-     */
-    public List<SpokenLanguage> getSpokenLanguages() {
-        return spokenLanguages;
-    }
-
-    /**
-     * @param spokenLanguages The spoken_languages
-     */
-    public void setSpokenLanguages(List<SpokenLanguage> spokenLanguages) {
-        this.spokenLanguages = spokenLanguages;
-    }
-
-    /**
-     * @return The status
-     */
-    public String getStatus() {
-        return status;
-    }
-
-    /**
-     * @param status The status
-     */
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    /**
-     * @return The tagline
-     */
-    public String getTagline() {
-        return tagline;
-    }
-
-    /**
-     * @param tagline The tagline
-     */
-    public void setTagline(String tagline) {
-        this.tagline = tagline;
-    }
 
     /**
      * @return The title
@@ -401,19 +217,6 @@ public class MovieDetail {
         this.title = title;
     }
 
-    /**
-     * @return The video
-     */
-    public boolean isVideo() {
-        return video;
-    }
-
-    /**
-     * @param video The video
-     */
-    public void setVideo(boolean video) {
-        this.video = video;
-    }
 
     /**
      * @return The voteAverage
@@ -430,44 +233,119 @@ public class MovieDetail {
     }
 
     /**
-     * @return The voteCount
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    public long getVoteCount() {
-        return voteCount;
-    }
-
-    /**
-     * @param voteCount The vote_count
-     */
-    public void setVoteCount(long voteCount) {
-        this.voteCount = voteCount;
-    }
-
-    /**
-     * @return The backdrops
-     */
+    @Generated(hash = 2089719922)
     public List<MovieBackdrop> getBackdrops() {
+        if (backdrops == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            MovieBackdropDao targetDao = daoSession.getMovieBackdropDao();
+            List<MovieBackdrop> backdropsNew = targetDao
+                    ._queryMovieDetail_Backdrops(id);
+            synchronized (this) {
+                if (backdrops == null) {
+                    backdrops = backdropsNew;
+                }
+            }
+        }
         return backdrops;
     }
 
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 2027946155)
+    public synchronized void resetBackdrops() {
+        backdrops = null;
+    }
+
     /**
-     * @param backdrops The backdrops
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
      */
+    @Generated(hash = 116324377)
+    public List<Genre> getGenres() {
+        if (genres == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            GenreDao targetDao = daoSession.getGenreDao();
+            List<Genre> genresNew = targetDao._queryMovieDetail_Genres(id);
+            synchronized (this) {
+                if (genres == null) {
+                    genres = genresNew;
+                }
+            }
+        }
+        return genres;
+    }
+
     public void setBackdrops(List<MovieBackdrop> backdrops) {
         this.backdrops = backdrops;
     }
 
-    /**
-     * @return The posters
-     */
-    public List<MoviePoster> getPosters() {
-        return posters;
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 1988821389)
+    public synchronized void resetGenres() {
+        genres = null;
     }
 
     /**
-     * @param posters The posters
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
      */
-    public void setPosters(List<MoviePoster> posters) {
-        this.posters = posters;
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
     }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1814069270)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getMovieDetailDao() : null;
+    }
+
 }

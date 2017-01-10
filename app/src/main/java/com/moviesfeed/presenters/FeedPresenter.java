@@ -1,19 +1,21 @@
 package com.moviesfeed.presenters;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.moviesfeed.App;
 import com.moviesfeed.activities.FeedActivity;
 import com.moviesfeed.api.Filters;
-import com.moviesfeed.api.FiltersType;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
+
+import org.greenrobot.greendao.async.AsyncSession;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import icepick.State;
+import nucleus.presenter.RxPresenter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -25,20 +27,16 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Pedro on 8/17/2016.
  */
-public class FeedPresenter extends BasePresenter<FeedActivity> {
+public class FeedPresenter extends RxPresenter<FeedActivity> {
 
-    private static final int REQUEST_MOVIES_SORTY_BY = 1;
-    private static final int REQUEST_MOVIES_FILTER = 2;
+    public static final int REQUEST_MOVIES_SORT_BY = 1;
+    public static final int REQUEST_MOVIES_FILTER = 2;
     public static final int FIRST_PAGE = 1;
+    public static final String DESC = ".desc";
 
-    @State
-    Filters filterBy = Filters.POPULARITY;
-    @State
-    FiltersType filterType = FiltersType.DESC;
-    @State
-    MoviesFeed moviesFeed;
-    @State
-    int page = 1;
+    private Filters filterBy = Filters.POPULARITY;
+    private MoviesFeed moviesFeed;
+    private int page = 1;
 
     private boolean isRequestingNextPage;
 
@@ -59,62 +57,48 @@ public class FeedPresenter extends BasePresenter<FeedActivity> {
                                 .observeOn(AndroidSchedulers.mainThread());
                     }
                 },
-                new Action2<FeedActivity, MoviesFeed>() {
-                    @Override
-                    public void call(final FeedActivity activity, final MoviesFeed response) {
+                handleRequestSuccess(),
+                handleRequestFailure());
 
-                        filterMovieFeed(activity, response);
-
-                    }
-                },
-                new Action2<FeedActivity, Throwable>() {
-                    @Override
-                    public void call(FeedActivity activity, Throwable throwable) {
-                        //TODO handle error
-                    }
-                });
-
-    }
-
-    private String getFormattedDate() {
-        Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH) + 1; //+1 is needed by the fact that month starts in 0
-        int day = c.get(Calendar.DAY_OF_MONTH);
-
-        return year + "-" + month + "-" + day;
     }
 
     private void createRequestMoviesFeedSortBy() {
-        restartableLatestCache(REQUEST_MOVIES_SORTY_BY,
+        restartableLatestCache(REQUEST_MOVIES_SORT_BY,
                 new Func0<Observable<MoviesFeed>>() {
                     @Override
                     public Observable<MoviesFeed> call() {
-                        return App.getServerApi().getMoviesSortBy(filterBy.toString() + filterType.toString(),
+                        return App.getServerApi().getMoviesSortBy(filterBy.toString() + FeedPresenter.DESC,
                                 getFormattedDate(), page)
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread());
                     }
                 },
-                new Action2<FeedActivity, MoviesFeed>() {
-                    @Override
-                    public void call(final FeedActivity activity, final MoviesFeed response) {
+                handleRequestSuccess(),
+                handleRequestFailure());
+    }
 
-                        filterMovieFeed(activity, response);
+    private Action2 handleRequestSuccess() {
+        return new Action2<FeedActivity, MoviesFeed>() {
+            @Override
+            public void call(final FeedActivity activity, final MoviesFeed response) {
+                response.setFilter(filterBy);
+                filterMovieFeed(activity, response);
+            }
+        };
+    }
 
-                    }
-                },
-                new Action2<FeedActivity, Throwable>() {
-                    @Override
-                    public void call(FeedActivity activity, Throwable throwable) {
-                        //TODO handle error
-                    }
-                });
+    private Action2 handleRequestFailure() {
+        return new Action2<FeedActivity, Throwable>() {
+            @Override
+            public void call(FeedActivity activity, Throwable throwable) {
+                Log.e(FeedPresenter.class.getName(), throwable.getMessage(), throwable);
+                //TODO handle error
+            }
+        };
     }
 
     private void filterMovieFeed(final FeedActivity activity, final MoviesFeed response) {
         final List<Movie> filteredMovies = new ArrayList<Movie>();
-
         Observable.from(response.getMovies()).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread()).filter(new Func1<Movie, Boolean>() {
             @Override
@@ -127,25 +111,37 @@ public class FeedPresenter extends BasePresenter<FeedActivity> {
                 if (isRequestingNextPage) {
                     moviesFeed.getMovies().addAll(filteredMovies);
                     moviesFeed.setPage(page);
-                    activity.requestMoviesFeedCallback(moviesFeed, isRequestingNextPage);
                 } else if (page == FIRST_PAGE) {
                     response.setMovies(filteredMovies);
                     moviesFeed = response;
-                    activity.requestMoviesFeedCallback(moviesFeed, isRequestingNextPage);
                 }
+
+                insertMoviesFeedDB(moviesFeed);
+                activity.requestMoviesFeedCallback(moviesFeed, isRequestingNextPage);
                 isRequestingNextPage = false;
             }
 
             @Override
-            public void onError(Throwable e) {
-
+            public void onError(Throwable throwable) {
+                Log.e(FeedPresenter.class.getName(), throwable.getMessage(), throwable);
+                //TODO handle error
             }
 
             @Override
             public void onNext(Movie movie) {
+                movie.setMoviesFeedKey(filterBy.getId());
                 filteredMovies.add(movie);
             }
         });
+    }
+
+    private void insertMoviesFeedDB(MoviesFeed moviesFeed) {
+        App.getDaoSession().getMoviesFeedDao().insertOrReplace(moviesFeed);
+        App.getDaoSession().getMovieDao().insertOrReplaceInTx(moviesFeed.getMovies());
+    }
+
+    private MoviesFeed loadMoviesFeedDB() {
+        return App.getDaoSession().getMoviesFeedDao().load(filterBy.getId());
     }
 
     private void request(boolean isRequestingNextPage) {
@@ -159,32 +155,39 @@ public class FeedPresenter extends BasePresenter<FeedActivity> {
 
         if (this.filterBy == Filters.TOP_RATED || this.filterBy == Filters.UPCOMING) {
             start(REQUEST_MOVIES_FILTER);
-            stop(REQUEST_MOVIES_SORTY_BY);
+            stop(REQUEST_MOVIES_SORT_BY);
         } else {
-            start(REQUEST_MOVIES_SORTY_BY);
+            start(REQUEST_MOVIES_SORT_BY);
             stop(REQUEST_MOVIES_FILTER);
         }
     }
 
 
-    public void requestMoviesFeed(Filters filterBy, FiltersType filterType) {
+    public void requestMoviesFeed(FeedActivity activity, Filters filterBy) {
         this.filterBy = filterBy;
-        this.filterType = filterType;
+        MoviesFeed moviesFeed = loadMoviesFeedDB();
+        if (moviesFeed != null) {
+            moviesFeed.setMovies(moviesFeed.getMovies());
+            this.moviesFeed = moviesFeed;
+            this.page = moviesFeed.getPage();
+            activity.requestMoviesFeedCallback(this.moviesFeed, isRequestingNextPage);
+        } else {
+            request(false);
+        }
 
-        request(false);
-    }
-
-    //Ready to use when necessary.
-    public void requestOrderByUpdate() {
-        if (this.filterType == FiltersType.ASC)
-            this.filterType = FiltersType.DESC;
-        else
-            this.filterType = FiltersType.ASC;
-
-        request(false);
     }
 
     public void requestNextPage() {
         request(true);
+    }
+
+
+    private String getFormattedDate() {
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH) + 1; //+1 is needed by the fact that month starts in 0
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        return year + "-" + month + "-" + day;
     }
 }
