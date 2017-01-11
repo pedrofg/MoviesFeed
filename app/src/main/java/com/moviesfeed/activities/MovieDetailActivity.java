@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.moviesfeed.R;
@@ -27,6 +29,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Handler;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,10 +41,9 @@ import nucleus.view.NucleusAppCompatActivity;
 @RequiresPresenter(MovieDetailPresenter.class)
 public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPresenter> {
 
+    public static final String MINUTES = "m";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    //    @BindView(R.id.imgMovieBanner)
-//    ImageView imgMovieBanner;
     @BindView(R.id.txtMovieTitle)
     TextView txtMovieTitle;
     @BindView(R.id.txtMovieYear)
@@ -60,6 +64,13 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
     CollapsingToolbarLayout collapsingToolBar;
     @BindView(R.id.recyclerViewMovieImages)
     RecyclerView rvMovieImages;
+    @BindView(R.id.progressLoadingMovies)
+    ProgressBar progressLoadingMovies;
+    @BindView(R.id.nestedScrollView)
+    NestedScrollView nestedScrollView;
+    @BindView(R.id.rbMovieRating)
+    RatingBar rbMovieRating;
+
 
     private MovieDetail movieDetail;
 
@@ -89,11 +100,15 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
         });
 
         getPresenter().requestMoviedetail(movieId);
-
-
     }
 
-    public void fillMovieDetails(final MovieDetail movieDetail) {
+    private void showLayoutContent() {
+        this.progressLoadingMovies.setVisibility(View.GONE);
+        this.appBarLayout.setVisibility(View.VISIBLE);
+        this.nestedScrollView.setVisibility(View.VISIBLE);
+    }
+
+    public void requestMovieDetailCallbackSuccess(final MovieDetail movieDetail) {
         this.movieDetail = movieDetail;
 
         //Fill movie info
@@ -104,12 +119,14 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
             this.txtMovieYear.setVisibility(View.VISIBLE);
         }
         if (this.movieDetail.getRuntime() > 0) {
-            this.txtMovieRuntime.setText(this.movieDetail.getRuntime() + "m");
+            this.txtMovieRuntime.setText(this.movieDetail.getRuntime() + MINUTES);
             this.txtMovieRuntime.setVisibility(View.VISIBLE);
         }
         if (this.movieDetail.getVoteAverage() > 0) {
             this.txtMovieRating.setText(String.valueOf(this.movieDetail.getVoteAverage()));
             this.txtMovieRating.setVisibility(View.VISIBLE);
+            float rating = (float) ((this.movieDetail.getVoteAverage() * 5) / 10);
+            this.rbMovieRating.setRating(rating);
         }
 
         this.txtMovieOverview.setText(this.movieDetail.getOverview());
@@ -121,12 +138,13 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
             for (int i = 0; i < this.movieDetail.getGenres().size(); i++) {
                 genreNames[i] = this.movieDetail.getGenres().get(i).getName();
             }
-            this.txtMovieGenres.setText(TextUtils.join(" | ", genreNames));
+            this.txtMovieGenres.setText(TextUtils.join("\n", genreNames));
             this.txtMovieGenres.setVisibility(View.VISIBLE);
         }
 
-
+        showLayoutContent();
         fillMovieImages();
+
     }
 
     private void fillMovieImages() {

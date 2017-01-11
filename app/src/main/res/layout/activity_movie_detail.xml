@@ -6,12 +6,20 @@
     android:background="@android:color/background_light"
     android:fitsSystemWindows="true">
 
+    <ProgressBar
+        android:id="@+id/progressLoadingMovies"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true" />
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:visibility="gone">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsingToolBar"
@@ -23,10 +31,12 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerViewMovieImages"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@android:color/white" />
 
 
             <android.support.v7.widget.Toolbar
@@ -40,82 +50,133 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:paddingBottom="10dp">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/txtMovieTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="26dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtMovieGenres"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtMovieTitle"
-                android:textSize="14dp"
-                android:visibility="gone" />
-
-
-            <LinearLayout
-                android:id="@+id/layoutMovieYear"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtMovieGenres"
-                android:orientation="horizontal">
+                android:layout_height="1dp"
+                android:background="@color/iconGray" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:paddingBottom="10dp">
 
                 <TextView
-                    android:id="@+id/txtMovieYear"
+                    android:id="@+id/txtMovieTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textSize="26dp"
+                    android:textStyle="bold" />
 
-                    android:textSize="18dp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/txtMovieRuntime"
+                <LinearLayout
+                    android:id="@+id/layoutRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@id/txtMovieYear"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@id/txtMovieTitle"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/txtMovieYear"
-                    android:textSize="18dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/rounded_border_background"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/txtMovieRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18dp"
+                        android:visibility="gone" />
+
+                    <RatingBar
+                        android:id="@+id/rbMovieRating"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:stepSize="0.01" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtMovieGenres"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/layoutRating"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/layoutRating"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/rounded_border_background"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textSize="14dp"
                     android:visibility="gone" />
-            </LinearLayout>
 
-            <TextView
-                android:id="@+id/txtMovieRating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/layoutMovieYear"
-                android:textSize="18dp"
-                android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/txtMovieOverview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtMovieRating"
-                android:textSize="18dp" />
+                <LinearLayout
+                    android:id="@+id/layoutMovieYear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/txtMovieTitle"
+                    android:layout_below="@id/txtMovieTitle"
+                    android:layout_toLeftOf="@id/layoutRating"
+                    android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/txtMovieHomepage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtMovieOverview"
-                android:autoLink="web"
-                android:textColorLink="@color/colorPrimary" />
+                    <TextView
+                        android:id="@+id/txtMovieYear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:textSize="18dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txtMovieRuntime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/txtMovieYear"
+                        android:layout_below="@id/txtMovieTitle"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@id/txtMovieYear"
+                        android:textSize="18dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/txtMovieOverview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/txtMovieTitle"
+                    android:layout_below="@id/layoutMovieYear"
+                    android:layout_marginRight="1dp"
+                    android:layout_toLeftOf="@id/txtMovieGenres"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/txtMovieHomepage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/txtMovieTitle"
+                    android:layout_below="@id/txtMovieOverview"
+                    android:layout_toLeftOf="@id/txtMovieGenres"
+                    android:autoLink="web"
+                    android:textColorLink="@color/colorPrimary" />
+            </RelativeLayout>
         </RelativeLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

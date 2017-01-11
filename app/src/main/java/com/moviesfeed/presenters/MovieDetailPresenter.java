@@ -1,18 +1,11 @@
 package com.moviesfeed.presenters;
 
-import android.os.Bundle;
-
-import com.google.gson.JsonObject;
 import com.moviesfeed.App;
-import com.moviesfeed.activities.FeedActivity;
 import com.moviesfeed.activities.MovieDetailActivity;
 import com.moviesfeed.models.MovieDetail;
-import com.moviesfeed.models.MoviesFeed;
 
 import nucleus.presenter.RxPresenter;
 import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action2;
 import rx.functions.Func0;
@@ -24,7 +17,7 @@ import rx.schedulers.Schedulers;
  */
 public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
 
-    private static final int REQUEST_MOVIE_DETAIL = 2;
+    private static final int REQUEST_MOVIE_DETAIL = 1;
     int movieId;
 
     private void createRequestMovieDetail() {
@@ -45,24 +38,6 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
             }
         });
 
-//        combined.subscribe(new Subscriber<MovieDetail>() {
-//            @Override
-//            public void onCompleted() {
-//                //do nothing
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                //TODO handle error
-//            }
-//
-//            @Override
-//            public void onNext(MovieDetail movieDetail) {
-//                getView().fillMovieDetails(movieDetail);
-//            }
-//        });
-
-
         restartableLatestCache(REQUEST_MOVIE_DETAIL,
                 new Func0<Observable<MovieDetail>>() {
                     @Override
@@ -74,7 +49,7 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
                     @Override
                     public void call(MovieDetailActivity activity, final MovieDetail response) {
 
-                        activity.fillMovieDetails(response);
+                        activity.requestMovieDetailCallbackSuccess(response);
 
                     }
                 },
