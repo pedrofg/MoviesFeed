@@ -70,6 +70,8 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
     NestedScrollView nestedScrollView;
     @BindView(R.id.rbMovieRating)
     RatingBar rbMovieRating;
+    @BindView(R.id.layoutMovieRating)
+    View layoutMovieRating;
 
 
     private MovieDetail movieDetail;
@@ -123,8 +125,8 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
             this.txtMovieRuntime.setVisibility(View.VISIBLE);
         }
         if (this.movieDetail.getVoteAverage() > 0) {
+            this.layoutMovieRating.setVisibility(View.VISIBLE);
             this.txtMovieRating.setText(String.valueOf(this.movieDetail.getVoteAverage()));
-            this.txtMovieRating.setVisibility(View.VISIBLE);
             float rating = (float) ((this.movieDetail.getVoteAverage() * 5) / 10);
             this.rbMovieRating.setRating(rating);
         }
