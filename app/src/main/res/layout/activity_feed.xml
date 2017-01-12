@@ -12,15 +12,13 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
 
-    <GridView
-        android:id="@+id/gridMoviesFeed"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvMoviesFeed"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:numColumns="3"
-        android:verticalSpacing="5dp"
         android:visibility="gone" />
 
     <ProgressBar

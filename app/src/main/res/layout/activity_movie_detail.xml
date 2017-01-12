@@ -73,15 +73,13 @@
 
                 <TextView
                     android:id="@+id/txtMovieTitle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
                     android:textSize="26dp"
                     android:textStyle="bold" />
 
                 <LinearLayout
-                    android:id="@+id/layoutRating"
+                    android:id="@+id/layoutMovieRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -90,14 +88,14 @@
                     android:background="@drawable/rounded_border_background"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="10dp">
+                    android:padding="10dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/txtMovieRating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="18dp"
-                        android:visibility="gone" />
+                        android:textSize="18dp" />
 
                     <RatingBar
                         android:id="@+id/rbMovieRating"
@@ -114,9 +112,9 @@
                     android:id="@+id/txtMovieGenres"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@id/layoutRating"
+                    android:layout_alignLeft="@id/layoutMovieRating"
                     android:layout_alignParentRight="true"
-                    android:layout_below="@id/layoutRating"
+                    android:layout_below="@id/layoutMovieRating"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/rounded_border_background"
                     android:gravity="center"
@@ -131,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/txtMovieTitle"
                     android:layout_below="@id/txtMovieTitle"
-                    android:layout_toLeftOf="@id/layoutRating"
+                    android:layout_toLeftOf="@id/layoutMovieRating"
                     android:orientation="horizontal">
 
                     <TextView

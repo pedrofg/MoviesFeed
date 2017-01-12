@@ -98,7 +98,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     }
 
     private void filterMovieFeed(final FeedActivity activity, final MoviesFeed response) {
-        final List<Movie> filteredMovies = new ArrayList<Movie>();
+        final List<Movie> filteredMovies = new ArrayList<>();
         Observable.from(response.getMovies()).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread()).filter(new Func1<Movie, Boolean>() {
             @Override
@@ -117,7 +117,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                 }
 
                 insertMoviesFeedDB(moviesFeed);
-                activity.requestMoviesFeedCallback(moviesFeed, isRequestingNextPage);
+                activity.requestMoviesFeedCallback(moviesFeed, isRequestingNextPage, filteredMovies.size());
                 isRequestingNextPage = false;
             }
 
@@ -148,7 +148,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         this.isRequestingNextPage = isRequestingNextPage;
 
         if (isRequestingNextPage) {
-            this.page = this.page + 1;
+            this.page = ++this.page;
         } else {
             this.page = 1;
         }
@@ -170,7 +170,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
             moviesFeed.setMovies(moviesFeed.getMovies());
             this.moviesFeed = moviesFeed;
             this.page = moviesFeed.getPage();
-            activity.requestMoviesFeedCallback(this.moviesFeed, isRequestingNextPage);
+            activity.requestMoviesFeedCallback(this.moviesFeed, isRequestingNextPage, this.moviesFeed.getMovies().size());
         } else {
             request(false);
         }

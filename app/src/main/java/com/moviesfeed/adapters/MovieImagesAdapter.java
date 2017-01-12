@@ -62,7 +62,7 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
                     }
                 });
 
-        holder.txtPosition.setText(++position + "/" + this.listMovieImages.size());
+        holder.txtPosition.setText(++position + " - " + this.listMovieImages.size());
 
     }
 

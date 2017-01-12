@@ -2,39 +2,37 @@ package com.moviesfeed.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 
 import com.moviesfeed.R;
 import com.moviesfeed.activities.uicomponents.EndlessScrollListener;
+import com.moviesfeed.activities.uicomponents.RecyclerItemClickListener;
 import com.moviesfeed.adapters.FeedAdapter;
 import com.moviesfeed.api.Filters;
-
-import android.support.design.widget.NavigationView;
-
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
 import com.moviesfeed.presenters.FeedPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnItemClick;
 import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusAppCompatActivity;
 
 @RequiresPresenter(FeedPresenter.class)
-public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implements NavigationView.OnNavigationItemSelectedListener, EndlessScrollListener.RefreshList {
+public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implements NavigationView.OnNavigationItemSelectedListener, EndlessScrollListener.RefreshList, RecyclerItemClickListener.OnItemClickListener {
     public static final String INTENT_MOVIE_DETAIL_ID = "INTENT_MOVIE_DETAIL_ID";
-    @BindView(R.id.gridMoviesFeed)
-    GridView gridMoviesFeed;
+    public static final int GRID_COLUMNS = 3;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.progressBar)
@@ -43,9 +41,12 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     DrawerLayout drawerLayout;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
+    @BindView(R.id.rvMoviesFeed)
+    RecyclerView rvMoviesFeed;
 
-    private FeedAdapter adapter;
-    private EndlessScrollListener scrollListener;
+    private EndlessScrollListener endlessScrollListener;
+    private FeedAdapter rvAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,43 +62,22 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         this.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        setUpAdapter();
-
-        this.scrollListener = new EndlessScrollListener(this.gridMoviesFeed, this);
-        this.gridMoviesFeed.setOnScrollListener(scrollListener);
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, GRID_COLUMNS);
+        this.rvMoviesFeed.setLayoutManager(gridLayoutManager);
+
+        this.endlessScrollListener = new EndlessScrollListener(gridLayoutManager, this);
+        this.rvMoviesFeed.addOnScrollListener(endlessScrollListener);
+
+        this.rvAdapter = new FeedAdapter(this);
+        this.rvMoviesFeed.setAdapter(rvAdapter);
+
+        this.rvMoviesFeed.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
+        this.rvMoviesFeed.setHasFixedSize(true);
 
         if (savedInstanceState == null)
             requestMoviesFeed(Filters.POPULARITY);
-    }
-
-    private void setUpAdapter() {
-        Log.i(FeedActivity.class.getName(), "setUpAdapter()");
-        this.adapter = new FeedAdapter(this);
-        this.gridMoviesFeed.setAdapter(adapter);
-    }
-
-    public void requestMoviesFeedCallback(MoviesFeed moviesFeed, boolean isNextPage) {
-        Log.i(FeedActivity.class.getName(), "requestMoviesFeedCallback() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage);
-        this.progressBar.setVisibility(View.GONE);
-        this.gridMoviesFeed.setVisibility(View.VISIBLE);
-
-        this.adapter.setMoviesFeed(moviesFeed);
-        this.adapter.notifyDataSetChanged();
-
-        if (isNextPage) {
-            Log.i(FeedActivity.class.getName(), "requestMoviesFeedCallback() notifyMorePages");
-            this.scrollListener.notifyMorePages();
-        }
-    }
-
-    private void requestMoviesFeed(Filters filter) {
-        this.gridMoviesFeed.setVisibility(View.GONE);
-        this.progressBar.setVisibility(View.VISIBLE);
-
-        getPresenter().requestMoviesFeed(this, filter);
     }
 
     @Override
@@ -132,9 +112,40 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         }
         Log.i(FeedActivity.class.getName(), "onNavigationItemSelected() filter: " + filter.toString());
         drawerLayout.closeDrawer(GravityCompat.START);
-        setUpAdapter();
+        refreshGrid();
         requestMoviesFeed(filter);
         return true;
+    }
+
+
+    private void requestMoviesFeed(Filters filter) {
+        this.rvMoviesFeed.setVisibility(View.GONE);
+        this.progressBar.setVisibility(View.VISIBLE);
+
+        getPresenter().requestMoviesFeed(this, filter);
+    }
+
+    public void requestMoviesFeedCallback(MoviesFeed moviesFeed, boolean isNextPage, int insertedMoviesCount) {
+        Log.i(FeedActivity.class.getName(), "requestMoviesFeedCallback() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage);
+        this.progressBar.setVisibility(View.GONE);
+        this.rvMoviesFeed.setVisibility(View.VISIBLE);
+
+        this.rvAdapter.setMoviesFeed(moviesFeed);
+
+        if (isNextPage) {
+            int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
+            this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
+        } else {
+            this.rvAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void refreshGrid() {
+        Log.i(FeedActivity.class.getName(), "refreshGrid()");
+
+        this.endlessScrollListener.reset();
+        this.rvMoviesFeed.scrollToPosition(0);
+
     }
 
     @Override
@@ -147,14 +158,15 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     }
 
     @Override
-    public void onRefresh(int pageNumber) {
-        Log.i(FeedActivity.class.getName(), "onRefresh() - page number: " + pageNumber);
+    public void onRefresh(int currentPage) {
+        Log.i(FeedActivity.class.getName(), "onRefresh() - page number: " + currentPage);
         getPresenter().requestNextPage();
     }
 
-    @OnItemClick(R.id.gridMoviesFeed)
-    public void onItemClick(int position) {
-        Movie movie = this.adapter.getItem(position);
+    //Grid item click listener
+    @Override
+    public void onItemClick(View view, int position) {
+        Movie movie = this.rvAdapter.getItem(position);
         Log.i(FeedActivity.class.getName(), "onItemClick, Movie Title: " + movie.getTitle());
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(INTENT_MOVIE_DETAIL_ID, movie.getIdTmdb());

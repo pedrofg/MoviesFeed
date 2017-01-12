@@ -1,54 +1,61 @@
 package com.moviesfeed.activities.uicomponents;
 
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.GridView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
-public class EndlessScrollListener implements OnScrollListener {
+public class EndlessScrollListener extends RecyclerView.OnScrollListener {
 
-    private GridView gridView;
-    private boolean isLoading;
-    private boolean hasMorePages;
-    private int pageNumber = 0;
-    private RefreshList refreshList;
-    private boolean isRefreshing;
+    public static String TAG = EndlessScrollListener.class.getSimpleName();
 
-    public EndlessScrollListener(GridView gridView, RefreshList refreshList) {
-        this.gridView = gridView;
-        this.isLoading = false;
-        this.isRefreshing = false;
-        this.hasMorePages = true;
+    private int previousTotal = 0; // The total number of items in the dataset after the last load
+    private boolean loading = true; // True if we are still waiting for the last set of data to load.
+    private int visibleThreshold = 5; // The minimum amount of items to have below your current scroll position before loading more.
+    int firstVisibleItem, visibleItemCount, totalItemCount;
+
+    private int currentPage = 1;
+
+    private GridLayoutManager gridLayoutManager;
+    private EndlessScrollListener.RefreshList refreshList;
+
+    public EndlessScrollListener(GridLayoutManager gridLayoutManager, EndlessScrollListener.RefreshList refreshList) {
+        this.gridLayoutManager = gridLayoutManager;
         this.refreshList = refreshList;
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (totalItemCount > 0 && gridView.getLastVisiblePosition() + 1 == totalItemCount && !isLoading) {
-            isLoading = true;
-            if (hasMorePages && !isRefreshing) {
-                isRefreshing = true;
-                refreshList.onRefresh(pageNumber);
+    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        super.onScrolled(recyclerView, dx, dy);
+
+        visibleItemCount = recyclerView.getChildCount();
+        totalItemCount = gridLayoutManager.getItemCount();
+        firstVisibleItem = gridLayoutManager.findFirstVisibleItemPosition();
+
+        if (loading) {
+            if (totalItemCount > previousTotal) {
+                loading = false;
+                previousTotal = totalItemCount;
             }
-        } else {
-            isLoading = false;
         }
+        if (!loading && (totalItemCount - visibleItemCount)
+                <= (firstVisibleItem + visibleThreshold)) {
+            // End has been reached
 
+            // Do something
+            currentPage++;
+
+            refreshList.onRefresh(currentPage);
+
+            loading = true;
+        }
     }
 
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-    }
-
-    public void noMorePages() {
-        this.hasMorePages = false;
-    }
-
-    public void notifyMorePages() {
-        isRefreshing = false;
-        pageNumber = pageNumber + 1;
+    public void reset() {
+        this.loading = true;
+        this.previousTotal = 0;
+        this.currentPage = 1;
     }
 
     public interface RefreshList {
-        void onRefresh(int pageNumber);
+        void onRefresh(int currentPage);
     }
 }

@@ -1,10 +1,10 @@
 package com.moviesfeed.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -19,10 +19,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Pedro on 8/17/2016.
- */
-public class FeedAdapter extends BaseAdapter {
+public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder> {
 
     private Context context;
     private MoviesFeed moviesFeed;
@@ -35,36 +32,25 @@ public class FeedAdapter extends BaseAdapter {
         this.moviesFeed = moviesFeed;
     }
 
+    public Movie getItem(int position) {
+        return this.moviesFeed.getMovies().get(position);
+    }
+
     @Override
-    public int getCount() {
+    public FeedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_movies_feed_item, parent, false);
+
+        FeedViewHolder viewHolder = new FeedViewHolder(view);
+        return viewHolder;
+    }
+
+    @Override
+    public int getItemCount() {
         return moviesFeed != null ? moviesFeed.getMovies().size() : 0;
     }
 
     @Override
-    public Movie getItem(int i) {
-        return moviesFeed != null ? moviesFeed.getMovies().get(i) : null;
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final ViewHolder holder;
-
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.grid_movies_feed_item, parent, false);
-
-            holder = new ViewHolder(convertView);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
+    public void onBindViewHolder(final FeedViewHolder holder, int position) {
         holder.progressItem.setVisibility(View.VISIBLE);
         String url = MoviesApi.URL_MOVIE_POSTER + moviesFeed.getMovies().get(position).getPosterPath();
         Picasso.with(context)
@@ -82,17 +68,16 @@ public class FeedAdapter extends BaseAdapter {
 
                     }
                 });
-
-        return convertView;
     }
 
-    static class ViewHolder {
+    static class FeedViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.movieItemPoster)
         ImageView imgMoviePoster;
         @BindView(R.id.movieItemProgressBar)
         ProgressBar progressItem;
 
-        public ViewHolder(View view) {
+        public FeedViewHolder(View view) {
+            super(view);
             ButterKnife.bind(this, view);
         }
     }
