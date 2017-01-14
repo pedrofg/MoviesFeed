@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +31,7 @@ import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusAppCompatActivity;
 
 @RequiresPresenter(FeedPresenter.class)
-public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implements NavigationView.OnNavigationItemSelectedListener, EndlessScrollListener.RefreshList, RecyclerItemClickListener.OnItemClickListener {
+public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implements NavigationView.OnNavigationItemSelectedListener, EndlessScrollListener.RefreshList, RecyclerItemClickListener.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     public static final String INTENT_MOVIE_DETAIL_ID = "INTENT_MOVIE_DETAIL_ID";
     public static final int GRID_COLUMNS = 3;
     @BindView(R.id.toolbar)
@@ -43,6 +44,8 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     NavigationView navigationView;
     @BindView(R.id.rvMoviesFeed)
     RecyclerView rvMoviesFeed;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private EndlessScrollListener endlessScrollListener;
     private FeedAdapter rvAdapter;
@@ -75,6 +78,9 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
         this.rvMoviesFeed.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
         this.rvMoviesFeed.setHasFixedSize(true);
+
+        this.swipeRefreshLayout.setOnRefreshListener(this);
+        this.swipeRefreshLayout.setColorSchemeResources(R.color.iconRed);
 
         if (savedInstanceState == null)
             requestMoviesFeed(Filters.POPULARITY);
@@ -119,16 +125,16 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
 
     private void requestMoviesFeed(Filters filter) {
-        this.rvMoviesFeed.setVisibility(View.GONE);
+        this.swipeRefreshLayout.setVisibility(View.GONE);
         this.progressBar.setVisibility(View.VISIBLE);
 
         getPresenter().requestMoviesFeed(this, filter);
     }
 
-    public void requestMoviesFeedCallback(MoviesFeed moviesFeed, boolean isNextPage, int insertedMoviesCount) {
+    public void requestMoviesFeedCallback(MoviesFeed moviesFeed, boolean isNextPage, boolean isUpdating, int insertedMoviesCount) {
         Log.i(FeedActivity.class.getName(), "requestMoviesFeedCallback() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage);
         this.progressBar.setVisibility(View.GONE);
-        this.rvMoviesFeed.setVisibility(View.VISIBLE);
+        this.swipeRefreshLayout.setVisibility(View.VISIBLE);
 
         this.rvAdapter.setMoviesFeed(moviesFeed);
 
@@ -138,11 +144,17 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         } else {
             this.rvAdapter.notifyDataSetChanged();
         }
+
+        if (isUpdating) {
+            refreshGrid();
+        }
+
     }
 
     private void refreshGrid() {
         Log.i(FeedActivity.class.getName(), "refreshGrid()");
 
+        this.swipeRefreshLayout.setRefreshing(false);
         this.endlessScrollListener.reset();
         this.rvMoviesFeed.scrollToPosition(0);
 
@@ -158,7 +170,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     }
 
     @Override
-    public void onRefresh(int currentPage) {
+    public void requestNextPage(int currentPage) {
         Log.i(FeedActivity.class.getName(), "onRefresh() - page number: " + currentPage);
         getPresenter().requestNextPage();
     }
@@ -174,4 +186,8 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     }
 
 
+    @Override
+    public void onRefresh() {
+        getPresenter().updateMoviesFeed();
+    }
 }

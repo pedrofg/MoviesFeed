@@ -7,9 +7,12 @@ import com.moviesfeed.App;
 import com.moviesfeed.activities.FeedActivity;
 import com.moviesfeed.api.Filters;
 import com.moviesfeed.models.Movie;
+import com.moviesfeed.models.MovieDao;
 import com.moviesfeed.models.MoviesFeed;
 
 import org.greenrobot.greendao.async.AsyncSession;
+import org.greenrobot.greendao.query.DeleteQuery;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,6 +42,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     private int page = 1;
 
     private boolean isRequestingNextPage;
+    private boolean isUpdating;
 
     @Override
     protected void onCreate(Bundle savedState) {
@@ -116,8 +120,14 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                     moviesFeed = response;
                 }
 
+                if (isUpdating) {
+                    deleteMoviesFeedDB(moviesFeed.getId());
+                }
+
                 insertMoviesFeedDB(moviesFeed);
-                activity.requestMoviesFeedCallback(moviesFeed, isRequestingNextPage, filteredMovies.size());
+                activity.requestMoviesFeedCallback(moviesFeed, isRequestingNextPage, isUpdating, filteredMovies.size());
+
+                isUpdating = false;
                 isRequestingNextPage = false;
             }
 
@@ -133,6 +143,14 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                 filteredMovies.add(movie);
             }
         });
+    }
+
+    private void deleteMoviesFeedDB(Long id) {
+        QueryBuilder qb = App.getDaoSession().getMovieDao().queryBuilder();
+        qb.where(MovieDao.Properties.MoviesFeedKey.eq(id));
+        qb.buildDelete().executeDeleteWithoutDetachingEntities();
+
+        App.getDaoSession().getMoviesFeedDao().deleteByKey(id);
     }
 
     private void insertMoviesFeedDB(MoviesFeed moviesFeed) {
@@ -170,10 +188,16 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
             moviesFeed.setMovies(moviesFeed.getMovies());
             this.moviesFeed = moviesFeed;
             this.page = moviesFeed.getPage();
-            activity.requestMoviesFeedCallback(this.moviesFeed, isRequestingNextPage, this.moviesFeed.getMovies().size());
+            activity.requestMoviesFeedCallback(this.moviesFeed, isRequestingNextPage, false, this.moviesFeed.getMovies().size());
         } else {
             request(false);
         }
+
+    }
+
+    public void updateMoviesFeed() {
+        this.isUpdating = true;
+        request(false);
 
     }
 

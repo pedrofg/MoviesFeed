@@ -11,15 +11,22 @@
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvMoviesFeed"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:layout_below="@id/toolbar"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:visibility="gone" />
+        android:paddingTop="5dp">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvMoviesFeed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"

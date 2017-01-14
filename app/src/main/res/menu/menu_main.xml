@@ -9,10 +9,5 @@
         android:title="@string/action_about"
         app:showAsAction="never" />
 
-    <!--<item-->
-    <!--android:id="@+id/action_order_by"-->
-    <!--android:orderInCategory="100"-->
-    <!--android:icon="@drawable/orderby"-->
-    <!--android:title="Order By"-->
-    <!--app:showAsAction="ifRoom" />-->
+
 </menu>
