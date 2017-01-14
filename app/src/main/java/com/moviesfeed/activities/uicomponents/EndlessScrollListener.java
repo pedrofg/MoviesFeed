@@ -43,7 +43,7 @@ public class EndlessScrollListener extends RecyclerView.OnScrollListener {
             // Do something
             currentPage++;
 
-            refreshList.onRefresh(currentPage);
+            refreshList.requestNextPage(currentPage);
 
             loading = true;
         }
@@ -56,6 +56,6 @@ public class EndlessScrollListener extends RecyclerView.OnScrollListener {
     }
 
     public interface RefreshList {
-        void onRefresh(int currentPage);
+        void requestNextPage(int currentPage);
     }
 }
