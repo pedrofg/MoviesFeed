@@ -14,7 +14,9 @@ import com.moviesfeed.api.MoviesApi;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,22 +54,47 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     @Override
     public void onBindViewHolder(final FeedViewHolder holder, int position) {
         holder.progressItem.setVisibility(View.VISIBLE);
-        String url = MoviesApi.URL_MOVIE_POSTER + moviesFeed.getMovies().get(position).getPosterPath();
-        Picasso.with(context)
+        final String url = MoviesApi.URL_MOVIE_POSTER + moviesFeed.getMovies().get(position).getPosterPath();
+
+        loadImage(url, holder.imgMoviePoster, new Callback() {
+            @Override
+            public void onSuccess() {
+                holder.progressItem.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError() {
+                //TODO handle error
+            }
+        });
+    }
+
+    private void loadImage(final String url, final ImageView imageView, final Callback callback) {
+
+        getRequestCreator(url, true).into(imageView, new Callback() {
+            @Override
+            public void onSuccess() {
+                callback.onSuccess();
+            }
+
+            @Override
+            public void onError() {
+                getRequestCreator(url, false).into(imageView, callback);
+            }
+        });
+
+    }
+
+    private RequestCreator getRequestCreator(String url, boolean useCache) {
+        RequestCreator requestCreator = Picasso.with(context)
                 .load(url)
                 .resizeDimen(R.dimen.movie_thumbnail_width, R.dimen.movie_thumbnail_height)
-                .transform(new CircleTransform(20, 0))
-                .into(holder.imgMoviePoster, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        holder.progressItem.setVisibility(View.GONE);
-                    }
+                .transform(new CircleTransform(20, 0));
 
-                    @Override
-                    public void onError() {
-
-                    }
-                });
+        if (useCache) {
+            requestCreator.networkPolicy(NetworkPolicy.OFFLINE);
+        }
+        return requestCreator;
     }
 
     static class FeedViewHolder extends RecyclerView.ViewHolder {
