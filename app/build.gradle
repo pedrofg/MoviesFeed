@@ -31,11 +31,6 @@ android {
     }
 }
 
-repositories {
-    //IcePick
-    maven { url "https://clojars.org/repo/" }
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

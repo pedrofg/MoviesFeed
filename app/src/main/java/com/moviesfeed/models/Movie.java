@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class Movie {
 
+    //idDb was created to ensure the same movies order from the server.
     @Id(autoincrement = true)
     private Long idDb;
     @SerializedName("id")
