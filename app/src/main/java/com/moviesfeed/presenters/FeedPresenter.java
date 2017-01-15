@@ -45,8 +45,6 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     private boolean isRequestingNextPage;
     private boolean isUpdating;
 
-    private Subscription updateMoviesFeedSubscription;
-
     @Override
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);

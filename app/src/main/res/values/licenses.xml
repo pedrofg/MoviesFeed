@@ -118,13 +118,13 @@
         limitations under the License.
         \r\n
         \r\n
-        <b>Picasso</b>
+        <b>Picasso 2 OkHttp 3 Downloader</b>
         \r\n
         \r\n
-        com.squareup.picasso:picasso:2.5.2
+        com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0
         \r\n
         \r\n
-        Copyright 2013 Square, Inc.
+        Copyright 2016 Jake Wharton
         \r\n
         \r\n
         Licensed under the Apache License, Version 2.0 (the "License");
