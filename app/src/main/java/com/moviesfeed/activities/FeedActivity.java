@@ -188,6 +188,6 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
     @Override
     public void onRefresh() {
-        getPresenter().updateMoviesFeed();
+        getPresenter().refreshMoviesFeed();
     }
 }

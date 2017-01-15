@@ -141,7 +141,7 @@ public class MoviesFeed {
     }
 
 
-    public void setFilter(Filters filter) {
+    public void setFilterAndId(Filters filter) {
         this.filter = filter;
         this.id = filter.getId();
     }
@@ -156,6 +156,11 @@ public class MoviesFeed {
         this.id = id;
     }
 
+
+
+    public void setFilter(Filters filter) {
+        this.filter = filter;
+    }
 
 
     /** called by internal mechanisms, do not call yourself. */
