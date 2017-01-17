@@ -40,7 +40,7 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
     }
 
     private void createLoadMovieDetailDb() {
-        restartableLatestCache(REQUEST_LOAD_MOVIE_DETAIL_DB, new Func0<Observable<MovieDetail>>() {
+        restartableFirst(REQUEST_LOAD_MOVIE_DETAIL_DB, new Func0<Observable<MovieDetail>>() {
                     @Override
                     public Observable<MovieDetail> call() {
                         return Observable.fromCallable(new Callable<MovieDetail>() {
@@ -69,7 +69,7 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
     }
 
     private void createUpdateMovieDetailDb() {
-        restartableLatestCache(REQUEST_UPDATE_MOVIE_DETAIL_DB, new Func0<Observable<MovieDetail>>() {
+        restartableFirst(REQUEST_UPDATE_MOVIE_DETAIL_DB, new Func0<Observable<MovieDetail>>() {
                     @Override
                     public Observable<MovieDetail> call() {
                         return Observable.fromCallable(new Callable<MovieDetail>() {
@@ -93,7 +93,7 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
     }
 
     private void createRequestMovieDetailAPI() {
-        restartableLatestCache(REQUEST_MOVIE_DETAIL_API,
+        restartableFirst(REQUEST_MOVIE_DETAIL_API,
                 new Func0<Observable<MovieDetail>>() {
                     @Override
                     public Observable<MovieDetail> call() {
