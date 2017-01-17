@@ -23,7 +23,7 @@ public interface MoviesApi {
                                            @Query("page") int page);
 
     @GET("/3/movie/{filter}?api_key=" + KEY)
-    Observable<MoviesFeed> getFilteredMovies(@Path("filter") String filter, @Query("page") int page);
+    Observable<MoviesFeed> getMoviesFilterBy(@Path("filter") String filter, @Query("page") int page);
 
 
     @GET("/3/movie/{id}?api_key=" + KEY)

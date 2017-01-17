@@ -11,8 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -20,18 +18,12 @@ import android.widget.TextView;
 import com.moviesfeed.R;
 import com.moviesfeed.activities.uicomponents.AppBarStateChangeListener;
 import com.moviesfeed.adapters.MovieImagesAdapter;
-import com.moviesfeed.api.MoviesApi;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
 import com.moviesfeed.presenters.MovieDetailPresenter;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Handler;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,7 +78,6 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
         Intent intent = getIntent();
         int movieId = intent.getIntExtra(FeedActivity.INTENT_MOVIE_DETAIL_ID, 0);
 
-        //Fill Toolbar
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -101,7 +92,7 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
             }
         });
 
-        getPresenter().requestMoviedetail(movieId);
+        getPresenter().requestMovieDetail(movieId);
     }
 
     private void showLayoutContent() {
@@ -127,8 +118,7 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
         if (this.movieDetail.getVoteAverage() > 0) {
             this.layoutMovieRating.setVisibility(View.VISIBLE);
             this.txtMovieRating.setText(String.valueOf(this.movieDetail.getVoteAverage()));
-            float rating = (float) ((this.movieDetail.getVoteAverage() * 5) / 10);
-            this.rbMovieRating.setRating(rating);
+            this.rbMovieRating.setRating(calculateRatingByVotes(this.movieDetail.getVoteAverage()));
         }
 
         this.txtMovieOverview.setText(this.movieDetail.getOverview());
@@ -149,6 +139,7 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
 
     }
 
+
     private void fillMovieImages() {
         //if there is no backdrop insert the posterPath as a backdrop so the reciclerView will contain an image to show.
         if (this.movieDetail.getBackdrops() == null) {
@@ -166,6 +157,11 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
 
         this.rvMovieImages.setLayoutManager(layoutManager);
         this.rvMovieImages.setAdapter(new MovieImagesAdapter(this, this.movieDetail.getBackdrops()));
+    }
+
+
+    private float calculateRatingByVotes(double votes) {
+        return (float) votes * 5 / 10;
     }
 
 

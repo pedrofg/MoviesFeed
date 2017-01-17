@@ -128,7 +128,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         this.swipeRefreshLayout.setVisibility(View.GONE);
         this.progressBar.setVisibility(View.VISIBLE);
 
-        getPresenter().requestMoviesFeed(this, filter);
+        getPresenter().requestMoviesFeed(filter);
     }
 
     public void requestMoviesFeedCallback(MoviesFeed moviesFeed, boolean isNextPage, boolean isUpdating, int insertedMoviesCount) {

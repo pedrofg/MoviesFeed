@@ -17,10 +17,10 @@ public class Genre {
     @SerializedName("name")
     @Expose
     private String name;
-    private long movieDetailId;
+    private Long movieDetailId;
 
-    @Generated(hash = 2014791978)
-    public Genre(Long id, String name, long movieDetailId) {
+    @Generated(hash = 1329650085)
+    public Genre(Long id, String name, Long movieDetailId) {
         this.id = id;
         this.name = name;
         this.movieDetailId = movieDetailId;
@@ -59,5 +59,9 @@ public class Genre {
 
     public Long getId() {
         return this.id;
+    }
+
+    public void setMovieDetailId(Long movieDetailId) {
+        this.movieDetailId = movieDetailId;
     }
 }
