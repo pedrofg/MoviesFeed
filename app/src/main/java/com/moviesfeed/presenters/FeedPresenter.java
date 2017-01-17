@@ -54,7 +54,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     }
 
     private void createRequestMoviesFeedFilterByAPI() {
-        restartableLatestCache(REQUEST_MOVIES_FEED_FILTER_BY_API,
+        restartableFirst(REQUEST_MOVIES_FEED_FILTER_BY_API,
                 new Func0<Observable<MoviesFeed>>() {
                     @Override
                     public Observable<MoviesFeed> call() {
@@ -69,7 +69,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     }
 
     private void createRequestMoviesFeedSortByAPI() {
-        restartableLatestCache(REQUEST_MOVIES_FEED_SORT_BY_API,
+        restartableFirst(REQUEST_MOVIES_FEED_SORT_BY_API,
                 new Func0<Observable<MoviesFeed>>() {
                     @Override
                     public Observable<MoviesFeed> call() {
@@ -84,7 +84,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     }
 
     private void createUpdateMoviesFeed() {
-        restartableLatestCache(REQUEST_UPDATE_MOVIES_FEED_DB, new Func0<Observable<List<Movie>>>() {
+        restartableFirst(REQUEST_UPDATE_MOVIES_FEED_DB, new Func0<Observable<List<Movie>>>() {
                     @Override
                     public Observable<List<Movie>> call() {
 
@@ -112,7 +112,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     }
 
     private void createLoadMoviesFeedDb() {
-        restartableLatestCache(REQUEST_LOAD_MOVIES_FEED_DB, new Func0<Observable<MoviesFeed>>() {
+        restartableFirst(REQUEST_LOAD_MOVIES_FEED_DB, new Func0<Observable<MoviesFeed>>() {
                     @Override
                     public Observable<MoviesFeed> call() {
                         return Observable.fromCallable(new Callable<MoviesFeed>() {
