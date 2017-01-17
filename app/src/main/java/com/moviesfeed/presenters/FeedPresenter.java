@@ -19,7 +19,6 @@ import java.util.concurrent.Callable;
 
 import nucleus.presenter.RxPresenter;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action2;
 import rx.functions.Func0;
@@ -30,10 +29,10 @@ import rx.schedulers.Schedulers;
  */
 public class FeedPresenter extends RxPresenter<FeedActivity> {
 
-    public static final int REQUEST_MOVIES_SORT_BY = 1;
-    public static final int REQUEST_MOVIES_FILTER = 2;
-    public static final int REQUEST_UPDATE_MOVIES_FEED = 3;
-    public static final int REQUEST_LOAD_MOVIES_FEED = 4;
+    public static final int REQUEST_MOVIES_FEED_SORT_BY_API = 1;
+    public static final int REQUEST_MOVIES_FEED_FILTER_BY_API = 2;
+    public static final int REQUEST_UPDATE_MOVIES_FEED_DB = 3;
+    public static final int REQUEST_LOAD_MOVIES_FEED_DB = 4;
     public static final int FIRST_PAGE = 1;
     public static final String DESC = ".desc";
 
@@ -48,29 +47,29 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     @Override
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
-        createRequestMoviesFeedSortBy();
-        createRequestMoviesFeedFiltered();
+        createRequestMoviesFeedSortByAPI();
+        createRequestMoviesFeedFilterByAPI();
         createUpdateMoviesFeed();
-        createLoadMoviesFeed();
+        createLoadMoviesFeedDb();
     }
 
-    private void createRequestMoviesFeedFiltered() {
-        restartableLatestCache(REQUEST_MOVIES_FILTER,
+    private void createRequestMoviesFeedFilterByAPI() {
+        restartableLatestCache(REQUEST_MOVIES_FEED_FILTER_BY_API,
                 new Func0<Observable<MoviesFeed>>() {
                     @Override
                     public Observable<MoviesFeed> call() {
-                        return App.getServerApi().getFilteredMovies(filterBy.toString(), page)
+                        return App.getServerApi().getMoviesFilterBy(filterBy.toString(), page)
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread());
                     }
                 },
-                handleRequestMovieFeedSuccess(),
-                handleRequestFailure());
+                handleRequestMovieFeedAPISuccess(),
+                handleError());
 
     }
 
-    private void createRequestMoviesFeedSortBy() {
-        restartableLatestCache(REQUEST_MOVIES_SORT_BY,
+    private void createRequestMoviesFeedSortByAPI() {
+        restartableLatestCache(REQUEST_MOVIES_FEED_SORT_BY_API,
                 new Func0<Observable<MoviesFeed>>() {
                     @Override
                     public Observable<MoviesFeed> call() {
@@ -80,19 +79,19 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                                 .observeOn(AndroidSchedulers.mainThread());
                     }
                 },
-                handleRequestMovieFeedSuccess(),
-                handleRequestFailure());
+                handleRequestMovieFeedAPISuccess(),
+                handleError());
     }
 
     private void createUpdateMoviesFeed() {
-        restartableLatestCache(REQUEST_UPDATE_MOVIES_FEED, new Func0<Observable<List<Movie>>>() {
+        restartableLatestCache(REQUEST_UPDATE_MOVIES_FEED_DB, new Func0<Observable<List<Movie>>>() {
                     @Override
                     public Observable<List<Movie>> call() {
 
                         return Observable.fromCallable(new Callable<List<Movie>>() {
                             @Override
                             public List<Movie> call() throws Exception {
-                                return updateMoviesFeed(lastResponse);
+                                return updateMoviesFeedDb(lastResponse);
                             }
                         }).subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread());
@@ -102,24 +101,24 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                 new Action2<FeedActivity, List<Movie>>() {
                     @Override
                     public void call(FeedActivity activity, List<Movie> movies) {
-                        Log.d(FeedPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED success");
+                        Log.d(FeedPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
                         activity.requestMoviesFeedCallback(moviesFeed, isRequestingNextPage, isUpdating, movies.size());
 
                         isUpdating = false;
                         isRequestingNextPage = false;
                     }
                 },
-                handleRequestFailure());
+                handleError());
     }
 
-    private void createLoadMoviesFeed() {
-        restartableLatestCache(REQUEST_LOAD_MOVIES_FEED, new Func0<Observable<MoviesFeed>>() {
+    private void createLoadMoviesFeedDb() {
+        restartableLatestCache(REQUEST_LOAD_MOVIES_FEED_DB, new Func0<Observable<MoviesFeed>>() {
                     @Override
                     public Observable<MoviesFeed> call() {
                         return Observable.fromCallable(new Callable<MoviesFeed>() {
                             @Override
                             public MoviesFeed call() throws Exception {
-                                return loadMoviesFeed();
+                                return loadMoviesFeedDb();
                             }
                         }).subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread());
@@ -130,29 +129,29 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                     @Override
                     public void call(FeedActivity activity, MoviesFeed moviesFeed) {
                         if (moviesFeed != null) {
-                            Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED success moviesFeed != null");
+                            Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED_DB success moviesFeed != null");
                             activity.requestMoviesFeedCallback(moviesFeed, false, false, moviesFeed.getMovies().size());
                         } else {
-                            Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED success moviesFeed == null");
-                            request(false);
+                            Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED_DB success moviesFeed == null");
+                            requestAPI(false);
                         }
                     }
                 },
-                handleRequestFailure());
+                handleError());
     }
 
-    private Action2 handleRequestMovieFeedSuccess() {
+    private Action2 handleRequestMovieFeedAPISuccess() {
         return new Action2<FeedActivity, MoviesFeed>() {
             @Override
             public void call(final FeedActivity activity, final MoviesFeed response) {
-                Log.d(FeedPresenter.class.getName(), "handleRequestMovieFeedSuccess()");
+                Log.d(FeedPresenter.class.getName(), "handleRequestMovieFeedAPISuccess()");
                 lastResponse = response;
-                start(REQUEST_UPDATE_MOVIES_FEED);
+                start(REQUEST_UPDATE_MOVIES_FEED_DB);
             }
         };
     }
 
-    private Action2 handleRequestFailure() {
+    private Action2 handleError() {
         return new Action2<FeedActivity, Throwable>() {
             @Override
             public void call(FeedActivity activity, Throwable throwable) {
@@ -163,7 +162,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     }
 
     //called by another thread.
-    private List<Movie> updateMoviesFeed(final MoviesFeed response) {
+    private List<Movie> updateMoviesFeedDb(final MoviesFeed response) {
         response.setFilterAndId(filterBy);
 
         final List<Movie> filteredMovies = new ArrayList<>();
@@ -175,24 +174,25 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
             }
         }
 
-        Log.d(FeedPresenter.class.getName(), "updateMoviesFeed() filtered movies: " + filteredMovies.size());
+        Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() filtered movies: " + filteredMovies.size());
 
         if (isRequestingNextPage) {
-            Log.d(FeedPresenter.class.getName(), "updateMoviesFeed() isRequestingNextPage");
+            Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() isRequestingNextPage");
             moviesFeed.getMovies().addAll(filteredMovies);
             moviesFeed.setPage(page);
         } else if (page == FIRST_PAGE) {
-            Log.d(FeedPresenter.class.getName(), "updateMoviesFeed() FIRST_PAGE");
+            Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() FIRST_PAGE");
             response.setMovies(filteredMovies);
             moviesFeed = response;
         }
 
         if (isUpdating) {
-            Log.d(FeedPresenter.class.getName(), "updateMoviesFeed() isUpdating");
+            Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() isUpdating");
             deleteMoviesFeedDb(moviesFeed.getId());
         }
 
-        insertMoviesFeedDb(moviesFeed);
+        App.getDaoSession().getMoviesFeedDao().insertOrReplace(moviesFeed);
+        App.getDaoSession().getMovieDao().insertOrReplaceInTx(moviesFeed.getMovies());
 
         return filteredMovies;
     }
@@ -206,30 +206,18 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         App.getDaoSession().getMoviesFeedDao().deleteByKey(id);
     }
 
-    private void insertMoviesFeedDb(MoviesFeed moviesFeed) {
-        Log.d(FeedPresenter.class.getName(), "insertMoviesFeedDb() id: " + moviesFeed.getId());
-        App.getDaoSession().getMoviesFeedDao().insertOrReplace(moviesFeed);
-        App.getDaoSession().getMovieDao().insertOrReplaceInTx(moviesFeed.getMovies());
-    }
-
     private MoviesFeed loadMoviesFeedDb() {
-        Log.d(FeedPresenter.class.getName(), "loadMoviesFeedDb() id: " + filterBy.getId());
-        return App.getDaoSession().getMoviesFeedDao().load(filterBy.getId());
-    }
-
-    //called by another thread.
-    private MoviesFeed loadMoviesFeed() {
-        MoviesFeed moviesFeed = loadMoviesFeedDb();
+        MoviesFeed moviesFeed = App.getDaoSession().getMoviesFeedDao().load(filterBy.getId());
         if (moviesFeed != null) {
             moviesFeed.setMovies(moviesFeed.getMovies());
             this.moviesFeed = moviesFeed;
             this.page = moviesFeed.getPage();
         }
-        Log.d(FeedPresenter.class.getName(), "loadMoviesFeed() moviesFeed: " + moviesFeed);
+        Log.d(FeedPresenter.class.getName(), "loadMoviesFeedDb() moviesFeed: " + moviesFeed);
         return moviesFeed;
     }
 
-    private void request(boolean isRequestingNextPage) {
+    private void requestAPI(boolean isRequestingNextPage) {
         this.isRequestingNextPage = isRequestingNextPage;
 
         if (isRequestingNextPage) {
@@ -239,33 +227,33 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         }
 
         if (this.filterBy == Filters.TOP_RATED || this.filterBy == Filters.UPCOMING) {
-            start(REQUEST_MOVIES_FILTER);
-            stop(REQUEST_MOVIES_SORT_BY);
+            start(REQUEST_MOVIES_FEED_FILTER_BY_API);
+            stop(REQUEST_MOVIES_FEED_SORT_BY_API);
         } else {
-            start(REQUEST_MOVIES_SORT_BY);
-            stop(REQUEST_MOVIES_FILTER);
+            start(REQUEST_MOVIES_FEED_SORT_BY_API);
+            stop(REQUEST_MOVIES_FEED_FILTER_BY_API);
         }
 
-        Log.d(FeedPresenter.class.getName(), "request() isRequestingNextPage: " + this.isRequestingNextPage + " page: " + this.page + " filterBy: " + this.filterBy);
+        Log.d(FeedPresenter.class.getName(), "requestAPI() isRequestingNextPage: " + this.isRequestingNextPage + " page: " + this.page + " filterBy: " + this.filterBy);
     }
 
 
-    public void requestMoviesFeed(FeedActivity activity, Filters filterBy) {
+    public void requestMoviesFeed(Filters filterBy) {
         Log.d(FeedPresenter.class.getName(), "requestMoviesFeed() filterBy: " + filterBy);
         this.filterBy = filterBy;
-        start(REQUEST_LOAD_MOVIES_FEED);
+        start(REQUEST_LOAD_MOVIES_FEED_DB);
     }
 
     public void refreshMoviesFeed() {
         this.isUpdating = true;
         Log.d(FeedPresenter.class.getName(), "refreshMoviesFeed() isUpdating: " + this.isUpdating);
-        request(false);
+        requestAPI(false);
 
     }
 
     public void requestNextPage() {
         Log.d(FeedPresenter.class.getName(), "requestNextPage()");
-        request(true);
+        requestAPI(true);
     }
 
 

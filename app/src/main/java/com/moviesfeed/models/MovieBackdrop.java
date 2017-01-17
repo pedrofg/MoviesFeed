@@ -15,10 +15,10 @@ public class MovieBackdrop {
     @SerializedName("file_path")
     @Expose
     private String filePath;
-    private long movieDetailId;
+    private Long movieDetailId;
 
-    @Generated(hash = 1056359085)
-    public MovieBackdrop(Long id, String filePath, long movieDetailId) {
+    @Generated(hash = 1877674059)
+    public MovieBackdrop(Long id, String filePath, Long movieDetailId) {
         this.id = id;
         this.filePath = filePath;
         this.movieDetailId = movieDetailId;
@@ -59,6 +59,10 @@ public class MovieBackdrop {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setMovieDetailId(Long movieDetailId) {
+        this.movieDetailId = movieDetailId;
     }
 
 }

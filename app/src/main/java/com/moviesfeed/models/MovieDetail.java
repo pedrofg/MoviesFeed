@@ -5,6 +5,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToMany;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -21,7 +22,7 @@ public class MovieDetail {
     @SerializedName("homepage")
     @Expose
     private String homepage;
-    @Id(autoincrement = true)
+    @Id
     @SerializedName("id")
     @Expose
     private Long id;
@@ -52,22 +53,26 @@ public class MovieDetail {
     @ToMany(referencedJoinProperty = "movieDetailId")
     @SerializedName("backdrops")
     @Expose
-    private List<MovieBackdrop> backdrops = new ArrayList<MovieBackdrop>();
+    private List<MovieBackdrop> backdrops;
     @ToMany(referencedJoinProperty = "movieDetailId")
     @SerializedName("genres")
     @Expose
-    private List<Genre> genres = new ArrayList<Genre>();
-    /** Used to resolve relations */
+    private List<Genre> genres;
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 275808995)
     private transient MovieDetailDao myDao;
 
     @Generated(hash = 1391283944)
     public MovieDetail(int budget, String homepage, Long id, String imdbId, String overview,
-            String posterPath, String releaseDate, long revenue, int runtime, String title,
-            double voteAverage) {
+                       String posterPath, String releaseDate, long revenue, int runtime, String title,
+                       double voteAverage) {
         this.budget = budget;
         this.homepage = homepage;
         this.id = id;
@@ -255,7 +260,9 @@ public class MovieDetail {
         return backdrops;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 2027946155)
     public synchronized void resetBackdrops() {
         backdrops = null;
@@ -291,7 +298,9 @@ public class MovieDetail {
         this.genres = genres;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 1988821389)
     public synchronized void resetGenres() {
         genres = null;

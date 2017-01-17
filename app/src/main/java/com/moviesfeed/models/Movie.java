@@ -26,7 +26,7 @@ public class Movie {
     @SerializedName("title")
     @Expose
     private String title;
-    private long moviesFeedKey;
+    private Long moviesFeedKey;
 
 
     @Generated(hash = 1263461133)
@@ -34,9 +34,9 @@ public class Movie {
     }
 
 
-    @Generated(hash = 1419433394)
+    @Generated(hash = 1496155034)
     public Movie(Long idDb, int idTmdb, String posterPath, String originalTitle,
-            String title, long moviesFeedKey) {
+            String title, Long moviesFeedKey) {
         this.idDb = idDb;
         this.idTmdb = idTmdb;
         this.posterPath = posterPath;
@@ -97,5 +97,10 @@ public class Movie {
 
     public void setIdTmdb(int idTmdb) {
         this.idTmdb = idTmdb;
+    }
+
+
+    public void setMoviesFeedKey(Long moviesFeedKey) {
+        this.moviesFeedKey = moviesFeedKey;
     }
 }
