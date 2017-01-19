@@ -13,6 +13,16 @@
         android:layout_gravity="center"
         android:indeterminate="true" />
 
+    <TextView
+        android:id="@+id/txtMovieDetailError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:visibility="gone" />
+
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -78,50 +88,55 @@
                     android:textSize="26dp"
                     android:textStyle="bold" />
 
-                <LinearLayout
-                    android:id="@+id/layoutMovieRating"
+                <RelativeLayout
+                    android:id="@+id/layoutRatingAndGenres"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_below="@id/txtMovieTitle"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/rounded_border_background"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="10dp"
-                    android:visibility="gone">
+                    android:layout_below="@id/txtMovieTitle">
+
+                    <LinearLayout
+                        android:id="@+id/layoutMovieRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/rounded_border_background"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/txtMovieRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="18dp" />
+
+                        <RatingBar
+                            android:id="@+id/rbMovieRating"
+                            style="?android:attr/ratingBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:stepSize="0.01" />
+
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/txtMovieRating"
+                        android:id="@+id/txtMovieGenres"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="18dp" />
-
-                    <RatingBar
-                        android:id="@+id/rbMovieRating"
-                        style="?android:attr/ratingBarStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:isIndicator="true"
-                        android:numStars="5"
-                        android:stepSize="0.01" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/txtMovieGenres"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@id/layoutMovieRating"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@id/layoutMovieRating"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/rounded_border_background"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:textSize="14dp"
-                    android:visibility="gone" />
-
+                        android:layout_alignLeft="@id/layoutMovieRating"
+                        android:layout_alignRight="@id/layoutMovieRating"
+                        android:layout_below="@id/layoutMovieRating"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/rounded_border_background"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:textSize="14dp"
+                        android:visibility="gone" />
+                </RelativeLayout>
 
                 <LinearLayout
                     android:id="@+id/layoutMovieYear"
@@ -129,14 +144,13 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/txtMovieTitle"
                     android:layout_below="@id/txtMovieTitle"
-                    android:layout_toLeftOf="@id/layoutMovieRating"
+                    android:layout_toLeftOf="@id/layoutRatingAndGenres"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/txtMovieYear"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:textSize="18dp"
                         android:visibility="gone" />
 
@@ -160,7 +174,7 @@
                     android:layout_alignLeft="@id/txtMovieTitle"
                     android:layout_below="@id/layoutMovieYear"
                     android:layout_marginRight="1dp"
-                    android:layout_toLeftOf="@id/txtMovieGenres"
+                    android:layout_toLeftOf="@id/layoutRatingAndGenres"
                     android:textSize="18dp" />
 
                 <TextView
@@ -169,12 +183,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/txtMovieTitle"
                     android:layout_below="@id/txtMovieOverview"
-                    android:layout_toLeftOf="@id/txtMovieGenres"
+                    android:layout_toLeftOf="@id/layoutRatingAndGenres"
                     android:autoLink="web"
                     android:textColorLink="@color/colorPrimary" />
             </RelativeLayout>
         </RelativeLayout>
 
     </android.support.v4.widget.NestedScrollView>
-
 </android.support.design.widget.CoordinatorLayout>

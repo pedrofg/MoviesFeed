@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.moviesfeed.R;
 import com.moviesfeed.activities.uicomponents.EndlessScrollListener;
@@ -27,6 +29,7 @@ import com.moviesfeed.presenters.FeedPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusAppCompatActivity;
 
@@ -46,6 +49,8 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     RecyclerView rvMoviesFeed;
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.txtError)
+    TextView txtError;
 
     private EndlessScrollListener endlessScrollListener;
     private FeedAdapter rvAdapter;
@@ -125,31 +130,11 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
 
     private void requestMoviesFeed(Filters filter) {
-        this.swipeRefreshLayout.setVisibility(View.GONE);
-        this.progressBar.setVisibility(View.VISIBLE);
+        updatingContent();
 
         getPresenter().requestMoviesFeed(filter);
     }
 
-    public void requestMoviesFeedCallback(MoviesFeed moviesFeed, boolean isNextPage, boolean isUpdating, int insertedMoviesCount) {
-        Log.i(FeedActivity.class.getName(), "requestMoviesFeedCallback() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage);
-        this.progressBar.setVisibility(View.GONE);
-        this.swipeRefreshLayout.setVisibility(View.VISIBLE);
-
-        this.rvAdapter.setMoviesFeed(moviesFeed);
-
-        if (isNextPage) {
-            int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
-            this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
-        } else {
-            this.rvAdapter.notifyDataSetChanged();
-        }
-
-        if (isUpdating) {
-            refreshGrid();
-        }
-
-    }
 
     private void refreshGrid() {
         Log.i(FeedActivity.class.getName(), "refreshGrid()");
@@ -185,9 +170,68 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         startActivity(intent);
     }
 
-
     @Override
     public void onRefresh() {
         getPresenter().refreshMoviesFeed();
     }
+
+    private void contentUpdated(boolean error) {
+        this.progressBar.setVisibility(View.GONE);
+        this.swipeRefreshLayout.setVisibility(View.VISIBLE);
+
+        if (error) {
+            this.rvMoviesFeed.setVisibility(View.GONE);
+            this.txtError.setVisibility(View.VISIBLE);
+        } else {
+            this.rvMoviesFeed.setVisibility(View.VISIBLE);
+            this.txtError.setVisibility(View.GONE);
+        }
+    }
+
+    private void updatingContent() {
+        this.progressBar.setVisibility(View.VISIBLE);
+        this.swipeRefreshLayout.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.txtError)
+    public void txtErrorClickListener(View view) {
+        updatingContent();
+        getPresenter().requestMoviesFeed(getPresenter().getCurrentFilter());
+    }
+
+
+    public void requestMoviesFeedSuccess(MoviesFeed moviesFeed, boolean isNextPage, boolean isUpdating, int insertedMoviesCount) {
+        Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage);
+        contentUpdated(false);
+
+        this.rvAdapter.setMoviesFeed(moviesFeed);
+
+        if (isNextPage) {
+            int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
+            this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
+        } else {
+            this.rvAdapter.notifyDataSetChanged();
+        }
+
+        if (isUpdating) {
+            refreshGrid();
+        }
+
+    }
+
+    public void requestMoviesFeedError(boolean showInToast, boolean isNetworkError) {
+        StringBuilder message = new StringBuilder();
+        message.append(isNetworkError ? getString(R.string.error_request_feed_network) : getString(R.string.error_request_feed));
+        if (showInToast) {
+            message.append(getString(R.string.please_try_again));
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        } else {
+            message.append(getString(R.string.tap_here_try_again));
+            this.txtError.setText(message);
+            contentUpdated(true);
+        }
+
+        this.swipeRefreshLayout.setRefreshing(false);
+    }
+
 }

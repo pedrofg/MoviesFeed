@@ -9,6 +9,7 @@ import com.moviesfeed.models.Genre;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import nucleus.presenter.RxPresenter;
@@ -58,7 +59,7 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
                     public void call(MovieDetailActivity activity, MovieDetail movieDetail) {
                         if (movieDetail != null) {
                             Log.d(MovieDetailPresenter.class.getName(), "REQUEST_LOAD_MOVIE_DETAIL_DB success movieDetail != null");
-                            activity.requestMovieDetailCallbackSuccess(movieDetail);
+                            activity.requestMovieDetailSuccess(movieDetail);
                         } else {
                             Log.d(MovieDetailPresenter.class.getName(), "REQUEST_LOAD_MOVIE_DETAIL_DB success movieDetail == null");
                             start(REQUEST_MOVIE_DETAIL_API);
@@ -86,7 +87,7 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
                     @Override
                     public void call(MovieDetailActivity activity, MovieDetail movieDetail) {
                         Log.d(FeedPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
-                        activity.requestMovieDetailCallbackSuccess(movieDetail);
+                        activity.requestMovieDetailSuccess(movieDetail);
                     }
                 },
                 handleError());
@@ -129,7 +130,11 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
             @Override
             public void call(MovieDetailActivity activity, Throwable throwable) {
                 Log.e(MovieDetailPresenter.class.getName(), throwable.getMessage(), throwable);
-                //TODO handle error
+                boolean isNetworkError = false;
+                if (throwable instanceof IOException && !Util.isNetworkAvailable(activity))
+                    isNetworkError = true;
+
+                activity.requestMovieDetailError(isNetworkError);
             }
         };
     }
