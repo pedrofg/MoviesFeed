@@ -1,6 +1,5 @@
 package com.moviesfeed.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -27,6 +26,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusAppCompatActivity;
 
@@ -64,9 +64,12 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
     RatingBar rbMovieRating;
     @BindView(R.id.layoutMovieRating)
     View layoutMovieRating;
+    @BindView(R.id.txtMovieDetailError)
+    TextView txtMovieDetailError;
 
 
     private MovieDetail movieDetail;
+    private int movieId;
 
 
     @Override
@@ -75,8 +78,7 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
 
-        Intent intent = getIntent();
-        int movieId = intent.getIntExtra(FeedActivity.INTENT_MOVIE_DETAIL_ID, 0);
+        this.movieId = getIntent().getIntExtra(FeedActivity.INTENT_MOVIE_DETAIL_ID, 0);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -92,16 +94,79 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
             }
         });
 
-        getPresenter().requestMovieDetail(movieId);
+        requestMovieDetail();
     }
 
-    private void showLayoutContent() {
+    private void updatingContent() {
+        hideAllViews();
+        this.progressLoadingMovies.setVisibility(View.VISIBLE);
+    }
+
+
+    private void contentUpdated(boolean error) {
+        hideAllViews();
+        if (error) {
+            this.txtMovieDetailError.setVisibility(View.VISIBLE);
+        } else {
+            this.appBarLayout.setVisibility(View.VISIBLE);
+            this.nestedScrollView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideAllViews() {
         this.progressLoadingMovies.setVisibility(View.GONE);
-        this.appBarLayout.setVisibility(View.VISIBLE);
-        this.nestedScrollView.setVisibility(View.VISIBLE);
+        this.appBarLayout.setVisibility(View.GONE);
+        this.nestedScrollView.setVisibility(View.GONE);
+        this.txtMovieDetailError.setVisibility(View.GONE);
     }
 
-    public void requestMovieDetailCallbackSuccess(final MovieDetail movieDetail) {
+
+    private void fillMovieImages() {
+        //if there is no backdrop insert the posterPath as a backdrop so the reciclerView will contain an image to show.
+        if (this.movieDetail.getBackdrops() == null) {
+            MovieBackdrop mb = new MovieBackdrop();
+            mb.setFilePath(this.movieDetail.getPosterPath());
+
+            List<MovieBackdrop> listBackdrops = new ArrayList<MovieBackdrop>();
+            listBackdrops.add(mb);
+
+            this.movieDetail.setBackdrops(listBackdrops);
+        }
+
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+
+        this.rvMovieImages.setLayoutManager(layoutManager);
+        this.rvMovieImages.setAdapter(new MovieImagesAdapter(this, this.movieDetail.getBackdrops()));
+    }
+
+
+    private float calculateRatingByVotes(double votes) {
+        return (float) votes * 5 / 10;
+    }
+
+    private void requestMovieDetail() {
+        updatingContent();
+        getPresenter().requestMovieDetail(this.movieId);
+    }
+
+    @OnClick(R.id.txtMovieDetailError)
+    public void txtErrorClickListener(View view) {
+        requestMovieDetail();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void requestMovieDetailSuccess(final MovieDetail movieDetail) {
         this.movieDetail = movieDetail;
 
         //Fill movie info
@@ -134,45 +199,16 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
             this.txtMovieGenres.setVisibility(View.VISIBLE);
         }
 
-        showLayoutContent();
+        contentUpdated(false);
         fillMovieImages();
 
     }
 
-
-    private void fillMovieImages() {
-        //if there is no backdrop insert the posterPath as a backdrop so the reciclerView will contain an image to show.
-        if (this.movieDetail.getBackdrops() == null) {
-            MovieBackdrop mb = new MovieBackdrop();
-            mb.setFilePath(this.movieDetail.getPosterPath());
-
-            List<MovieBackdrop> listBackdrops = new ArrayList<MovieBackdrop>();
-            listBackdrops.add(mb);
-
-            this.movieDetail.setBackdrops(listBackdrops);
-        }
-
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-
-        this.rvMovieImages.setLayoutManager(layoutManager);
-        this.rvMovieImages.setAdapter(new MovieImagesAdapter(this, this.movieDetail.getBackdrops()));
-    }
-
-
-    private float calculateRatingByVotes(double votes) {
-        return (float) votes * 5 / 10;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void requestMovieDetailError(boolean isNetworkError) {
+        StringBuilder message = new StringBuilder();
+        message.append(isNetworkError ? getString(R.string.error_request_feed_network) : getString(R.string.error_request_feed));
+        message.append(getString(R.string.tap_here_try_again));
+        this.txtMovieDetailError.setText(message);
+        contentUpdated(true);
     }
 }
