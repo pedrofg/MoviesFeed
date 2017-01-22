@@ -41,6 +41,18 @@ public class MoviesFeed {
     @Generated(hash = 1393672384)
     private transient MoviesFeedDao myDao;
 
+    public MoviesFeed clone() {
+        MoviesFeed newMoviesFeed = new MoviesFeed();
+        newMoviesFeed.setId(this.id);
+        newMoviesFeed.setPage(this.page);
+        if (this.movies != null) {
+            newMoviesFeed.setMovies(new ArrayList<Movie>());
+            newMoviesFeed.getMovies().addAll(this.movies);
+        }
+        newMoviesFeed.setFilter(this.filter);
+        return newMoviesFeed;
+    }
+
 
     @Generated(hash = 306040833)
     public MoviesFeed() {
@@ -157,7 +169,6 @@ public class MoviesFeed {
     }
 
 
-
     public void setFilter(Filters filter) {
         this.filter = filter;
     }
@@ -169,6 +180,8 @@ public class MoviesFeed {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMoviesFeedDao() : null;
     }
+
+
 }
 
 

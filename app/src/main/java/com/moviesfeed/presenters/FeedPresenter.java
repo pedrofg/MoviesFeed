@@ -3,6 +3,7 @@ package com.moviesfeed.presenters;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.moviesfeed.App;
@@ -78,10 +79,15 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                 new Func0<Observable<MoviesFeed>>() {
                     @Override
                     public Observable<MoviesFeed> call() {
-                        return App.getServerApi().getMoviesSortBy(filterBy.toString() + FeedPresenter.DESC,
-                                getFormattedDate(), page)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                        if (filterBy.getId() >= Filters.ACTION.getId()) {
+                            return App.getServerApi().getMovieByGenre(Integer.valueOf(filterBy.toString()), getFormattedDate(), page)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread());
+                        } else {
+                            return App.getServerApi().getDiscoverMovie(filterBy.toString() + FeedPresenter.DESC, page)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread());
+                        }
                     }
                 },
                 handleRequestMovieFeedAPISuccess(),
@@ -108,7 +114,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                     @Override
                     public void call(FeedActivity activity, List<Movie> movies) {
                         Log.d(FeedPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
-                        activity.requestMoviesFeedSuccess(moviesFeed, isRequestingNextPage, isUpdating, movies.size());
+                        activity.requestMoviesFeedSuccess(moviesFeed.clone(), isRequestingNextPage, isUpdating, movies.size());
 
                         isUpdating = false;
                         isRequestingNextPage = false;
@@ -136,7 +142,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                     public void call(FeedActivity activity, MoviesFeed moviesFeed) {
                         if (moviesFeed != null) {
                             Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED_DB success moviesFeed != null");
-                            activity.requestMoviesFeedSuccess(moviesFeed, false, false, moviesFeed.getMovies().size());
+                            activity.requestMoviesFeedSuccess(moviesFeed.clone(), false, false, moviesFeed.getMovies().size());
                         } else {
                             Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED_DB success moviesFeed == null");
                             requestAPI(false);
@@ -181,7 +187,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         final List<Movie> filteredMovies = new ArrayList<>();
 
         for (Movie movie : response.getMovies()) {
-            if (movie.getPosterPath() != null) {
+            if (validateMovie(movie)) {
                 filteredMovies.add(movie);
                 movie.setMoviesFeedKey(response.getId());
             }
@@ -239,15 +245,26 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
             this.page = 1;
         }
 
-        if (this.filterBy == Filters.TOP_RATED || this.filterBy == Filters.UPCOMING) {
-            start(REQUEST_MOVIES_FEED_FILTER_BY_API);
-            stop(REQUEST_MOVIES_FEED_SORT_BY_API);
-        } else {
+
+        stop(REQUEST_MOVIES_FEED_FILTER_BY_API);
+        stop(REQUEST_MOVIES_FEED_SORT_BY_API);
+        if (this.filterBy.getId() >= Filters.REVENUE.getId()) {
             start(REQUEST_MOVIES_FEED_SORT_BY_API);
-            stop(REQUEST_MOVIES_FEED_FILTER_BY_API);
+        } else {
+            start(REQUEST_MOVIES_FEED_FILTER_BY_API);
         }
 
         Log.d(FeedPresenter.class.getName(), "requestAPI() isRequestingNextPage: " + this.isRequestingNextPage + " page: " + this.page + " filterBy: " + this.filterBy);
+    }
+
+    private boolean validateMovie(Movie movie) {
+        if (TextUtils.isEmpty(movie.getOverview()) ||
+                TextUtils.isEmpty(movie.getTitle()) ||
+                TextUtils.isEmpty(movie.getPosterPath()) ||
+                TextUtils.isEmpty(movie.getBackdropPath())) {
+            return false;
+        }
+        return true;
     }
 
     private String getFormattedDate() {

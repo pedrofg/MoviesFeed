@@ -4,7 +4,9 @@ import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.ToOne;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -51,13 +53,14 @@ public class MovieDetail {
     @Expose
     private double voteAverage;
     @ToMany(referencedJoinProperty = "movieDetailId")
-    @SerializedName("backdrops")
-    @Expose
-    private List<MovieBackdrop> backdrops;
-    @ToMany(referencedJoinProperty = "movieDetailId")
     @SerializedName("genres")
     @Expose
     private List<Genre> genres;
+    @ToOne(joinProperty = "imagesId")
+    @SerializedName("images")
+    @Expose
+    private MovieImages images;
+    private Long imagesId;
     /**
      * Used to resolve relations
      */
@@ -68,11 +71,13 @@ public class MovieDetail {
      */
     @Generated(hash = 275808995)
     private transient MovieDetailDao myDao;
+    @Generated(hash = 1730634245)
+    private transient Long images__resolvedKey;
 
-    @Generated(hash = 1391283944)
+    @Generated(hash = 433251951)
     public MovieDetail(int budget, String homepage, Long id, String imdbId, String overview,
                        String posterPath, String releaseDate, long revenue, int runtime, String title,
-                       double voteAverage) {
+                       double voteAverage, Long imagesId) {
         this.budget = budget;
         this.homepage = homepage;
         this.id = id;
@@ -84,6 +89,7 @@ public class MovieDetail {
         this.runtime = runtime;
         this.title = title;
         this.voteAverage = voteAverage;
+        this.imagesId = imagesId;
     }
 
     @Generated(hash = 850277392)
@@ -237,36 +243,6 @@ public class MovieDetail {
         this.voteAverage = voteAverage;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 2089719922)
-    public List<MovieBackdrop> getBackdrops() {
-        if (backdrops == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            MovieBackdropDao targetDao = daoSession.getMovieBackdropDao();
-            List<MovieBackdrop> backdropsNew = targetDao
-                    ._queryMovieDetail_Backdrops(id);
-            synchronized (this) {
-                if (backdrops == null) {
-                    backdrops = backdropsNew;
-                }
-            }
-        }
-        return backdrops;
-    }
-
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
-    @Generated(hash = 2027946155)
-    public synchronized void resetBackdrops() {
-        backdrops = null;
-    }
 
     /**
      * To-many relationship, resolved on first access (and after reset).
@@ -290,9 +266,6 @@ public class MovieDetail {
         return genres;
     }
 
-    public void setBackdrops(List<MovieBackdrop> backdrops) {
-        this.backdrops = backdrops;
-    }
 
     public void setGenres(List<Genre> genres) {
         this.genres = genres;
@@ -348,6 +321,49 @@ public class MovieDetail {
 
     public Long getId() {
         return this.id;
+    }
+
+    public Long getImagesId() {
+        return this.imagesId;
+    }
+
+    public void setImagesId(Long imagesId) {
+        this.imagesId = imagesId;
+    }
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Keep
+    @Generated(hash = 1057636331)
+    public MovieImages getImages() {
+        Long __key = this.imagesId;
+        if (images == null && (images__resolvedKey == null || !images__resolvedKey.equals(__key))) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            MovieImagesDao targetDao = daoSession.getMovieImagesDao();
+            MovieImages imagesNew = targetDao.load(__key);
+            synchronized (this) {
+                images = imagesNew;
+                images__resolvedKey = __key;
+            }
+        }
+        return images;
+    }
+
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 1372965984)
+    public void setImages(MovieImages images) {
+        synchronized (this) {
+            this.images = images;
+            imagesId = images == null ? null : images.getId();
+            images__resolvedKey = imagesId;
+        }
     }
 
     /** called by internal mechanisms, do not call yourself. */

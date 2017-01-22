@@ -1,23 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/groupFilters"
+        android:checkableBehavior="single">
         <item
-            android:checked="true"
             android:id="@+id/nav_popularity"
+            android:checked="true"
             android:title="Popularity" />
         <item
-            android:id="@+id/nav_release_date"
-            android:title="Release Date" />
-        <item
-            android:id="@+id/nav_revenue"
-            android:title="Revenue" />
+            android:id="@+id/nav_now_playing"
+            android:title="Now Playing" />
         <item
             android:id="@+id/nav_top_rated"
             android:title="Top Rated" />
         <item
             android:id="@+id/nav_upcoming"
             android:title="Upcoming" />
+        <item
+            android:id="@+id/nav_revenue"
+            android:title="Revenue" />
     </group>
+
+    <group
+        android:id="@+id/groupGenres"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_action"
+            android:title="Action" />
+        <item
+            android:id="@+id/nav_animation"
+            android:title="Animation" />
+        <item
+            android:id="@+id/nav_comedy"
+            android:title="Comedy" />
+        <item
+            android:id="@+id/nav_romance"
+            android:title="Romance" />
+        <item
+            android:id="@+id/nav_drama"
+            android:title="Drama" />
+        <item
+            android:id="@+id/nav_science_fiction"
+            android:title="Science Fiction" />
+        <item
+            android:id="@+id/nav_music"
+            android:title="Music" />
+        <item
+            android:id="@+id/nav_thriller"
+            android:title="Thriller" />
+        <item
+            android:id="@+id/nav_horror"
+            android:title="Horror" />
+        <item
+            android:id="@+id/nav_documentary"
+            android:title="Documentary" />
+        <item
+            android:id="@+id/nav_war"
+            android:title="War" />
+    </group>
+
 
 </menu>

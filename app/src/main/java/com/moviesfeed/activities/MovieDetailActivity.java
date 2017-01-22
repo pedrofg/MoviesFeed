@@ -123,21 +123,21 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
 
     private void fillMovieImages() {
         //if there is no backdrop insert the posterPath as a backdrop so the reciclerView will contain an image to show.
-        if (this.movieDetail.getBackdrops() == null) {
+        if (this.movieDetail.getImages().getBackdrops() == null || this.movieDetail.getImages().getBackdrops().size() == 0) {
             MovieBackdrop mb = new MovieBackdrop();
             mb.setFilePath(this.movieDetail.getPosterPath());
 
             List<MovieBackdrop> listBackdrops = new ArrayList<MovieBackdrop>();
             listBackdrops.add(mb);
 
-            this.movieDetail.setBackdrops(listBackdrops);
+            this.movieDetail.getImages().setBackdrops(listBackdrops);
         }
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
 
         this.rvMovieImages.setLayoutManager(layoutManager);
-        this.rvMovieImages.setAdapter(new MovieImagesAdapter(this, this.movieDetail.getBackdrops()));
+        this.rvMovieImages.setAdapter(new MovieImagesAdapter(this, this.movieDetail.getImages().getBackdrops()));
     }
 
 

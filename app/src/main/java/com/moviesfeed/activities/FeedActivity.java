@@ -106,26 +106,54 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         Filters filter = null;
 
         if (id == R.id.nav_popularity) {
             filter = Filters.POPULARITY;
-        } else if (id == R.id.nav_release_date) {
-            filter = Filters.RELEASE_DATE;
+        } else if (id == R.id.nav_now_playing) {
+            filter = Filters.NOW_PLAYING;
         } else if (id == R.id.nav_revenue) {
             filter = Filters.REVENUE;
         } else if (id == R.id.nav_top_rated) {
             filter = Filters.TOP_RATED;
         } else if (id == R.id.nav_upcoming) {
             filter = Filters.UPCOMING;
+        } else if (id == R.id.nav_comedy) {
+            filter = Filters.COMEDY;
+        } else if (id == R.id.nav_action) {
+            filter = Filters.ACTION;
+        } else if (id == R.id.nav_animation) {
+            filter = Filters.ANIMATION;
+        } else if (id == R.id.nav_comedy) {
+            filter = Filters.COMEDY;
+        } else if (id == R.id.nav_romance) {
+            filter = Filters.ROMANCE;
+        } else if (id == R.id.nav_drama) {
+            filter = Filters.DRAMA;
+        } else if (id == R.id.nav_science_fiction) {
+            filter = Filters.SCIENCE_FICTION;
+        } else if (id == R.id.nav_music) {
+            filter = Filters.MUSIC;
+        } else if (id == R.id.nav_thriller) {
+            filter = Filters.THRILLER;
+        } else if (id == R.id.nav_horror) {
+            filter = Filters.HORROR;
+        } else if (id == R.id.nav_documentary) {
+            filter = Filters.DOCUMENTARY;
+        } else if (id == R.id.nav_war) {
+            filter = Filters.WAR;
         }
         Log.i(FeedActivity.class.getName(), "onNavigationItemSelected() filter: " + filter.toString());
         drawerLayout.closeDrawer(GravityCompat.START);
-        refreshGrid();
-        requestMoviesFeed(filter);
-        return true;
+
+        if (filter == getPresenter().getCurrentFilter()) {
+            return false;
+        } else {
+            refreshGrid();
+            requestMoviesFeed(filter);
+            return true;
+        }
     }
 
 
@@ -204,13 +232,15 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage);
         contentUpdated(false);
 
+        int previousAdapterSize = this.rvAdapter.getItemCount();
         this.rvAdapter.setMoviesFeed(moviesFeed);
 
         if (isNextPage) {
             int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
             this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
         } else {
-            this.rvAdapter.notifyDataSetChanged();
+            this.rvAdapter.notifyItemRangeRemoved(0, previousAdapterSize);
+            this.rvAdapter.notifyItemRangeInserted(0, insertedMoviesCount);
         }
 
         if (isUpdating) {
