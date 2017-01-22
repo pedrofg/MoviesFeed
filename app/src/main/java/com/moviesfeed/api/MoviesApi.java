@@ -19,17 +19,16 @@ public interface MoviesApi {
     String URL_MOVIE_BACKGROUND = "http://image.tmdb.org/t/p/w1000/";
 
     @GET("/3/discover/movie?api_key=" + KEY)
-    Observable<MoviesFeed> getMoviesSortBy(@Query("sort_by") String sortBy, @Query("primary_release_date.lte") String date,
-                                           @Query("page") int page);
+    Observable<MoviesFeed> getDiscoverMovie(@Query("sort_by") String sortBy, @Query("page") int page);
+
+    @GET("/3/discover/movie?api_key=" + KEY + "&sort_by=primary_release_date.desc")
+    Observable<MoviesFeed> getMovieByGenre(@Query("with_genres") int genre, @Query("primary_release_date.lte") String date, @Query("page") int page);
 
     @GET("/3/movie/{filter}?api_key=" + KEY)
     Observable<MoviesFeed> getMoviesFilterBy(@Path("filter") String filter, @Query("page") int page);
 
 
-    @GET("/3/movie/{id}?api_key=" + KEY)
+    @GET("/3/movie/{id}?api_key=" + KEY + "&append_to_response=images")
     Observable<MovieDetail> getMovieDetail(@Path("id") int movieId);
-
-    @GET("/3/movie/{id}/images?api_key=" + KEY)
-    Observable<MovieDetail> getMovieImages(@Path("id") int movieId);
 
 }

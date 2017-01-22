@@ -7,8 +7,12 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
+/**
+ * Created by Pedro on 1/21/2017.
+ */
+
 @Entity
-public class MovieBackdrop {
+public class MoviePoster {
 
     @Id(autoincrement = true)
     private Long id;
@@ -16,14 +20,14 @@ public class MovieBackdrop {
     @Expose
     private String filePath;
     private Long movieImagesId;
-    @Generated(hash = 403000038)
-    public MovieBackdrop(Long id, String filePath, Long movieImagesId) {
+    @Generated(hash = 1414992469)
+    public MoviePoster(Long id, String filePath, Long movieImagesId) {
         this.id = id;
         this.filePath = filePath;
         this.movieImagesId = movieImagesId;
     }
-    @Generated(hash = 20645344)
-    public MovieBackdrop() {
+    @Generated(hash = 547620416)
+    public MoviePoster() {
     }
     public Long getId() {
         return this.id;

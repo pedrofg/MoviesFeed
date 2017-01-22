@@ -5,9 +5,11 @@ import android.util.Log;
 
 import com.moviesfeed.App;
 import com.moviesfeed.activities.MovieDetailActivity;
+import com.moviesfeed.models.DaoSession;
 import com.moviesfeed.models.Genre;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
+import com.moviesfeed.models.MoviePoster;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
@@ -38,6 +40,27 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
         createLoadMovieDetailDb();
         createUpdateMovieDetailDb();
         createRequestMovieDetailAPI();
+    }
+
+    private void createRequestMovieDetailAPI() {
+        restartableFirst(REQUEST_MOVIE_DETAIL_API,
+                new Func0<Observable<MovieDetail>>() {
+                    @Override
+                    public Observable<MovieDetail> call() {
+                        return App.getServerApi().getMovieDetail(movieId).subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
+                    }
+                },
+                new Action2<MovieDetailActivity, MovieDetail>() {
+                    @Override
+                    public void call(MovieDetailActivity activity, final MovieDetail response) {
+                        Log.d(MovieDetailPresenter.class.getName(), "REQUEST_MOVIE_DETAIL_API success");
+                        lastResponse = response;
+                        start(REQUEST_UPDATE_MOVIE_DETAIL_DB);
+
+                    }
+                },
+                handleError());
     }
 
     private void createLoadMovieDetailDb() {
@@ -93,37 +116,6 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
                 handleError());
     }
 
-    private void createRequestMovieDetailAPI() {
-        restartableFirst(REQUEST_MOVIE_DETAIL_API,
-                new Func0<Observable<MovieDetail>>() {
-                    @Override
-                    public Observable<MovieDetail> call() {
-                        final Observable<MovieDetail> movieDetailsObservable = App.getServerApi().getMovieDetail(movieId);
-
-                        final Observable<MovieDetail> movieImagesObservable = App.getServerApi().getMovieImages(movieId);
-
-                        return Observable.zip(movieDetailsObservable, movieImagesObservable, new Func2<MovieDetail, MovieDetail, MovieDetail>() {
-                            @Override
-                            public MovieDetail call(MovieDetail movieDetail, MovieDetail movieImage) {
-                                movieDetail.setBackdrops(movieImage.getBackdrops());
-                                return movieDetail;
-                            }
-                        }).subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread());
-                    }
-                },
-                new Action2<MovieDetailActivity, MovieDetail>() {
-                    @Override
-                    public void call(MovieDetailActivity activity, final MovieDetail response) {
-                        Log.d(MovieDetailPresenter.class.getName(), "REQUEST_MOVIE_DETAIL_API success");
-                        lastResponse = response;
-                        start(REQUEST_UPDATE_MOVIE_DETAIL_DB);
-
-                    }
-                },
-                handleError());
-    }
-
 
     private Action2 handleError() {
         return new Action2<MovieDetailActivity, Throwable>() {
@@ -140,10 +132,12 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
     }
 
     private MovieDetail loadMovieDetailDb() {
-        MovieDetail movieDetail = App.getDaoSession().getMovieDetailDao().load((long) this.movieId);
+        MovieDetail movieDetail = App.getDaoSession().getMovieDetailDao().loadDeep((long) this.movieId);
+        //Doing that the GreenDao gets() will load the objects while still in another thread.
         if (movieDetail != null) {
-            movieDetail.setGenres(movieDetail.getGenres());
-            movieDetail.setBackdrops(movieDetail.getBackdrops());
+            movieDetail.getGenres();
+            movieDetail.getImages().getBackdrops();
+            movieDetail.getImages().getPosters();
         }
         Log.d(MovieDetailPresenter.class.getName(), "loadMovieDetailDb() movieDetail: " + movieDetail);
         return movieDetail;
@@ -154,13 +148,22 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
         for (Genre genre : movieDetail.getGenres()) {
             genre.setMovieDetailId(movieDetail.getId());
         }
-        for (MovieBackdrop mb : movieDetail.getBackdrops()) {
-            mb.setMovieDetailId(movieDetail.getId());
+
+        movieDetail.setImagesId(movieDetail.getId());
+        movieDetail.getImages().setId(movieDetail.getId());
+
+        for (MovieBackdrop mb : movieDetail.getImages().getBackdrops()) {
+            mb.setMovieImagesId(movieDetail.getImages().getId());
+        }
+        for (MoviePoster mp : movieDetail.getImages().getPosters()) {
+            mp.setMovieImagesId(movieDetail.getImages().getId());
         }
 
         App.getDaoSession().getMovieDetailDao().insertOrReplace(movieDetail);
         App.getDaoSession().getGenreDao().insertOrReplaceInTx(movieDetail.getGenres());
-        App.getDaoSession().getMovieBackdropDao().insertOrReplaceInTx(movieDetail.getBackdrops());
+        App.getDaoSession().getMovieImagesDao().insertOrReplace(movieDetail.getImages());
+        App.getDaoSession().getMovieBackdropDao().insertOrReplaceInTx(movieDetail.getImages().getBackdrops());
+        App.getDaoSession().getMoviePosterDao().insertOrReplaceInTx(movieDetail.getImages().getPosters());
         return movieDetail;
     }
 

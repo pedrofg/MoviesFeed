@@ -26,6 +26,12 @@ public class Movie {
     @SerializedName("title")
     @Expose
     private String title;
+    @SerializedName("overview")
+    @Expose
+    private String overview;
+    @SerializedName("backdrop_path")
+    @Expose
+    private String backdropPath;
     private Long moviesFeedKey;
 
 
@@ -34,14 +40,17 @@ public class Movie {
     }
 
 
-    @Generated(hash = 1496155034)
+    @Generated(hash = 1373817001)
     public Movie(Long idDb, int idTmdb, String posterPath, String originalTitle,
-            String title, Long moviesFeedKey) {
+            String title, String overview, String backdropPath,
+            Long moviesFeedKey) {
         this.idDb = idDb;
         this.idTmdb = idTmdb;
         this.posterPath = posterPath;
         this.originalTitle = originalTitle;
         this.title = title;
+        this.overview = overview;
+        this.backdropPath = backdropPath;
         this.moviesFeedKey = moviesFeedKey;
     }
 
@@ -71,14 +80,9 @@ public class Movie {
         this.title = title;
     }
 
-    public long getMoviesFeedKey() {
+    public Long getMoviesFeedKey() {
         return this.moviesFeedKey;
     }
-
-    public void setMoviesFeedKey(long moviesFeedKey) {
-        this.moviesFeedKey = moviesFeedKey;
-    }
-
 
     public int getIdTmdb() {
         return idTmdb;
@@ -102,5 +106,21 @@ public class Movie {
 
     public void setMoviesFeedKey(Long moviesFeedKey) {
         this.moviesFeedKey = moviesFeedKey;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
     }
 }
