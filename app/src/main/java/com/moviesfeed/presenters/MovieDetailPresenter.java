@@ -1,6 +1,7 @@
 package com.moviesfeed.presenters;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.moviesfeed.App;
@@ -10,6 +11,7 @@ import com.moviesfeed.models.Genre;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
 import com.moviesfeed.models.MoviePoster;
+import com.moviesfeed.models.Video;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
@@ -138,6 +140,7 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
             movieDetail.getGenres();
             movieDetail.getImages().getBackdrops();
             movieDetail.getImages().getPosters();
+            movieDetail.getVideos().getVideos();
         }
         Log.d(MovieDetailPresenter.class.getName(), "loadMovieDetailDb() movieDetail: " + movieDetail);
         return movieDetail;
@@ -151,6 +154,8 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
 
         movieDetail.setImagesId(movieDetail.getId());
         movieDetail.getImages().setId(movieDetail.getId());
+        movieDetail.setVideosId(movieDetail.getId());
+        movieDetail.getVideos().setId(movieDetail.getId());
 
         for (MovieBackdrop mb : movieDetail.getImages().getBackdrops()) {
             mb.setMovieImagesId(movieDetail.getImages().getId());
@@ -158,12 +163,24 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
         for (MoviePoster mp : movieDetail.getImages().getPosters()) {
             mp.setMovieImagesId(movieDetail.getImages().getId());
         }
+        for (Video video : movieDetail.getVideos().getVideos()) {
+            if (TextUtils.isEmpty(video.getKey()) ||
+                    TextUtils.isEmpty(video.getSite()) ||
+                    !video.getSite().equals(Video.YOUTUBE_SITE)) {
+                movieDetail.getVideos().getVideos().remove(video);
+            } else {
+                video.setMovieVideosId(movieDetail.getVideos().getId());
+            }
+
+        }
 
         App.getDaoSession().getMovieDetailDao().insertOrReplace(movieDetail);
         App.getDaoSession().getGenreDao().insertOrReplaceInTx(movieDetail.getGenres());
         App.getDaoSession().getMovieImagesDao().insertOrReplace(movieDetail.getImages());
         App.getDaoSession().getMovieBackdropDao().insertOrReplaceInTx(movieDetail.getImages().getBackdrops());
         App.getDaoSession().getMoviePosterDao().insertOrReplaceInTx(movieDetail.getImages().getPosters());
+        App.getDaoSession().getMovieVideosDao().insertOrReplaceInTx(movieDetail.getVideos());
+        App.getDaoSession().getVideoDao().insertOrReplaceInTx(movieDetail.getVideos().getVideos());
         return movieDetail;
     }
 

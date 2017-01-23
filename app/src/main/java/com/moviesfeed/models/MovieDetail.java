@@ -60,7 +60,12 @@ public class MovieDetail {
     @SerializedName("images")
     @Expose
     private MovieImages images;
+    @ToOne(joinProperty = "videosId")
+    @SerializedName("videos")
+    @Expose
+    private MovieVideos videos;
     private Long imagesId;
+    private Long videosId;
     /**
      * Used to resolve relations
      */
@@ -73,11 +78,13 @@ public class MovieDetail {
     private transient MovieDetailDao myDao;
     @Generated(hash = 1730634245)
     private transient Long images__resolvedKey;
+    @Generated(hash = 458023817)
+    private transient Long videos__resolvedKey;
 
-    @Generated(hash = 433251951)
+    @Generated(hash = 2056803007)
     public MovieDetail(int budget, String homepage, Long id, String imdbId, String overview,
-                       String posterPath, String releaseDate, long revenue, int runtime, String title,
-                       double voteAverage, Long imagesId) {
+            String posterPath, String releaseDate, long revenue, int runtime, String title,
+            double voteAverage, Long imagesId, Long videosId) {
         this.budget = budget;
         this.homepage = homepage;
         this.id = id;
@@ -90,6 +97,7 @@ public class MovieDetail {
         this.title = title;
         this.voteAverage = voteAverage;
         this.imagesId = imagesId;
+        this.videosId = videosId;
     }
 
     @Generated(hash = 850277392)
@@ -363,6 +371,44 @@ public class MovieDetail {
             this.images = images;
             imagesId = images == null ? null : images.getId();
             images__resolvedKey = imagesId;
+        }
+    }
+
+    public Long getVideosId() {
+        return this.videosId;
+    }
+
+    public void setVideosId(Long videosId) {
+        this.videosId = videosId;
+    }
+
+    /** To-one relationship, resolved on first access. */
+    @Keep
+    @Generated(hash = 729026238)
+    public MovieVideos getVideos() {
+        Long __key = this.videosId;
+        if (videos == null && (videos__resolvedKey == null || !videos__resolvedKey.equals(__key))) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            MovieVideosDao targetDao = daoSession.getMovieVideosDao();
+            MovieVideos videosNew = targetDao.load(__key);
+            synchronized (this) {
+                videos = videosNew;
+                videos__resolvedKey = __key;
+            }
+        }
+        return videos;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 397838886)
+    public void setVideos(MovieVideos videos) {
+        synchronized (this) {
+            this.videos = videos;
+            videosId = videos == null ? null : videos.getId();
+            videos__resolvedKey = videosId;
         }
     }
 

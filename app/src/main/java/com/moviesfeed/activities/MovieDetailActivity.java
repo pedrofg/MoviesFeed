@@ -1,5 +1,7 @@
 package com.moviesfeed.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -16,9 +18,12 @@ import android.widget.TextView;
 
 import com.moviesfeed.R;
 import com.moviesfeed.activities.uicomponents.AppBarStateChangeListener;
+import com.moviesfeed.activities.uicomponents.RecyclerItemClickListener;
 import com.moviesfeed.adapters.MovieImagesAdapter;
+import com.moviesfeed.adapters.MovieVideosAdapter;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
+import com.moviesfeed.models.Video;
 import com.moviesfeed.presenters.MovieDetailPresenter;
 
 import java.util.ArrayList;
@@ -31,7 +36,7 @@ import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusAppCompatActivity;
 
 @RequiresPresenter(MovieDetailPresenter.class)
-public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPresenter> {
+public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPresenter> implements RecyclerItemClickListener.OnItemClickListener {
 
     public static final String MINUTES = "m";
     @BindView(R.id.toolbar)
@@ -66,10 +71,15 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
     View layoutMovieRating;
     @BindView(R.id.txtMovieDetailError)
     TextView txtMovieDetailError;
+    @BindView(R.id.recyclerViewMovieVideos)
+    RecyclerView rvMovieVideos;
+    @BindView(R.id.layoutVideos)
+    View layoutVideos;
 
 
     private MovieDetail movieDetail;
     private int movieId;
+    private MovieVideosAdapter rvVideosAdapter;
 
 
     @Override
@@ -93,6 +103,9 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
                     collapsingToolBar.setTitle(" ");
             }
         });
+
+        this.rvMovieVideos.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
+        this.rvMovieVideos.setHasFixedSize(true);
 
         requestMovieDetail();
     }
@@ -118,26 +131,6 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
         this.appBarLayout.setVisibility(View.GONE);
         this.nestedScrollView.setVisibility(View.GONE);
         this.txtMovieDetailError.setVisibility(View.GONE);
-    }
-
-
-    private void fillMovieImages() {
-        //if there is no backdrop insert the posterPath as a backdrop so the reciclerView will contain an image to show.
-        if (this.movieDetail.getImages().getBackdrops() == null || this.movieDetail.getImages().getBackdrops().size() == 0) {
-            MovieBackdrop mb = new MovieBackdrop();
-            mb.setFilePath(this.movieDetail.getPosterPath());
-
-            List<MovieBackdrop> listBackdrops = new ArrayList<MovieBackdrop>();
-            listBackdrops.add(mb);
-
-            this.movieDetail.getImages().setBackdrops(listBackdrops);
-        }
-
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-
-        this.rvMovieImages.setLayoutManager(layoutManager);
-        this.rvMovieImages.setAdapter(new MovieImagesAdapter(this, this.movieDetail.getImages().getBackdrops()));
     }
 
 
@@ -201,7 +194,42 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
 
         contentUpdated(false);
         fillMovieImages();
+        fillMovieVideos();
 
+    }
+
+    private void fillMovieVideos() {
+        if (this.movieDetail.getVideos() != null &&
+                this.movieDetail.getVideos().getVideos() != null &&
+                this.movieDetail.getVideos().getVideos().size() > 0) {
+
+            LinearLayoutManager layoutManager
+                    = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+
+            this.rvMovieVideos.setLayoutManager(layoutManager);
+            this.rvVideosAdapter = new MovieVideosAdapter(this, this.movieDetail.getVideos().getVideos());
+            this.rvMovieVideos.setAdapter(rvVideosAdapter);
+            this.layoutVideos.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void fillMovieImages() {
+        //if there is no backdrop insert the posterPath as a backdrop so the reciclerView will contain an image to show.
+        if (this.movieDetail.getImages().getBackdrops() == null || this.movieDetail.getImages().getBackdrops().size() == 0) {
+            MovieBackdrop mb = new MovieBackdrop();
+            mb.setFilePath(this.movieDetail.getPosterPath());
+
+            List<MovieBackdrop> listBackdrops = new ArrayList<MovieBackdrop>();
+            listBackdrops.add(mb);
+
+            this.movieDetail.getImages().setBackdrops(listBackdrops);
+        }
+
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+
+        this.rvMovieImages.setLayoutManager(layoutManager);
+        this.rvMovieImages.setAdapter(new MovieImagesAdapter(this, this.movieDetail.getImages().getBackdrops()));
     }
 
     public void requestMovieDetailError(boolean isNetworkError) {
@@ -210,5 +238,12 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
         message.append(getString(R.string.tap_here_try_again));
         this.txtMovieDetailError.setText(message);
         contentUpdated(true);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Video video = this.rvVideosAdapter.getItem(position);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(video.getYoutubeUrl()));
+        startActivity(intent);
     }
 }

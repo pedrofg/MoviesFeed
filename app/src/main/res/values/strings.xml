@@ -8,4 +8,5 @@
     <string name="error_request_feed_network">A network error has occurred.</string>
     <string name="tap_here_try_again">\nTap here to try again.</string>
     <string name="please_try_again">Please try again.</string>
+    <string name="videos">Videos</string>
 </resources>

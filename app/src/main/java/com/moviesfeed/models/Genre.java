@@ -11,17 +11,19 @@ import org.greenrobot.greendao.annotation.Generated;
 public class Genre {
 
     @Id(autoincrement = true)
+    private Long idDb;
     @SerializedName("id")
     @Expose
-    private Long id;
+    private int idTmdb;
     @SerializedName("name")
     @Expose
     private String name;
     private Long movieDetailId;
 
-    @Generated(hash = 1329650085)
-    public Genre(Long id, String name, Long movieDetailId) {
-        this.id = id;
+    @Generated(hash = 415445634)
+    public Genre(Long idDb, int idTmdb, String name, Long movieDetailId) {
+        this.idDb = idDb;
+        this.idTmdb = idTmdb;
         this.name = name;
         this.movieDetailId = movieDetailId;
     }
@@ -53,15 +55,24 @@ public class Genre {
         this.movieDetailId = movieDetailId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
 
     public void setMovieDetailId(Long movieDetailId) {
         this.movieDetailId = movieDetailId;
+    }
+
+    public int getIdTmdb() {
+        return this.idTmdb;
+    }
+
+    public void setIdTmdb(int idTmdb) {
+        this.idTmdb = idTmdb;
+    }
+
+    public Long getIdDb() {
+        return this.idDb;
+    }
+
+    public void setIdDb(Long idDb) {
+        this.idDb = idDb;
     }
 }
