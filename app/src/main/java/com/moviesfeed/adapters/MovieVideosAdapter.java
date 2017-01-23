@@ -7,11 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.moviesfeed.R;
-import com.moviesfeed.api.MoviesApi;
-import com.moviesfeed.models.MovieBackdrop;
+import com.moviesfeed.models.Video;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -23,35 +21,37 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Pedro on 8/28/2016.
+ * Created by Pedro on 1/22/2017.
  */
-public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.MovieImagesViewHolder> {
 
-    private List<MovieBackdrop> listMovieImages;
+public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.MovieVideosViewHolder> {
+
+    private List<Video> listVideos;
     private Context context;
 
-    public MovieImagesAdapter(Context context, List<MovieBackdrop> listMovieBackdrop) {
+    public MovieVideosAdapter(Context context, List<Video> listVideos) {
         this.context = context;
-        this.listMovieImages = listMovieBackdrop;
+        this.listVideos = listVideos;
     }
 
-    @Override
-    public MovieImagesViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_images_item, viewGroup, false);
 
-        MovieImagesViewHolder viewHolder = new MovieImagesViewHolder(view);
+    @Override
+    public MovieVideosViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_video_item, viewGroup, false);
+
+        MovieVideosViewHolder viewHolder = new MovieVideosViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(final MovieImagesViewHolder holder, int position) {
-        MovieBackdrop mb = this.listMovieImages.get(position);
-
+    public void onBindViewHolder(final MovieVideosViewHolder holder, int position) {
+        Video video = this.listVideos.get(position);
         holder.progressItem.setVisibility(View.VISIBLE);
-        final String url = MoviesApi.URL_MOVIE_BACKGROUND + mb.getFilePath();
-        loadImage(url, holder.imgMovieBackdrop, new Callback() {
+
+        loadImage(video.getYoutubeThumbnailUrl(), holder.imgMovieVideo, new Callback() {
             @Override
             public void onSuccess() {
+                holder.imgIconPlay.setVisibility(View.VISIBLE);
                 holder.progressItem.setVisibility(View.GONE);
             }
 
@@ -61,10 +61,7 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
             }
         });
 
-        holder.txtPosition.setText(++position + " - " + this.listMovieImages.size());
-
     }
-
 
     private void loadImage(final String url, final ImageView imageView, final Callback callback) {
         getRequestCreator(url, true).into(imageView, new Callback() {
@@ -83,7 +80,9 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
 
     private RequestCreator getRequestCreator(String url, boolean useCache) {
         RequestCreator requestCreator = Picasso.with(context)
-                .load(url);
+                .load(url)
+                .resizeDimen(R.dimen.movie_video_width, R.dimen.movie_video_height)
+                .centerCrop();
 
         if (useCache) {
             requestCreator.networkPolicy(NetworkPolicy.OFFLINE);
@@ -93,24 +92,24 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
 
     @Override
     public int getItemCount() {
-        return (this.listMovieImages != null ? this.listMovieImages.size() : 0);
+        return (this.listVideos != null ? this.listVideos.size() : 0);
     }
 
+    public Video getItem(int position) {
+        return this.listVideos.get(position);
+    }
 
-    static class MovieImagesViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.imgMovieBackdrop)
-        ImageView imgMovieBackdrop;
-        @BindView(R.id.progressMovieBackdrop)
+    static class MovieVideosViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.imgMovieVideo)
+        ImageView imgMovieVideo;
+        @BindView(R.id.imgIconPlay)
+        ImageView imgIconPlay;
+        @BindView(R.id.progressMovieVideo)
         ProgressBar progressItem;
-        @BindView(R.id.txtPosition)
-        TextView txtPosition;
 
-
-        public MovieImagesViewHolder(View view) {
+        public MovieVideosViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
     }
 }
-
-
