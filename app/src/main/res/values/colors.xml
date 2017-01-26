@@ -8,5 +8,6 @@
     <color name="iconDarkerGray">#24374B</color>
     <color name="iconGray">#868686</color>
     <color name="iconWhite">#FDF3F3</color>
+    <color name="lightGray">#EFEBEB</color>
 
 </resources>
