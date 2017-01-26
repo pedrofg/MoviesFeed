@@ -14,4 +14,13 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="TxtSettingsStyle" parent="android:Widget.TextView">
+        <item name="android:background">@drawable/settings_txt_background</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:gravity">center_vertical|left</item>
+    </style>
+
 </resources>

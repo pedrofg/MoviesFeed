@@ -3,41 +3,33 @@ package com.moviesfeed.activities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.moviesfeed.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AboutActivity extends AppCompatActivity {
+public class ThirdPartyAPIsActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbarAboutActivity)
+    @BindView(R.id.toolbarThirdParty)
     Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
+        setContentView(R.layout.activity_third_party);
         ButterKnife.bind(this);
 
-        //Fill Toolbar
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.action_about));
+        getSupportActionBar().setTitle(getString(R.string.third_party_apis));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
+        finish();
         return super.onOptionsItemSelected(item);
     }
 }

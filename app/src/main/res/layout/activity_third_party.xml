@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_about"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.moviesfeed.activities.AboutActivity">
+    tools:context="com.moviesfeed.activities.ThirdPartyAPIsActivity">
 
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbarAboutActivity"
+        android:id="@+id/toolbarThirdParty"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
@@ -18,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/iconWhite"
-        android:layout_below="@id/toolbarAboutActivity"
+        android:layout_below="@id/toolbarThirdParty"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:fillViewport="true">

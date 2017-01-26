@@ -34,7 +34,7 @@ import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusAppCompatActivity;
 
 @RequiresPresenter(FeedPresenter.class)
-public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implements NavigationView.OnNavigationItemSelectedListener, EndlessScrollListener.RefreshList, RecyclerItemClickListener.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implements NavigationView.OnNavigationItemSelectedListener, EndlessScrollListener.RefreshList, RecyclerItemClickListener.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
     public static final String INTENT_MOVIE_DETAIL_ID = "INTENT_MOVIE_DETAIL_ID";
     public static final int GRID_COLUMNS = 3;
     @BindView(R.id.toolbar)
@@ -51,6 +51,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.txtError)
     TextView txtError;
+    View settingsIcon;
 
     private EndlessScrollListener endlessScrollListener;
     private FeedAdapter rvAdapter;
@@ -87,21 +88,12 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         this.swipeRefreshLayout.setOnRefreshListener(this);
         this.swipeRefreshLayout.setColorSchemeResources(R.color.iconRed);
 
+        View header = navigationView.getHeaderView(0);
+        settingsIcon = header.findViewById(R.id.settingsIcon);
+        settingsIcon.setOnClickListener(this);
+
         if (savedInstanceState == null)
             requestMoviesFeed(Filters.POPULARITY);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -227,7 +219,6 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         getPresenter().requestMoviesFeed(getPresenter().getCurrentFilter());
     }
 
-
     public void requestMoviesFeedSuccess(MoviesFeed moviesFeed, boolean isNextPage, boolean isUpdating, int insertedMoviesCount) {
         Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage);
         contentUpdated(false);
@@ -264,4 +255,11 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         this.swipeRefreshLayout.setRefreshing(false);
     }
 
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.settingsIcon) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
+    }
 }
