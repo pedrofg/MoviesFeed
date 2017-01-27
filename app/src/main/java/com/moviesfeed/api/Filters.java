@@ -24,37 +24,37 @@ public enum Filters {
     public String toString() {
         String name = "";
         if (id == 0) {
-            name = "popular";
+            name = MoviesApi.FILTER_POPULARITY;
         } else if (id == 1) {
-            name = "upcoming";
+            name = MoviesApi.FILTER_UPCOMING;
         } else if (id == 2) {
-            name = "now_playing";
+            name = MoviesApi.FILTER_NOW_PLAYING;
         } else if (id == 3) {
-            name = "top_rated";
+            name = MoviesApi.FILTER_TOP_RATED;
         } else if (id == 4) {
-            name = "revenue";
+            name = MoviesApi.FILTER_REVENUE;
         } else if (id == 5) {
-            name = "28";
+            name = MoviesApi.GENRE_ACTION;
         } else if (id == 6) {
-            name = "16";
+            name = MoviesApi.GENRE_ANIMATION;
         } else if (id == 7) {
-            name = "35";
+            name = MoviesApi.GENRE_COMEDY;
         } else if (id == 8) {
-            name = "10749";
+            name = MoviesApi.GENRE_ROMANCE;
         } else if (id == 9) {
-            name = "18";
+            name = MoviesApi.GENRE_DRAMA;
         } else if (id == 10) {
-            name = "878";
+            name = MoviesApi.GENRE_SCIENCE_FICTION;
         } else if (id == 11) {
-            name = "10402";
+            name = MoviesApi.GENRE_MUSIC;
         } else if (id == 12) {
-            name = "53";
+            name = MoviesApi.GENRE_THRILLER;
         } else if (id == 13) {
-            name = "27";
+            name = MoviesApi.GENRE_HORROR;
         } else if (id == 14) {
-            name = "99";
+            name = MoviesApi.GENRE_DOCUMENTARY;
         } else if (id == 15) {
-            name = "10752";
+            name = MoviesApi.GENRE_WAR;
         }
         return name;
     }
