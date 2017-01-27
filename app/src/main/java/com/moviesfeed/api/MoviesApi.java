@@ -18,10 +18,28 @@ public interface MoviesApi {
     String URL_MOVIE_POSTER = "http://image.tmdb.org/t/p/w300/";
     String URL_MOVIE_BACKGROUND = "http://image.tmdb.org/t/p/w1000/";
 
-    @GET("/3/discover/movie?api_key=" + KEY)
+    String FILTER_POPULARITY = "popular";
+    String FILTER_UPCOMING = "upcoming";
+    String FILTER_NOW_PLAYING = "now_playing";
+    String FILTER_TOP_RATED = "top_rated";
+    String FILTER_REVENUE = "revenue";
+
+    String GENRE_ACTION = "28";
+    String GENRE_ANIMATION = "16";
+    String GENRE_COMEDY = "35";
+    String GENRE_ROMANCE = "10749";
+    String GENRE_DRAMA = "18";
+    String GENRE_SCIENCE_FICTION = "878";
+    String GENRE_MUSIC = "10402";
+    String GENRE_THRILLER = "53";
+    String GENRE_HORROR = "27";
+    String GENRE_DOCUMENTARY = "99";
+    String GENRE_WAR = "10752";
+
+    @GET("/3/discover/movie?api_key=" + KEY + "&include_adult=false")
     Observable<MoviesFeed> getDiscoverMovie(@Query("sort_by") String sortBy, @Query("page") int page);
 
-    @GET("/3/discover/movie?api_key=" + KEY + "&sort_by=primary_release_date.desc")
+    @GET("/3/discover/movie?api_key=" + KEY + "&sort_by=primary_release_date.desc&include_adult=false")
     Observable<MoviesFeed> getMovieByGenre(@Query("with_genres") int genre, @Query("primary_release_date.lte") String date, @Query("page") int page);
 
     @GET("/3/movie/{filter}?api_key=" + KEY)
