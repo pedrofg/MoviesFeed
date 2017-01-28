@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <RelativeLayout
+        android:id="@+id/layoutImg"
+        android:layout_width="@dimen/movie_cast_width"
+        android:layout_height="@dimen/movie_cast_height"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/imgMovieCastCrew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progressMovieCastCrew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="true" />
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/txtMovieCastCrewName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layoutImg"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/txtMovieCastCrewAs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtMovieCastCrewName"
+        android:layout_centerHorizontal="true"
+        android:textSize="14dp" />
+
+
+</RelativeLayout>

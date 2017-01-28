@@ -6,10 +6,13 @@ import android.util.Log;
 
 import com.moviesfeed.App;
 import com.moviesfeed.activities.MovieDetailActivity;
+import com.moviesfeed.models.Cast;
+import com.moviesfeed.models.Crew;
 import com.moviesfeed.models.DaoSession;
 import com.moviesfeed.models.Genre;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
+import com.moviesfeed.models.MovieImages;
 import com.moviesfeed.models.MoviePoster;
 import com.moviesfeed.models.Video;
 
@@ -141,6 +144,8 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
             movieDetail.getImages().getBackdrops();
             movieDetail.getImages().getPosters();
             movieDetail.getVideos().getVideos();
+            movieDetail.getCredits().getCast();
+            movieDetail.getCredits().getCrew();
         }
         Log.d(MovieDetailPresenter.class.getName(), "loadMovieDetailDb() movieDetail: " + movieDetail);
         return movieDetail;
@@ -148,15 +153,17 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
 
 
     private MovieDetail updateMovieDetailDb(MovieDetail movieDetail) {
-        for (Genre genre : movieDetail.getGenres()) {
-            genre.setMovieDetailId(movieDetail.getId());
-        }
 
         movieDetail.setImagesId(movieDetail.getId());
         movieDetail.getImages().setId(movieDetail.getId());
         movieDetail.setVideosId(movieDetail.getId());
         movieDetail.getVideos().setId(movieDetail.getId());
+        movieDetail.setCreditsId(movieDetail.getId());
+        movieDetail.getCredits().setIdDb(movieDetail.getId());
 
+        for (Genre genre : movieDetail.getGenres()) {
+            genre.setMovieDetailId(movieDetail.getId());
+        }
         for (MovieBackdrop mb : movieDetail.getImages().getBackdrops()) {
             mb.setMovieImagesId(movieDetail.getImages().getId());
         }
@@ -173,14 +180,23 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
             }
 
         }
+        for (Crew crew : movieDetail.getCredits().getCrew()) {
+            crew.setCreditsKey(movieDetail.getCredits().getIdDb());
+        }
+        for (Cast cast : movieDetail.getCredits().getCast()) {
+            cast.setCreditsKey(movieDetail.getCredits().getIdDb());
+        }
 
-        App.getDaoSession().getMovieDetailDao().insertOrReplace(movieDetail);
         App.getDaoSession().getGenreDao().insertOrReplaceInTx(movieDetail.getGenres());
         App.getDaoSession().getMovieImagesDao().insertOrReplace(movieDetail.getImages());
         App.getDaoSession().getMovieBackdropDao().insertOrReplaceInTx(movieDetail.getImages().getBackdrops());
         App.getDaoSession().getMoviePosterDao().insertOrReplaceInTx(movieDetail.getImages().getPosters());
         App.getDaoSession().getMovieVideosDao().insertOrReplaceInTx(movieDetail.getVideos());
         App.getDaoSession().getVideoDao().insertOrReplaceInTx(movieDetail.getVideos().getVideos());
+        App.getDaoSession().getCreditsDao().insertOrReplace(movieDetail.getCredits());
+        App.getDaoSession().getCrewDao().insertOrReplaceInTx(movieDetail.getCredits().getCrew());
+        App.getDaoSession().getCastDao().insertOrReplaceInTx(movieDetail.getCredits().getCast());
+        App.getDaoSession().getMovieDetailDao().insertOrReplace(movieDetail);
         return movieDetail;
     }
 

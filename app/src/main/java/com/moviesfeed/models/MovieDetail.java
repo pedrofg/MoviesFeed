@@ -64,8 +64,14 @@ public class MovieDetail {
     @SerializedName("videos")
     @Expose
     private MovieVideos videos;
+    @ToOne(joinProperty = "creditsId")
+    @SerializedName("credits")
+    @Expose
+    private Credits credits;
     private Long imagesId;
     private Long videosId;
+    private Long creditsId;
+
     /**
      * Used to resolve relations
      */
@@ -80,11 +86,13 @@ public class MovieDetail {
     private transient Long images__resolvedKey;
     @Generated(hash = 458023817)
     private transient Long videos__resolvedKey;
+    @Generated(hash = 2130436260)
+    private transient Long credits__resolvedKey;
 
-    @Generated(hash = 2056803007)
+    @Generated(hash = 1538373129)
     public MovieDetail(int budget, String homepage, Long id, String imdbId, String overview,
-            String posterPath, String releaseDate, long revenue, int runtime, String title,
-            double voteAverage, Long imagesId, Long videosId) {
+                       String posterPath, String releaseDate, long revenue, int runtime, String title,
+                       double voteAverage, Long imagesId, Long videosId, Long creditsId) {
         this.budget = budget;
         this.homepage = homepage;
         this.id = id;
@@ -98,6 +106,7 @@ public class MovieDetail {
         this.voteAverage = voteAverage;
         this.imagesId = imagesId;
         this.videosId = videosId;
+        this.creditsId = creditsId;
     }
 
     @Generated(hash = 850277392)
@@ -382,7 +391,9 @@ public class MovieDetail {
         this.videosId = videosId;
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Keep
     @Generated(hash = 729026238)
     public MovieVideos getVideos() {
@@ -402,13 +413,57 @@ public class MovieDetail {
         return videos;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 397838886)
     public void setVideos(MovieVideos videos) {
         synchronized (this) {
             this.videos = videos;
             videosId = videos == null ? null : videos.getId();
             videos__resolvedKey = videosId;
+        }
+    }
+
+    public Long getCreditsId() {
+        return this.creditsId;
+    }
+
+    public void setCreditsId(Long creditsId) {
+        this.creditsId = creditsId;
+    }
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Keep
+    @Generated(hash = 822197607)
+    public Credits getCredits() {
+        Long __key = this.creditsId;
+        if (credits == null && (credits__resolvedKey == null || !credits__resolvedKey.equals(__key))) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            CreditsDao targetDao = daoSession.getCreditsDao();
+            Credits creditsNew = targetDao.load(__key);
+            synchronized (this) {
+                credits = creditsNew;
+                credits__resolvedKey = __key;
+            }
+        }
+        return credits;
+    }
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 1676176909)
+    public void setCredits(Credits credits) {
+        synchronized (this) {
+            this.credits = credits;
+            creditsId = credits == null ? null : credits.getIdDb();
+            credits__resolvedKey = creditsId;
         }
     }
 
