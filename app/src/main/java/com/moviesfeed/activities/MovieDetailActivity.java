@@ -18,7 +18,10 @@ import android.widget.TextView;
 
 import com.moviesfeed.R;
 import com.moviesfeed.activities.uicomponents.AppBarStateChangeListener;
+import com.moviesfeed.activities.uicomponents.DividerItemDecoration;
 import com.moviesfeed.activities.uicomponents.RecyclerItemClickListener;
+import com.moviesfeed.adapters.MovieCastAdapter;
+import com.moviesfeed.adapters.MovieCrewAdapter;
 import com.moviesfeed.adapters.MovieImagesAdapter;
 import com.moviesfeed.adapters.MovieVideosAdapter;
 import com.moviesfeed.models.MovieBackdrop;
@@ -75,11 +78,18 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
     RecyclerView rvMovieVideos;
     @BindView(R.id.layoutVideos)
     View layoutVideos;
+    @BindView(R.id.recyclerViewMovieCast)
+    RecyclerView rvMovieCast;
+    @BindView(R.id.layoutCast)
+    View layoutCast;
+    @BindView(R.id.recyclerViewMovieCrew)
+    RecyclerView rvMovieCrew;
+    @BindView(R.id.layoutCrew)
+    View layoutCrew;
 
-
+    private MovieVideosAdapter rvVideosAdapter;
     private MovieDetail movieDetail;
     private int movieId;
-    private MovieVideosAdapter rvVideosAdapter;
 
 
     @Override
@@ -195,20 +205,42 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
         contentUpdated(false);
         fillMovieImages();
         fillMovieVideos();
+        fillMovieCast();
+        fillMovieCrew();
 
     }
+
+    private void fillMovieCrew() {
+        if (this.movieDetail.getCredits() != null && this.movieDetail.getCredits().getCrew() != null && this.movieDetail.getCredits().getCrew().size() > 0) {
+            this.rvMovieCrew.setLayoutManager(getHorizontalLayoutManager());
+            this.rvMovieCrew.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
+            MovieCrewAdapter adapter = new MovieCrewAdapter(this, this.movieDetail.getCredits().getCrew());
+            this.rvMovieCrew.setAdapter(adapter);
+            this.layoutCrew.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void fillMovieCast() {
+        if (this.movieDetail.getCredits() != null && this.movieDetail.getCredits().getCast() != null && this.movieDetail.getCredits().getCast().size() > 0) {
+            this.rvMovieCast.setLayoutManager(getHorizontalLayoutManager());
+            this.rvMovieCast.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
+            MovieCastAdapter adapter = new MovieCastAdapter(this, this.movieDetail.getCredits().getCast());
+            this.rvMovieCast.setAdapter(adapter);
+            this.layoutCast.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     private void fillMovieVideos() {
         if (this.movieDetail.getVideos() != null &&
                 this.movieDetail.getVideos().getVideos() != null &&
                 this.movieDetail.getVideos().getVideos().size() > 0) {
 
-            LinearLayoutManager layoutManager
-                    = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
 
-            this.rvMovieVideos.setLayoutManager(layoutManager);
+            this.rvMovieVideos.setLayoutManager(getHorizontalLayoutManager());
+            this.rvMovieVideos.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
             this.rvVideosAdapter = new MovieVideosAdapter(this, this.movieDetail.getVideos().getVideos());
-            this.rvMovieVideos.setAdapter(rvVideosAdapter);
+            this.rvMovieVideos.setAdapter(this.rvVideosAdapter);
             this.layoutVideos.setVisibility(View.VISIBLE);
         }
     }
@@ -225,11 +257,13 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
             this.movieDetail.getImages().setBackdrops(listBackdrops);
         }
 
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
 
-        this.rvMovieImages.setLayoutManager(layoutManager);
+        this.rvMovieImages.setLayoutManager(getHorizontalLayoutManager());
         this.rvMovieImages.setAdapter(new MovieImagesAdapter(this, this.movieDetail.getImages().getBackdrops()));
+    }
+
+    public RecyclerView.LayoutManager getHorizontalLayoutManager() {
+        return new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
     }
 
     public void requestMovieDetailError(boolean isNetworkError) {

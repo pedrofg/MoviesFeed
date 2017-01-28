@@ -51,6 +51,7 @@ public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.
         loadImage(video.getYoutubeThumbnailUrl(), holder.imgMovieVideo, new Callback() {
             @Override
             public void onSuccess() {
+                holder.imgMovieVideo.setVisibility(View.VISIBLE);
                 holder.imgIconPlay.setVisibility(View.VISIBLE);
                 holder.progressItem.setVisibility(View.GONE);
             }

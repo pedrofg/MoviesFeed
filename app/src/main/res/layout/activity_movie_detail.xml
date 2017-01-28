@@ -216,6 +216,56 @@
                         android:layout_marginTop="20dp"
                         android:background="@android:color/white" />
                 </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutCast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layoutVideos"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/txtCast"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/cast"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerViewMovieCast"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txtCast"
+                        android:layout_marginTop="20dp"
+                        android:background="@android:color/white" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutCrew"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layoutCast"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/txtCrew"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/crew"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerViewMovieCrew"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txtCrew"
+                        android:layout_marginTop="20dp"
+                        android:background="@android:color/white" />
+                </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>
 

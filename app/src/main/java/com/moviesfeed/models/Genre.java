@@ -51,10 +51,6 @@ public class Genre {
         return movieDetailId;
     }
 
-    public void setMovieDetailId(long movieDetailId) {
-        this.movieDetailId = movieDetailId;
-    }
-
 
     public void setMovieDetailId(Long movieDetailId) {
         this.movieDetailId = movieDetailId;

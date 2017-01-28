@@ -9,12 +9,12 @@ import android.graphics.Shader;
 
 import com.squareup.picasso.Transformation;
 
-public class CircleTransform implements Transformation {
+public class BorderTransform implements Transformation {
 
     private final int radius;
     private final int margin;
 
-    public CircleTransform(final int radius, final int margin) {
+    public BorderTransform(final int radius, final int margin) {
         this.radius = radius;
         this.margin = margin;
     }

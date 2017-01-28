@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.moviesfeed.R;
-import com.moviesfeed.activities.uicomponents.CircleTransform;
+import com.moviesfeed.activities.uicomponents.BorderTransform;
 import com.moviesfeed.api.MoviesApi;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
@@ -89,7 +89,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         RequestCreator requestCreator = Picasso.with(context)
                 .load(url)
                 .resizeDimen(R.dimen.movie_thumbnail_width, R.dimen.movie_thumbnail_height)
-                .transform(new CircleTransform(20, 0));
+                .transform(new BorderTransform(20, 0));
 
         if (useCache) {
             requestCreator.networkPolicy(NetworkPolicy.OFFLINE);

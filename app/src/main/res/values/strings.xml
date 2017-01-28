@@ -9,9 +9,13 @@
     <string name="tap_here_try_again">\nTap here to try again.</string>
     <string name="please_try_again">Please try again.</string>
     <string name="videos">Videos</string>
+    <string name="cast">Cast</string>
+    <string name="crew">Crew</string>
     <string name="tell_a_friend">Tell a Friend</string>
     <string name="third_party_apis">Third-Party APIs</string>
     <string name="settings">Settings</string>
     <string name="copyright">Copyright © 2017 PGF. All rights reserved.</string>
     <string name="tell_a_friend_message">Hey check out the best movies here, MoviesFeed App at: https://github.com/pedrofg/MoviesFeed</string>
+    <string name="as">as&#160;</string>
+
 </resources>
