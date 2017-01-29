@@ -23,6 +23,7 @@ public interface MoviesApi {
     String FILTER_NOW_PLAYING = "now_playing";
     String FILTER_TOP_RATED = "top_rated";
     String FILTER_REVENUE = "revenue";
+    String FILTER_SEARCH = "search";
 
     String GENRE_ACTION = "28";
     String GENRE_ANIMATION = "16";
@@ -45,8 +46,10 @@ public interface MoviesApi {
     @GET("/3/movie/{filter}?api_key=" + KEY)
     Observable<MoviesFeed> getMoviesFilterBy(@Path("filter") String filter, @Query("page") int page);
 
-
     @GET("/3/movie/{id}?api_key=" + KEY + "&append_to_response=images,videos,credits")
     Observable<MovieDetail> getMovieDetail(@Path("id") int movieId);
+
+    @GET("/3/search/movie?api_key=" + KEY + "&include_adult=false")
+    Observable<MoviesFeed> getSearchMovie(@Query("query") String query, @Query("page") int page);
 
 }

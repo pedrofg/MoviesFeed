@@ -1,7 +1,5 @@
 package com.moviesfeed.presenters;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import nucleus.presenter.RxPresenter;
 import rx.Observable;
@@ -38,6 +35,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     public static final int REQUEST_MOVIES_FEED_FILTER_BY_API = 2;
     public static final int REQUEST_UPDATE_MOVIES_FEED_DB = 3;
     public static final int REQUEST_LOAD_MOVIES_FEED_DB = 4;
+    public static final int REQUEST_SEARCH_MOVIES_API = 5;
     public static final int FIRST_PAGE = 1;
     public static final String DESC = ".desc";
 
@@ -49,6 +47,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
 
     private boolean isRequestingNextPage;
     private boolean isUpdating;
+    private String searchQuery;
 
     @Override
     protected void onCreate(Bundle savedState) {
@@ -57,7 +56,9 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         createRequestMoviesFeedFilterByAPI();
         createUpdateMoviesFeed();
         createLoadMoviesFeedDb();
+        createRequestSearchMoviesAPI();
     }
+
 
     private void createRequestMoviesFeedFilterByAPI() {
         restartableFirst(REQUEST_MOVIES_FEED_FILTER_BY_API,
@@ -79,12 +80,12 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                 new Func0<Observable<MoviesFeed>>() {
                     @Override
                     public Observable<MoviesFeed> call() {
-                        if (filterBy.getId() >= Filters.ACTION.getId()) {
-                            return App.getServerApi().getMovieByGenre(Integer.valueOf(filterBy.toString()), getFormattedDate(), page)
+                        if (filterBy == Filters.REVENUE) {
+                            return App.getServerApi().getDiscoverMovie(filterBy.toString() + FeedPresenter.DESC, page)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread());
                         } else {
-                            return App.getServerApi().getDiscoverMovie(filterBy.toString() + FeedPresenter.DESC, page)
+                            return App.getServerApi().getMovieByGenre(Integer.valueOf(filterBy.toString()), getFormattedDate(), page)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread());
                         }
@@ -92,6 +93,21 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                 },
                 handleRequestMovieFeedAPISuccess(),
                 handleError());
+    }
+
+    private void createRequestSearchMoviesAPI() {
+        restartableFirst(REQUEST_SEARCH_MOVIES_API,
+                new Func0<Observable<MoviesFeed>>() {
+                    @Override
+                    public Observable<MoviesFeed> call() {
+                        return App.getServerApi().getSearchMovie(searchQuery, page)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
+                    }
+                },
+                handleRequestMovieFeedAPISuccess(),
+                handleError());
+
     }
 
     private void createUpdateMoviesFeed() {
@@ -248,7 +264,11 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
 
         stop(REQUEST_MOVIES_FEED_FILTER_BY_API);
         stop(REQUEST_MOVIES_FEED_SORT_BY_API);
-        if (this.filterBy.getId() >= Filters.REVENUE.getId()) {
+        stop(REQUEST_SEARCH_MOVIES_API);
+
+        if (this.filterBy == Filters.SEARCH) {
+            start(REQUEST_SEARCH_MOVIES_API);
+        } else if (this.filterBy.getId() >= Filters.REVENUE.getId()) {
             start(REQUEST_MOVIES_FEED_SORT_BY_API);
         } else {
             start(REQUEST_MOVIES_FEED_FILTER_BY_API);
@@ -302,5 +322,10 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         return filterBy;
     }
 
-
+    public void requestSearchMoviesFeed(String query) {
+        this.searchQuery = query;
+        this.filterBy = Filters.SEARCH;
+        this.moviesFeed = null;
+        requestAPI(false);
+    }
 }

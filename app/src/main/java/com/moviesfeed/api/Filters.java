@@ -8,7 +8,7 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 public enum Filters {
     POPULARITY(0), UPCOMING(1), NOW_PLAYING(2), TOP_RATED(3), REVENUE(4),
     ACTION(5), ANIMATION(6), COMEDY(7), ROMANCE(8), DRAMA(9), SCIENCE_FICTION(10),
-    MUSIC(11), THRILLER(12), HORROR(13), DOCUMENTARY(14), WAR(15);
+    MUSIC(11), THRILLER(12), HORROR(13), DOCUMENTARY(14), WAR(15), SEARCH(16);
 
     private final long id;
 
@@ -55,6 +55,8 @@ public enum Filters {
             name = MoviesApi.GENRE_DOCUMENTARY;
         } else if (id == 15) {
             name = MoviesApi.GENRE_WAR;
+        } else if (id == 16) {
+            name = MoviesApi.FILTER_SEARCH;
         }
         return name;
     }

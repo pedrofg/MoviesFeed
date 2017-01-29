@@ -1,5 +1,6 @@
 package com.moviesfeed.activities;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -9,9 +10,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -55,6 +58,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
     private EndlessScrollListener endlessScrollListener;
     private FeedAdapter rvAdapter;
+    private int checkedMenuItem;
 
 
     @Override
@@ -92,14 +96,53 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         settingsIcon = header.findViewById(R.id.settingsIcon);
         settingsIcon.setOnClickListener(this);
 
+        this.checkedMenuItem = R.id.nav_popularity;
+
         if (savedInstanceState == null)
             requestMoviesFeed(Filters.POPULARITY);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.i(FeedActivity.class.getName(), "onNewIntent() " + intent.getAction());
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Log.i(FeedActivity.class.getName(), "handleIntent() ACTION_SEARCH query: " + query);
+
+            this.navigationView.getMenu().findItem(this.checkedMenuItem).setChecked(false);
+            refreshGrid();
+            updatingContent();
+            getPresenter().requestSearchMoviesFeed(query);
+        }
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         Filters filter = null;
+        this.checkedMenuItem = item.getItemId();
+        this.navigationView.getMenu().findItem(this.checkedMenuItem).setChecked(true);
 
         if (id == R.id.nav_popularity) {
             filter = Filters.POPULARITY;
@@ -117,8 +160,6 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
             filter = Filters.ACTION;
         } else if (id == R.id.nav_animation) {
             filter = Filters.ANIMATION;
-        } else if (id == R.id.nav_comedy) {
-            filter = Filters.COMEDY;
         } else if (id == R.id.nav_romance) {
             filter = Filters.ROMANCE;
         } else if (id == R.id.nav_drama) {
@@ -215,27 +256,34 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
     @OnClick(R.id.txtError)
     public void txtErrorClickListener(View view) {
-        updatingContent();
-        getPresenter().requestMoviesFeed(getPresenter().getCurrentFilter());
+        if (getPresenter().getCurrentFilter() != Filters.SEARCH) {
+            updatingContent();
+            getPresenter().requestMoviesFeed(getPresenter().getCurrentFilter());
+        }
     }
 
     public void requestMoviesFeedSuccess(MoviesFeed moviesFeed, boolean isNextPage, boolean isUpdating, int insertedMoviesCount) {
         Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage);
-        contentUpdated(false);
+        if (moviesFeed.getMovies().size() > 0) {
+            contentUpdated(false);
 
-        int previousAdapterSize = this.rvAdapter.getItemCount();
-        this.rvAdapter.setMoviesFeed(moviesFeed);
+            int previousAdapterSize = this.rvAdapter.getItemCount();
+            this.rvAdapter.setMoviesFeed(moviesFeed);
 
-        if (isNextPage) {
-            int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
-            this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
+            if (isNextPage) {
+                int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
+                this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
+            } else {
+                this.rvAdapter.notifyItemRangeRemoved(0, previousAdapterSize);
+                this.rvAdapter.notifyItemRangeInserted(0, insertedMoviesCount);
+            }
+
+            if (isUpdating) {
+                refreshGrid();
+            }
         } else {
-            this.rvAdapter.notifyItemRangeRemoved(0, previousAdapterSize);
-            this.rvAdapter.notifyItemRangeInserted(0, insertedMoviesCount);
-        }
-
-        if (isUpdating) {
-            refreshGrid();
+            contentUpdated(true);
+            this.txtError.setText(getString(R.string.no_movies_found));
         }
 
     }
