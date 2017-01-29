@@ -17,5 +17,8 @@
     <string name="copyright">Copyright © 2017 PGF. All rights reserved.</string>
     <string name="tell_a_friend_message">Hey check out the best movies here, MoviesFeed App at: https://github.com/pedrofg/MoviesFeed</string>
     <string name="as">as&#160;</string>
+    <string name="search">Search</string>
+    <string name="search_hint">What movie are you looking for?</string>
+    <string name="no_movies_found">No movies found.</string>
 
 </resources>
