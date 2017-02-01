@@ -7,6 +7,8 @@
     <dimen name="nav_header_height">80dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="movie_cast_height">110dp</dimen>
-    <dimen name="movie_cast_width">100dp</dimen>
+    <dimen name="movie_cast_thumbnail_height">110dp</dimen>
+    <dimen name="movie_cast_thumbnail_width">100dp</dimen>
+    <dimen name="movie_cast_width">110dp</dimen>
+    <dimen name="layout_cast_height">240dp</dimen>
 </resources>

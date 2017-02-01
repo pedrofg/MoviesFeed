@@ -24,10 +24,11 @@ import butterknife.ButterKnife;
  * Created by Pedro on 2017-01-28.
  */
 
-public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieCastCrewViewHolder> {
+public abstract class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieCastCrewViewHolder> {
 
 
-    public static final int MAX_ROLE_LENGTH = 18;
+    public static final int MAX_TITLE_LENGTH = 16;
+    public static final int MAX_SUB_TITLE_LENGTH = 16;
     private Context context;
     private int listSize;
 
@@ -71,13 +72,22 @@ public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieC
         });
     }
 
-    public String formatText(String text) {
-        String formattedText = text;
-        if (text.length() > MAX_ROLE_LENGTH) {
-            formattedText = text.substring(0, MAX_ROLE_LENGTH) + "...";
+    private String formatText(String text, int maxLenght) {
+        if (text.length() > maxLenght) {
+            return text.substring(0, maxLenght) + "...";
+        } else {
+            return text;
         }
-        return formattedText;
     }
+
+    public String formatTitle(String text) {
+        return formatText(text, MAX_TITLE_LENGTH);
+    }
+
+    public String formatSubTitle(String text) {
+        return formatText(text, MAX_SUB_TITLE_LENGTH);
+    }
+
 
     private void loadImage(final String url, final ImageView imageView, final Callback callback) {
         RequestCreator rcCache = getRequestCreator(url, 0, true);
@@ -116,7 +126,7 @@ public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieC
         else
             requestCreator = Picasso.with(context).load(resourceError);
 
-        requestCreator.resizeDimen(R.dimen.movie_cast_width, R.dimen.movie_cast_height);
+        requestCreator.resizeDimen(R.dimen.movie_cast_thumbnail_width, R.dimen.movie_cast_thumbnail_height);
         requestCreator.transform(new CircularTransform());
 
         if (useCache) {
