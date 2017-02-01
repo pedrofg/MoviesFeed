@@ -27,9 +27,9 @@ public class MovieCastAdapter extends CastCrewAdapter {
 
         Cast cast = this.listCast.get(position);
 
-        holder.txtMovieCastName.setText(cast.getName());
+        holder.txtMovieCastName.setText(formatTitle(cast.getName()));
 
-        holder.txtMovieCastAs.setText(context.getString(R.string.as) + formatText(cast.getCharacter()));
+        holder.txtMovieCastAs.setText(context.getString(R.string.as) + formatSubTitle(cast.getCharacter()));
 
         loadImage(cast.getProfilePath(), holder);
     }

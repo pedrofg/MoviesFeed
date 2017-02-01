@@ -79,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
-                android:paddingBottom="10dp">
+                android:paddingBottom="20dp">
 
                 <TextView
                     android:id="@+id/txtMovieTitle"
@@ -220,15 +220,15 @@
                 <RelativeLayout
                     android:id="@+id/layoutCast"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/layout_cast_height"
                     android:layout_below="@id/layoutVideos"
+                    android:layout_marginTop="20dp"
                     android:visibility="gone">
 
                     <TextView
                         android:id="@+id/txtCast"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
                         android:text="@string/cast"
                         android:textSize="20dp"
                         android:textStyle="bold" />
@@ -245,7 +245,7 @@
                 <RelativeLayout
                     android:id="@+id/layoutCrew"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/layout_cast_height"
                     android:layout_below="@id/layoutCast"
                     android:visibility="gone">
 
@@ -253,7 +253,6 @@
                         android:id="@+id/txtCrew"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
                         android:text="@string/crew"
                         android:textSize="20dp"
                         android:textStyle="bold" />
