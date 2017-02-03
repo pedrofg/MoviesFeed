@@ -184,6 +184,12 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
             @Override
             public void call(FeedActivity activity, Throwable throwable) {
                 Log.e(FeedPresenter.class.getName(), "handleError() " + throwable.getMessage(), throwable);
+
+                if (isRequestingNextPage)
+                    page--;
+                isRequestingNextPage = false;
+                isUpdating = false;
+
                 boolean isNetworkError = false;
                 if (throwable instanceof IOException && !Util.isNetworkAvailable(activity))
                     isNetworkError = true;
@@ -256,9 +262,9 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         this.isRequestingNextPage = isRequestingNextPage;
 
         if (isRequestingNextPage) {
-            this.page = ++this.page;
+            this.page++;
         } else {
-            this.page = 1;
+            this.page = FIRST_PAGE;
         }
 
 
@@ -307,6 +313,17 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         start(REQUEST_LOAD_MOVIES_FEED_DB);
     }
 
+    public void requestSearchMoviesFeed(String query) {
+        this.searchQuery = query;
+        this.filterBy = Filters.SEARCH;
+        this.moviesFeed = null;
+        requestAPI(false);
+    }
+
+    public String getSearchQuery() {
+        return this.searchQuery;
+    }
+
     public void refreshMoviesFeed() {
         this.isUpdating = true;
         Log.d(FeedPresenter.class.getName(), "refreshMoviesFeed() isUpdating: " + this.isUpdating);
@@ -322,10 +339,5 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         return filterBy;
     }
 
-    public void requestSearchMoviesFeed(String query) {
-        this.searchQuery = query;
-        this.filterBy = Filters.SEARCH;
-        this.moviesFeed = null;
-        requestAPI(false);
-    }
+
 }

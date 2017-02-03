@@ -40,6 +40,7 @@ import nucleus.view.NucleusAppCompatActivity;
 public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implements NavigationView.OnNavigationItemSelectedListener, EndlessScrollListener.RefreshList, RecyclerItemClickListener.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
     public static final String INTENT_MOVIE_DETAIL_ID = "INTENT_MOVIE_DETAIL_ID";
     public static final int GRID_COLUMNS = 3;
+    public static final int GRID_FILL_ALL_COLUMNS = 1;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.progressBar)
@@ -56,10 +57,10 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     TextView txtError;
     View settingsIcon;
 
-    private EndlessScrollListener endlessScrollListener;
     private FeedAdapter rvAdapter;
     private int checkedMenuItem;
-
+    private EndlessScrollListener endlessScrollListener;
+    //TODO Investigate error why is not keeping the same filter when scrolling or clicking on update after error.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,14 +79,13 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         navigationView.setNavigationItemSelectedListener(this);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, GRID_COLUMNS);
+        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup);
         this.rvMoviesFeed.setLayoutManager(gridLayoutManager);
 
         this.endlessScrollListener = new EndlessScrollListener(gridLayoutManager, this);
         this.rvMoviesFeed.addOnScrollListener(endlessScrollListener);
 
-        this.rvAdapter = new FeedAdapter(this);
-        this.rvMoviesFeed.setAdapter(rvAdapter);
-
+        setRvAdapter();
         this.rvMoviesFeed.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
         this.rvMoviesFeed.setHasFixedSize(true);
 
@@ -101,6 +101,18 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         if (savedInstanceState == null)
             requestMoviesFeed(Filters.POPULARITY);
     }
+
+    private void setRvAdapter() {
+        this.rvAdapter = new FeedAdapter(this);
+        this.rvMoviesFeed.setAdapter(rvAdapter);
+    }
+
+    GridLayoutManager.SpanSizeLookup onSpanSizeLookup = new GridLayoutManager.SpanSizeLookup() {
+        @Override
+        public int getSpanSize(int position) {
+            return rvAdapter.getItemViewType(position) == FeedAdapter.VIEW_ITEM ? GRID_FILL_ALL_COLUMNS : GRID_COLUMNS;
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -189,13 +201,11 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         }
     }
 
-
     private void requestMoviesFeed(Filters filter) {
         updatingContent();
 
         getPresenter().requestMoviesFeed(filter);
     }
-
 
     private void refreshGrid() {
         Log.i(FeedActivity.class.getName(), "refreshGrid()");
@@ -204,6 +214,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         this.endlessScrollListener.reset();
         this.rvMoviesFeed.scrollToPosition(0);
 
+        setRvAdapter();
     }
 
     @Override
@@ -215,20 +226,20 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         }
     }
 
-    @Override
-    public void requestNextPage(int currentPage) {
-        Log.i(FeedActivity.class.getName(), "onRefresh() - page number: " + currentPage);
-        getPresenter().requestNextPage();
-    }
-
     //Grid item click listener
     @Override
     public void onItemClick(View view, int position) {
         Movie movie = this.rvAdapter.getItem(position);
-        Log.i(FeedActivity.class.getName(), "onItemClick, Movie Title: " + movie.getTitle());
-        Intent intent = new Intent(this, MovieDetailActivity.class);
-        intent.putExtra(INTENT_MOVIE_DETAIL_ID, movie.getIdTmdb());
-        startActivity(intent);
+        if (movie != null) {
+            Log.i(FeedActivity.class.getName(), "onItemClick, Movie Title: " + movie.getTitle());
+            Intent intent = new Intent(this, MovieDetailActivity.class);
+            intent.putExtra(INTENT_MOVIE_DETAIL_ID, movie.getIdTmdb());
+            startActivity(intent);
+        } else {
+            Log.i(FeedActivity.class.getName(), "onItemClick movie == null / update item clicked");
+            //it means the user clicked on the update icon item
+            getPresenter().requestNextPage();
+        }
     }
 
     @Override
@@ -256,44 +267,52 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
     @OnClick(R.id.txtError)
     public void txtErrorClickListener(View view) {
+        updatingContent();
         if (getPresenter().getCurrentFilter() != Filters.SEARCH) {
-            updatingContent();
             getPresenter().requestMoviesFeed(getPresenter().getCurrentFilter());
+        } else {
+            getPresenter().requestSearchMoviesFeed(getPresenter().getSearchQuery());
         }
     }
 
     public void requestMoviesFeedSuccess(MoviesFeed moviesFeed, boolean isNextPage, boolean isUpdating, int insertedMoviesCount) {
         Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage);
         if (moviesFeed.getMovies().size() > 0) {
-            contentUpdated(false);
-
-            int previousAdapterSize = this.rvAdapter.getItemCount();
-            this.rvAdapter.setMoviesFeed(moviesFeed);
-
-            if (isNextPage) {
-                int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
-                this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
-            } else {
-                this.rvAdapter.notifyItemRangeRemoved(0, previousAdapterSize);
-                this.rvAdapter.notifyItemRangeInserted(0, insertedMoviesCount);
-            }
 
             if (isUpdating) {
                 refreshGrid();
             }
+
+            if (isNextPage) {
+                removeProgressBottomGrid();
+
+                this.rvAdapter.setMoviesFeed(moviesFeed);
+
+                int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
+                this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
+            } else {
+                this.rvAdapter.setMoviesFeed(moviesFeed);
+            }
+
+
+            contentUpdated(false);
         } else {
             contentUpdated(true);
             this.txtError.setText(getString(R.string.no_movies_found));
         }
 
+
     }
 
-    public void requestMoviesFeedError(boolean showInToast, boolean isNetworkError) {
+    public void requestMoviesFeedError(boolean thereIsCache, boolean isNetworkError) {
+        Log.i(FeedActivity.class.getName(), "requestMoviesFeedError() - thereIsCache: " + thereIsCache + " isNetworkError: " + isNetworkError);
         StringBuilder message = new StringBuilder();
         message.append(isNetworkError ? getString(R.string.error_request_feed_network) : getString(R.string.error_request_feed));
-        if (showInToast) {
+        if (thereIsCache) {
             message.append(getString(R.string.please_try_again));
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            removeProgressBottomGrid();
+            addProgressBottomGrid(true);
         } else {
             message.append(getString(R.string.tap_here_try_again));
             this.txtError.setText(message);
@@ -310,4 +329,24 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
             startActivity(intent);
         }
     }
+
+    private void addProgressBottomGrid(boolean errorProgress) {
+        this.endlessScrollListener.addProgressItem();
+        this.rvAdapter.addProgress(errorProgress);
+    }
+
+    private void removeProgressBottomGrid() {
+        this.endlessScrollListener.removeProgressItem();
+        this.rvAdapter.removeProgress();
+    }
+
+
+    @Override
+    public void requestNextPage(int currentPage) {
+        Log.i(FeedActivity.class.getName(), "requestNextPage() - page number: " + currentPage);
+        removeProgressBottomGrid();
+        addProgressBottomGrid(false);
+        getPresenter().requestNextPage();
+    }
+
 }
