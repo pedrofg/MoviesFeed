@@ -13,7 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AnimatedActivity {
 
     @BindView(R.id.toolbarSettings)
     Toolbar toolbar;
@@ -28,7 +28,9 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.settings));
+
     }
+
 
     @OnClick(R.id.btnTellAFriend)
     public void btnTellAFriendClickListener(View view) {

@@ -37,7 +37,7 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
 
     @Override
     public MovieImagesViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_images_item, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_details_images_rv_item, viewGroup, false);
 
         MovieImagesViewHolder viewHolder = new MovieImagesViewHolder(view);
         return viewHolder;

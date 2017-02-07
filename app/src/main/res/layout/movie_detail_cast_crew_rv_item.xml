@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/movie_cast_width"
     android:layout_height="wrap_content"
     android:background="@android:color/white">
@@ -27,7 +28,7 @@
     </RelativeLayout>
 
 
-    <TextView
+    <com.moviesfeed.activities.uicomponents.CustomTextView
         android:id="@+id/txtMovieCastCrewName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,16 +37,19 @@
         android:maxLines="2"
         android:textAlignment="center"
         android:textColor="@android:color/black"
-        android:textSize="16dp" />
+        android:textSize="16dp"
+        app:typeface="Roboto-Light.ttf" />
 
-    <TextView
+    <com.moviesfeed.activities.uicomponents.CustomTextView
         android:id="@+id/txtMovieCastCrewAs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/txtMovieCastCrewName"
         android:layout_centerHorizontal="true"
         android:textAlignment="center"
-        android:textSize="14dp" />
+        android:textColor="@android:color/black"
+        android:textSize="14dp"
+        app:typeface="Roboto-Thin.ttf" />
 
 
 </RelativeLayout>

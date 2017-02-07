@@ -10,13 +10,10 @@
         <item name="autoCompleteTextViewStyle">@style/cursorColor</item>
     </style>
 
+
     <style name="cursorColor" parent="Widget.AppCompat.AutoCompleteTextView">
         <item name="android:textCursorDrawable">@drawable/cursor</item>
     </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="TxtSettingsStyle" parent="android:Widget.TextView">
         <item name="android:background">@drawable/settings_txt_background</item>

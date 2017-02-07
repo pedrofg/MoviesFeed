@@ -3,6 +3,8 @@ package com.moviesfeed.activities;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,6 +19,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +46,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     public static final String INTENT_MOVIE_DETAIL_ID = "INTENT_MOVIE_DETAIL_ID";
     public static final int GRID_COLUMNS = 3;
     public static final int GRID_FILL_ALL_COLUMNS = 1;
+    public static final int REQUEST_CODE_SETTINGS_ACTIVITY = 0;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.progressBar)
@@ -55,12 +61,13 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.txtError)
     TextView txtError;
+    @BindView(R.id.layoutFeedError)
+    View layoutError;
     View settingsIcon;
 
     private FeedAdapter rvAdapter;
     private int checkedMenuItem;
     private EndlessScrollListener endlessScrollListener;
-    //TODO Investigate error why is not keeping the same filter when scrolling or clicking on update after error.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         setContentView(R.layout.activity_feed_root);
         ButterKnife.bind(this);
 
+        this.toolbar.setTitle(getString(R.string.popularity));
         setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -93,8 +101,8 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         this.swipeRefreshLayout.setColorSchemeResources(R.color.iconRed);
 
         View header = navigationView.getHeaderView(0);
-        settingsIcon = header.findViewById(R.id.settingsIcon);
-        settingsIcon.setOnClickListener(this);
+        this.settingsIcon = header.findViewById(R.id.settingsIcon);
+        this.settingsIcon.setOnClickListener(this);
 
         this.checkedMenuItem = R.id.nav_popularity;
 
@@ -143,6 +151,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
             Log.i(FeedActivity.class.getName(), "handleIntent() ACTION_SEARCH query: " + query);
 
             this.navigationView.getMenu().findItem(this.checkedMenuItem).setChecked(false);
+            this.toolbar.setTitle(query);
             refreshGrid();
             updatingContent();
             getPresenter().requestSearchMoviesFeed(query);
@@ -154,7 +163,8 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         int id = item.getItemId();
         Filters filter = null;
         this.checkedMenuItem = item.getItemId();
-        this.navigationView.getMenu().findItem(this.checkedMenuItem).setChecked(true);
+        MenuItem menuItem = this.navigationView.getMenu().findItem(this.checkedMenuItem);
+        menuItem.setChecked(true);
 
         if (id == R.id.nav_popularity) {
             filter = Filters.POPULARITY;
@@ -195,6 +205,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         if (filter == getPresenter().getCurrentFilter()) {
             return false;
         } else {
+            this.toolbar.setTitle(menuItem.getTitle());
             refreshGrid();
             requestMoviesFeed(filter);
             return true;
@@ -249,29 +260,29 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
     private void contentUpdated(boolean error) {
         this.progressBar.setVisibility(View.GONE);
-        this.swipeRefreshLayout.setVisibility(View.VISIBLE);
+        this.swipeRefreshLayout.setVisibility(View.GONE);
+        this.layoutError.setVisibility(View.GONE);
 
         if (error) {
-            this.rvMoviesFeed.setVisibility(View.GONE);
-            this.txtError.setVisibility(View.VISIBLE);
+            this.layoutError.setVisibility(View.VISIBLE);
         } else {
-            this.rvMoviesFeed.setVisibility(View.VISIBLE);
-            this.txtError.setVisibility(View.GONE);
+            this.swipeRefreshLayout.setVisibility(View.VISIBLE);
         }
     }
 
     private void updatingContent() {
         this.progressBar.setVisibility(View.VISIBLE);
         this.swipeRefreshLayout.setVisibility(View.GONE);
+        this.layoutError.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.txtError)
     public void txtErrorClickListener(View view) {
         updatingContent();
-        if (getPresenter().getCurrentFilter() != Filters.SEARCH) {
-            getPresenter().requestMoviesFeed(getPresenter().getCurrentFilter());
-        } else {
+        if (getPresenter().getCurrentFilter() == Filters.SEARCH) {
             getPresenter().requestSearchMoviesFeed(getPresenter().getSearchQuery());
+        } else {
+            getPresenter().requestMoviesFeed(getPresenter().getCurrentFilter());
         }
     }
 
@@ -309,8 +320,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         StringBuilder message = new StringBuilder();
         message.append(isNetworkError ? getString(R.string.error_request_feed_network) : getString(R.string.error_request_feed));
         if (thereIsCache) {
-            message.append(getString(R.string.please_try_again));
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             removeProgressBottomGrid();
             addProgressBottomGrid(true);
         } else {
@@ -322,11 +332,39 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         this.swipeRefreshLayout.setRefreshing(false);
     }
 
+
     @Override
-    public void onClick(View v) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SETTINGS_ACTIVITY) {
+            Animation rotation = AnimationUtils.loadAnimation(this, R.anim.clockwise_rotation);
+            this.settingsIcon.startAnimation(rotation);
+        }
+    }
+
+    @Override
+    public void onClick(final View v) {
         if (v.getId() == R.id.settingsIcon) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+            Animation rotation = AnimationUtils.loadAnimation(this, R.anim.anticlockwise_rotation);
+            this.settingsIcon.startAnimation(rotation);
+
+            rotation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    Intent intent = new Intent(FeedActivity.this, SettingsActivity.class);
+                    startActivityForResult(intent, REQUEST_CODE_SETTINGS_ACTIVITY);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+
         }
     }
 
@@ -339,7 +377,6 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         this.endlessScrollListener.removeProgressItem();
         this.rvAdapter.removeProgress();
     }
-
 
     @Override
     public void requestNextPage(int currentPage) {

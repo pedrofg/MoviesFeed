@@ -7,19 +7,19 @@
         <item
             android:id="@+id/nav_popularity"
             android:checked="true"
-            android:title="Popularity" />
+            android:title="@string/popularity" />
         <item
             android:id="@+id/nav_now_playing"
-            android:title="Now Playing" />
+            android:title="@string/now_playing" />
         <item
             android:id="@+id/nav_top_rated"
-            android:title="Top Rated" />
+            android:title="@string/top_rated" />
         <item
             android:id="@+id/nav_upcoming"
-            android:title="Upcoming" />
+            android:title="@string/upcoming" />
         <item
             android:id="@+id/nav_revenue"
-            android:title="Revenue" />
+            android:title="@string/revenue" />
     </group>
 
     <group
@@ -27,37 +27,37 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_action"
-            android:title="Action" />
+            android:title="@string/action" />
         <item
             android:id="@+id/nav_animation"
-            android:title="Animation" />
+            android:title="@string/animation" />
         <item
             android:id="@+id/nav_comedy"
-            android:title="Comedy" />
+            android:title="@string/comedy" />
         <item
             android:id="@+id/nav_romance"
-            android:title="Romance" />
+            android:title="@string/romance" />
         <item
             android:id="@+id/nav_drama"
-            android:title="Drama" />
+            android:title="@string/drama" />
         <item
             android:id="@+id/nav_science_fiction"
-            android:title="Science Fiction" />
+            android:title="@string/science_fiction" />
         <item
             android:id="@+id/nav_music"
-            android:title="Music" />
+            android:title="@string/music" />
         <item
             android:id="@+id/nav_thriller"
-            android:title="Thriller" />
+            android:title="@string/thriller" />
         <item
             android:id="@+id/nav_horror"
-            android:title="Horror" />
+            android:title="@string/horror" />
         <item
             android:id="@+id/nav_documentary"
-            android:title="Documentary" />
+            android:title="@string/documentary" />
         <item
             android:id="@+id/nav_war"
-            android:title="War" />
+            android:title="@string/war" />
     </group>
 
 

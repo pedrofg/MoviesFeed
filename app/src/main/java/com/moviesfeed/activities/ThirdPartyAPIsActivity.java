@@ -1,6 +1,5 @@
 package com.moviesfeed.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -10,7 +9,7 @@ import com.moviesfeed.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ThirdPartyAPIsActivity extends AppCompatActivity {
+public class ThirdPartyAPIsActivity extends AnimatedActivity {
 
     @BindView(R.id.toolbarThirdParty)
     Toolbar toolbar;
@@ -25,6 +24,7 @@ public class ThirdPartyAPIsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.third_party_apis));
+
     }
 
     @Override

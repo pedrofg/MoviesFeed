@@ -8,7 +8,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/update_icon"
+        android:src="@drawable/ic_update"
         android:visibility="gone" />
 
     <ProgressBar
