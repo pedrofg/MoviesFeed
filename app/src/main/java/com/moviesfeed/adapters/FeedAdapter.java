@@ -56,7 +56,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         RecyclerView.ViewHolder vh;
         if (viewType == VIEW_ITEM) {
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.grid_movies_feed_item, parent, false);
+                    .inflate(R.layout.feed_item, parent, false);
 
             vh = new FeedViewHolder(v);
         } else {

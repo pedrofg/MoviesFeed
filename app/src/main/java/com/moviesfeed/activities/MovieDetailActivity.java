@@ -39,7 +39,7 @@ import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusAppCompatActivity;
 
 @RequiresPresenter(MovieDetailPresenter.class)
-public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPresenter> implements RecyclerItemClickListener.OnItemClickListener {
+public class MovieDetailActivity extends AnimatedActivity<MovieDetailPresenter> implements RecyclerItemClickListener.OnItemClickListener {
 
     public static final String MINUTES = "m";
     @BindView(R.id.toolbar)
@@ -86,11 +86,12 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
     RecyclerView rvMovieCrew;
     @BindView(R.id.layoutCrew)
     View layoutCrew;
+    @BindView(R.id.layoutDetailsError)
+    View layoutError;
 
     private MovieVideosAdapter rvVideosAdapter;
     private MovieDetail movieDetail;
     private int movieId;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +121,7 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
         requestMovieDetail();
     }
 
+
     private void updatingContent() {
         hideAllViews();
         this.progressLoadingMovies.setVisibility(View.VISIBLE);
@@ -129,7 +131,7 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
     private void contentUpdated(boolean error) {
         hideAllViews();
         if (error) {
-            this.txtMovieDetailError.setVisibility(View.VISIBLE);
+            this.layoutError.setVisibility(View.VISIBLE);
         } else {
             this.appBarLayout.setVisibility(View.VISIBLE);
             this.nestedScrollView.setVisibility(View.VISIBLE);
@@ -140,7 +142,7 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
         this.progressLoadingMovies.setVisibility(View.GONE);
         this.appBarLayout.setVisibility(View.GONE);
         this.nestedScrollView.setVisibility(View.GONE);
-        this.txtMovieDetailError.setVisibility(View.GONE);
+        this.layoutError.setVisibility(View.GONE);
     }
 
 
@@ -192,22 +194,26 @@ public class MovieDetailActivity extends NucleusAppCompatActivity<MovieDetailPre
         this.txtMovieOverview.setText(this.movieDetail.getOverview());
         this.txtMovieHomepage.setText(this.movieDetail.getHomepage());
 
-        //Fill Genres
-        if (this.movieDetail.getGenres().size() > 0) {
-            String[] genreNames = new String[this.movieDetail.getGenres().size()];
-            for (int i = 0; i < this.movieDetail.getGenres().size(); i++) {
-                genreNames[i] = this.movieDetail.getGenres().get(i).getName();
-            }
-            this.txtMovieGenres.setText(TextUtils.join("\n", genreNames));
-            this.txtMovieGenres.setVisibility(View.VISIBLE);
-        }
-
+        fillGenresText();
         contentUpdated(false);
         fillMovieImages();
         fillMovieVideos();
         fillMovieCast();
         fillMovieCrew();
 
+    }
+
+    private void fillGenresText() {
+        //Fill Genres
+        if (this.movieDetail.getGenres().size() > 0) {
+            String jumpLine = "\n";
+            String[] genreNames = new String[this.movieDetail.getGenres().size()];
+            for (int i = 0; i < this.movieDetail.getGenres().size(); i++) {
+                genreNames[i] = this.movieDetail.getGenres().get(i).getName().replaceAll(" ", "-");
+            }
+            this.txtMovieGenres.setText(TextUtils.join(jumpLine, genreNames));
+            this.txtMovieGenres.setVisibility(View.VISIBLE);
+        }
     }
 
     private void fillMovieCrew() {

@@ -5,7 +5,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="error_request_feed">An error has occurred.</string>
-    <string name="error_request_feed_network">A network error has occurred.</string>
+    <string name="error_request_feed_network">A network error has occurred.\nVerify your connection.</string>
     <string name="tap_here_try_again">\nTap here to try again.</string>
     <string name="please_try_again">Please try again.</string>
     <string name="videos">Videos</string>
@@ -19,6 +19,22 @@
     <string name="as">as&#160;</string>
     <string name="search">Search</string>
     <string name="search_hint">What movie are you looking for?</string>
-    <string name="no_movies_found">No movies found.</string>
+    <string name="no_movies_found">We did not find any movie related to your search.</string>
+    <string name="popularity">Popularity</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="revenue">Revenue</string>
+    <string name="action">Action</string>
+    <string name="animation">Animation</string>
+    <string name="comedy">Comedy</string>
+    <string name="romance">Romance</string>
+    <string name="drama">Drama</string>
+    <string name="science_fiction">Science Fiction</string>
+    <string name="music">Music</string>
+    <string name="thriller">Thriller</string>
+    <string name="horror">Horror</string>
+    <string name="documentary">Documentary</string>
+    <string name="war">War</string>
 
 </resources>

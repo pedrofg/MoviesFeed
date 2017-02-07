@@ -39,7 +39,7 @@ public abstract class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapt
 
     @Override
     public MovieCastCrewViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_cast_crew_item, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_detail_cast_crew_rv_item, viewGroup, false);
 
         MovieCastCrewViewHolder viewHolder = new MovieCastCrewViewHolder(view);
         return viewHolder;
