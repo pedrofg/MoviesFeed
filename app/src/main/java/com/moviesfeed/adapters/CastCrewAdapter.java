@@ -9,13 +9,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.moviesfeed.activities.uicomponents.ImageLoader;
 import com.moviesfeed.R;
 import com.moviesfeed.activities.uicomponents.CircularTransform;
 import com.moviesfeed.api.MoviesApi;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,18 +56,21 @@ public abstract class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapt
 
     public void loadImage(String path, final MovieCastCrewViewHolder holder) {
         final String url = MoviesApi.URL_MOVIE_POSTER + path;
-        this.loadImage(url, holder.imgMovieCastCrew, new Callback() {
-            @Override
-            public void onSuccess() {
-                holder.imgMovieCastCrew.setVisibility(View.VISIBLE);
-                holder.progressItem.setVisibility(View.GONE);
-            }
 
-            @Override
-            public void onError() {
-                holder.progressItem.setVisibility(View.GONE);
-            }
-        });
+        ImageLoader.loadImage(context, url, holder.imgMovieCastCrew, new CircularTransform(),
+                R.dimen.movie_cast_thumbnail_width, R.dimen.movie_cast_thumbnail_height, R.drawable.no_profile, false,
+                new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        holder.imgMovieCastCrew.setVisibility(View.VISIBLE);
+                        holder.progressItem.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        holder.progressItem.setVisibility(View.GONE);
+                    }
+                });
     }
 
     private String formatText(String text, int maxLenght) {
@@ -88,52 +89,6 @@ public abstract class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapt
         return formatText(text, MAX_SUB_TITLE_LENGTH);
     }
 
-
-    private void loadImage(final String url, final ImageView imageView, final Callback callback) {
-        RequestCreator rcCache = getRequestCreator(url, 0, true);
-
-        rcCache.into(imageView, new Callback() {
-            @Override
-            public void onSuccess() {
-                callback.onSuccess();
-            }
-
-            @Override
-            public void onError() {
-                RequestCreator rcDownload = getRequestCreator(url, 0, false);
-                rcDownload.into(imageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        callback.onSuccess();
-                    }
-
-                    @Override
-                    public void onError() {
-                        RequestCreator rcErrorImg = getRequestCreator(null, R.drawable.no_profile, false);
-                        rcErrorImg.into(imageView, callback);
-                    }
-                });
-            }
-        });
-
-    }
-
-    private RequestCreator getRequestCreator(String url, int resourceError, boolean useCache) {
-        RequestCreator requestCreator;
-
-        if (url != null)
-            requestCreator = Picasso.with(context).load(url);
-        else
-            requestCreator = Picasso.with(context).load(resourceError);
-
-        requestCreator.resizeDimen(R.dimen.movie_cast_thumbnail_width, R.dimen.movie_cast_thumbnail_height);
-        requestCreator.transform(new CircularTransform());
-
-        if (useCache) {
-            requestCreator.networkPolicy(NetworkPolicy.OFFLINE);
-        }
-        return requestCreator;
-    }
 
     static class MovieCastCrewViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.imgMovieCastCrew)

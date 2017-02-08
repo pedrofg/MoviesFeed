@@ -11,7 +11,7 @@ import nucleus.view.NucleusAppCompatActivity;
  * Created by Pedro on 2017-02-06.
  */
 
-public class AnimatedActivity<P extends Presenter> extends NucleusAppCompatActivity<P> {
+public class AnimatedTransitionActivity<P extends Presenter> extends NucleusAppCompatActivity<P> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

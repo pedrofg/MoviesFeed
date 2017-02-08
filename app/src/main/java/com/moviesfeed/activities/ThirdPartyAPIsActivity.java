@@ -9,7 +9,7 @@ import com.moviesfeed.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ThirdPartyAPIsActivity extends AnimatedActivity {
+public class ThirdPartyAPIsActivity extends AnimatedTransitionActivity {
 
     @BindView(R.id.toolbarThirdParty)
     Toolbar toolbar;

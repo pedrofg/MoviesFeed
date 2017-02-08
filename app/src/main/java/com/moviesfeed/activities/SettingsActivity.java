@@ -2,7 +2,6 @@ package com.moviesfeed.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SettingsActivity extends AnimatedActivity {
+public class SettingsActivity extends AnimatedTransitionActivity {
 
     @BindView(R.id.toolbarSettings)
     Toolbar toolbar;
