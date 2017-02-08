@@ -36,10 +36,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import nucleus.factory.RequiresPresenter;
-import nucleus.view.NucleusAppCompatActivity;
 
 @RequiresPresenter(MovieDetailPresenter.class)
-public class MovieDetailActivity extends AnimatedActivity<MovieDetailPresenter> implements RecyclerItemClickListener.OnItemClickListener {
+public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailPresenter> implements RecyclerItemClickListener.OnItemClickListener {
 
     public static final String MINUTES = "m";
     @BindView(R.id.toolbar)

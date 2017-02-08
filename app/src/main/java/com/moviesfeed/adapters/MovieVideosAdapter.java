@@ -8,12 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.moviesfeed.activities.uicomponents.ImageLoader;
 import com.moviesfeed.R;
 import com.moviesfeed.models.Video;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import java.util.List;
 
@@ -48,47 +46,21 @@ public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.
         Video video = this.listVideos.get(position);
         holder.progressItem.setVisibility(View.VISIBLE);
 
-        loadImage(video.getYoutubeThumbnailUrl(), holder.imgMovieVideo, new Callback() {
-            @Override
-            public void onSuccess() {
-                holder.imgMovieVideo.setVisibility(View.VISIBLE);
-                holder.imgIconPlay.setVisibility(View.VISIBLE);
-                holder.progressItem.setVisibility(View.GONE);
-            }
+        ImageLoader.loadImage(context, video.getYoutubeThumbnailUrl(), holder.imgMovieVideo, null, R.dimen.movie_video_width, R.dimen.movie_video_height, 0, true,
+                new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        holder.imgMovieVideo.setVisibility(View.VISIBLE);
+                        holder.imgIconPlay.setVisibility(View.VISIBLE);
+                        holder.progressItem.setVisibility(View.GONE);
+                    }
 
-            @Override
-            public void onError() {
-                //TODO handle error
-            }
-        });
+                    @Override
+                    public void onError() {
+                        //TODO handle error
+                    }
+                });
 
-    }
-
-    private void loadImage(final String url, final ImageView imageView, final Callback callback) {
-        getRequestCreator(url, true).into(imageView, new Callback() {
-            @Override
-            public void onSuccess() {
-                callback.onSuccess();
-            }
-
-            @Override
-            public void onError() {
-                getRequestCreator(url, false).into(imageView, callback);
-            }
-        });
-
-    }
-
-    private RequestCreator getRequestCreator(String url, boolean useCache) {
-        RequestCreator requestCreator = Picasso.with(context)
-                .load(url)
-                .resizeDimen(R.dimen.movie_video_width, R.dimen.movie_video_height)
-                .centerCrop();
-
-        if (useCache) {
-            requestCreator.networkPolicy(NetworkPolicy.OFFLINE);
-        }
-        return requestCreator;
     }
 
     @Override

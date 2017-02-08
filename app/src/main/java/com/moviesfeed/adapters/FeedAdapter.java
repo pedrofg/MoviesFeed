@@ -8,15 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.moviesfeed.activities.uicomponents.ImageLoader;
 import com.moviesfeed.R;
 import com.moviesfeed.activities.uicomponents.BorderTransform;
 import com.moviesfeed.api.MoviesApi;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,17 +72,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((FeedViewHolder) holder).progressItem.setVisibility(View.VISIBLE);
             final String url = MoviesApi.URL_MOVIE_POSTER + moviesFeed.getMovies().get(position).getPosterPath();
 
-            loadImage(url, ((FeedViewHolder) holder).imgMoviePoster, new Callback() {
-                @Override
-                public void onSuccess() {
-                    ((FeedViewHolder) holder).progressItem.setVisibility(View.GONE);
-                }
+            ImageLoader.loadImage(context, url, ((FeedViewHolder) holder).imgMoviePoster, new BorderTransform(20, 0),
+                    R.dimen.grid_movie_thumbnail_width, R.dimen.grid_movie_thumbnail_height, 0, false,
+                    new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            ((FeedViewHolder) holder).progressItem.setVisibility(View.GONE);
+                        }
 
-                @Override
-                public void onError() {
-                    //TODO handle error
-                }
-            });
+                        @Override
+                        public void onError() {
+                            //TODO handle error
+                        }
+                    });
+
         } else {
             if (this.isErrorProgress) {
                 ((ProgressViewHolder) holder).progressBar.setVisibility(View.GONE);
@@ -102,33 +103,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return moviesFeed != null ? moviesFeed.getMovies().size() : 0;
     }
 
-    private void loadImage(final String url, final ImageView imageView, final Callback callback) {
-
-        getRequestCreator(url, true).into(imageView, new Callback() {
-            @Override
-            public void onSuccess() {
-                callback.onSuccess();
-            }
-
-            @Override
-            public void onError() {
-                getRequestCreator(url, false).into(imageView, callback);
-            }
-        });
-
-    }
-
-    private RequestCreator getRequestCreator(String url, boolean useCache) {
-        RequestCreator requestCreator = Picasso.with(context)
-                .load(url)
-                .resizeDimen(R.dimen.movie_thumbnail_width, R.dimen.movie_thumbnail_height)
-                .transform(new BorderTransform(20, 0));
-
-        if (useCache) {
-            requestCreator.networkPolicy(NetworkPolicy.OFFLINE);
-        }
-        return requestCreator;
-    }
 
     public void addProgress(boolean errorProgress) {
         this.isErrorProgress = errorProgress;
