@@ -37,11 +37,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import nucleus.factory.RequiresPresenter;
 
+import static com.moviesfeed.activities.FeedActivity.MAX_ALPHA;
+
 @RequiresPresenter(MovieDetailPresenter.class)
 public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailPresenter> implements RecyclerItemClickListener.OnItemClickListener {
 
     public static final String MINUTES = "m";
-    @BindView(R.id.toolbar)
+    public static final String EMPTY_STRING = " ";
+    @BindView(R.id.toolbarMovieDetail)
     Toolbar toolbar;
     @BindView(R.id.txtMovieTitle)
     TextView txtMovieTitle;
@@ -106,16 +109,24 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
 
         this.appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
-            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+            public void onStateChanged(AppBarLayout appBarLayout, State state, int verticalOffset) {
                 if (state == State.COLLAPSED && movieDetail != null)
-                    collapsingToolBar.setTitle(movieDetail.getTitle());
-                else
-                    collapsingToolBar.setTitle(" ");
+                    toolbar.setTitle(movieDetail.getTitle());
+                else if (!toolbar.getTitle().equals(EMPTY_STRING))
+                    toolbar.setTitle(EMPTY_STRING);
+
+                //measuring for alpha
+                int toolBarHeight = toolbar.getMeasuredHeight();
+                int appBarHeight = appBarLayout.getMeasuredHeight();
+                Float f = ((((float) appBarHeight - toolBarHeight) + verticalOffset) / ((float) appBarHeight - toolBarHeight)) * MAX_ALPHA;
+                toolbar.getBackground().setAlpha(MAX_ALPHA - Math.round(f));
             }
         });
 
+
         this.rvMovieVideos.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
         this.rvMovieVideos.setHasFixedSize(true);
+
 
         requestMovieDetail();
     }
@@ -191,7 +202,11 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
         }
 
         this.txtMovieOverview.setText(this.movieDetail.getOverview());
-        this.txtMovieHomepage.setText(this.movieDetail.getHomepage());
+
+        if (!TextUtils.isEmpty(this.movieDetail.getHomepage())) {
+            this.txtMovieHomepage.setText(this.movieDetail.getHomepage());
+            this.txtMovieHomepage.setVisibility(View.VISIBLE);
+        }
 
         fillGenresText();
         contentUpdated(false);

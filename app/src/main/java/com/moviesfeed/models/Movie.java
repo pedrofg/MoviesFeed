@@ -32,6 +32,9 @@ public class Movie {
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
+    @SerializedName("vote_average")
+    @Expose
+    private double voteAverage;
     private Long moviesFeedKey;
 
 
@@ -40,9 +43,9 @@ public class Movie {
     }
 
 
-    @Generated(hash = 1373817001)
+    @Generated(hash = 1808365304)
     public Movie(Long idDb, int idTmdb, String posterPath, String originalTitle,
-            String title, String overview, String backdropPath,
+            String title, String overview, String backdropPath, double voteAverage,
             Long moviesFeedKey) {
         this.idDb = idDb;
         this.idTmdb = idTmdb;
@@ -51,6 +54,7 @@ public class Movie {
         this.title = title;
         this.overview = overview;
         this.backdropPath = backdropPath;
+        this.voteAverage = voteAverage;
         this.moviesFeedKey = moviesFeedKey;
     }
 
@@ -122,5 +126,15 @@ public class Movie {
 
     public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
+    }
+
+
+    public double getVoteAverage() {
+        return this.voteAverage;
+    }
+
+
+    public void setVoteAverage(double voteAverage) {
+        this.voteAverage = voteAverage;
     }
 }
