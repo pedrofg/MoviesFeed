@@ -287,7 +287,8 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         if (TextUtils.isEmpty(movie.getOverview()) ||
                 TextUtils.isEmpty(movie.getTitle()) ||
                 TextUtils.isEmpty(movie.getPosterPath()) ||
-                TextUtils.isEmpty(movie.getBackdropPath())) {
+                TextUtils.isEmpty(movie.getBackdropPath()) ||
+                movie.getVoteAverage() == 0) {
             return false;
         }
         return true;

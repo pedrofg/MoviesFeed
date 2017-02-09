@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_light"
+    android:background="@android:color/white"
     android:fitsSystemWindows="true">
 
     <ProgressBar
@@ -54,23 +54,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false">
 
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerViewMovieImages"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/white" />
+                android:background="@android:color/white"
+                app:layout_collapseMode="parallax" />
 
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@+id/toolbarMovieDetail"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark"
                 app:layout_collapseMode="pin" />
 
 
@@ -222,6 +223,7 @@
                         android:autoLink="web"
                         android:textColor="@android:color/black"
                         android:textColorLink="@color/colorPrimary"
+                        android:visibility="gone"
                         app:typeface="Roboto-Light.ttf" />
                 </RelativeLayout>
 
@@ -289,7 +291,6 @@
                     android:layout_below="@id/layoutCast"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:layout_marginTop="10dp"
                     android:visibility="gone">
 
                     <com.moviesfeed.activities.uicomponents.CustomTextView
