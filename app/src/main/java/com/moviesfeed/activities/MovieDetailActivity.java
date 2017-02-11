@@ -37,13 +37,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import nucleus.factory.RequiresPresenter;
 
-import static com.moviesfeed.activities.FeedActivity.MAX_ALPHA;
 
 @RequiresPresenter(MovieDetailPresenter.class)
 public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailPresenter> implements RecyclerItemClickListener.OnItemClickListener {
 
     public static final String MINUTES = "m";
     public static final String EMPTY_STRING = " ";
+    public static final int MAX_ALPHA = 255;
     @BindView(R.id.toolbarMovieDetail)
     Toolbar toolbar;
     @BindView(R.id.txtMovieTitle)
@@ -119,7 +119,7 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
                 int toolBarHeight = toolbar.getMeasuredHeight();
                 int appBarHeight = appBarLayout.getMeasuredHeight();
                 Float f = ((((float) appBarHeight - toolBarHeight) + verticalOffset) / ((float) appBarHeight - toolBarHeight)) * MAX_ALPHA;
-                toolbar.getBackground().setAlpha(MAX_ALPHA - Math.round(f));
+                toolbar.getBackground().mutate().setAlpha(MAX_ALPHA - Math.round(f));
             }
         });
 
@@ -130,7 +130,6 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
 
         requestMovieDetail();
     }
-
 
     private void updatingContent() {
         hideAllViews();

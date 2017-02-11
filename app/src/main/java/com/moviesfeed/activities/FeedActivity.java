@@ -47,8 +47,6 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     public static final int GRID_COLUMNS = 3;
     public static final int GRID_FILL_ALL_COLUMNS = 1;
     public static final int REQUEST_CODE_SETTINGS_ACTIVITY = 0;
-    public static final int REQUEST_CODE_DETAILS_ACTIVITY = 1;
-    public static final int MAX_ALPHA = 255;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.progressBar)
@@ -248,7 +246,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
             Log.i(FeedActivity.class.getName(), "onItemClick, Movie Title: " + movie.getTitle());
             Intent intent = new Intent(this, MovieDetailActivity.class);
             intent.putExtra(INTENT_MOVIE_DETAIL_ID, movie.getIdTmdb());
-            startActivityForResult(intent, REQUEST_CODE_DETAILS_ACTIVITY);
+            startActivity(intent);
         } else {
             Log.i(FeedActivity.class.getName(), "onItemClick movie == null / update item clicked");
             //it means the user clicked on the update icon item
@@ -342,8 +340,6 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         if (requestCode == REQUEST_CODE_SETTINGS_ACTIVITY) {
             Animation rotation = AnimationUtils.loadAnimation(this, R.anim.clockwise_rotation);
             this.settingsIcon.startAnimation(rotation);
-        } else if (requestCode == REQUEST_CODE_DETAILS_ACTIVITY) {
-            this.toolbar.getBackground().setAlpha(MAX_ALPHA);
         }
     }
 
