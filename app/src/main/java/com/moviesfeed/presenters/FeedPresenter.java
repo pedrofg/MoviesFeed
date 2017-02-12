@@ -209,7 +209,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         final List<Movie> filteredMovies = new ArrayList<>();
 
         for (Movie movie : response.getMovies()) {
-            if (validateMovie(movie)) {
+            if (Validator.validateMovie(movie)) {
                 filteredMovies.add(movie);
                 movie.setMoviesFeedKey(response.getId());
             }
@@ -283,16 +283,6 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         Log.d(FeedPresenter.class.getName(), "requestAPI() isRequestingNextPage: " + this.isRequestingNextPage + " page: " + this.page + " filterBy: " + this.filterBy);
     }
 
-    private boolean validateMovie(Movie movie) {
-        if (TextUtils.isEmpty(movie.getOverview()) ||
-                TextUtils.isEmpty(movie.getTitle()) ||
-                TextUtils.isEmpty(movie.getPosterPath()) ||
-                TextUtils.isEmpty(movie.getBackdropPath()) ||
-                movie.getVoteAverage() == 0) {
-            return false;
-        }
-        return true;
-    }
 
     private String getFormattedDate() {
         Calendar c = Calendar.getInstance();

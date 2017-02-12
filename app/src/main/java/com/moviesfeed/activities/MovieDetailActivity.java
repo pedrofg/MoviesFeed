@@ -20,10 +20,12 @@ import com.moviesfeed.R;
 import com.moviesfeed.activities.uicomponents.AppBarStateChangeListener;
 import com.moviesfeed.activities.uicomponents.DividerItemDecoration;
 import com.moviesfeed.activities.uicomponents.RecyclerItemClickListener;
+import com.moviesfeed.adapters.FeedAdapter;
 import com.moviesfeed.adapters.MovieCastAdapter;
 import com.moviesfeed.adapters.MovieCrewAdapter;
 import com.moviesfeed.adapters.MovieImagesAdapter;
 import com.moviesfeed.adapters.MovieVideosAdapter;
+import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
 import com.moviesfeed.models.Video;
@@ -36,6 +38,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import nucleus.factory.RequiresPresenter;
+
+import static com.moviesfeed.activities.FeedActivity.INTENT_MOVIE_DETAIL_ID;
 
 
 @RequiresPresenter(MovieDetailPresenter.class)
@@ -90,8 +94,13 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
     View layoutCrew;
     @BindView(R.id.layoutDetailsError)
     View layoutError;
+    @BindView(R.id.recyclerViewSimilarMovies)
+    RecyclerView rvSimilarMovies;
+    @BindView(R.id.layoutSimilarMovies)
+    View layoutSimilarMovies;
 
     private MovieVideosAdapter rvVideosAdapter;
+    private FeedAdapter rvSimilarMoviesAdapter;
     private MovieDetail movieDetail;
     private int movieId;
 
@@ -101,7 +110,7 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
 
-        this.movieId = getIntent().getIntExtra(FeedActivity.INTENT_MOVIE_DETAIL_ID, 0);
+        this.movieId = getIntent().getIntExtra(INTENT_MOVIE_DETAIL_ID, 0);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -124,8 +133,15 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
         });
 
 
-        this.rvMovieVideos.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
+        RecyclerItemClickListener itemClickListener = new RecyclerItemClickListener(this, this);
+        this.rvMovieVideos.addOnItemTouchListener(itemClickListener);
+        this.rvSimilarMovies.addOnItemTouchListener(itemClickListener);
+
         this.rvMovieVideos.setHasFixedSize(true);
+        this.rvSimilarMovies.setHasFixedSize(true);
+        this.rvMovieImages.setHasFixedSize(true);
+        this.rvMovieCrew.setHasFixedSize(true);
+        this.rvMovieCast.setHasFixedSize(true);
 
 
         requestMovieDetail();
@@ -213,8 +229,10 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
         fillMovieVideos();
         fillMovieCast();
         fillMovieCrew();
+        fillSimilarMovies();
 
     }
+
 
     private void fillGenresText() {
         //Fill Genres
@@ -230,7 +248,9 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
     }
 
     private void fillMovieCrew() {
-        if (this.movieDetail.getCredits() != null && this.movieDetail.getCredits().getCrew() != null && this.movieDetail.getCredits().getCrew().size() > 0) {
+        if (this.movieDetail.getCredits() != null &&
+                this.movieDetail.getCredits().getCrew() != null &&
+                this.movieDetail.getCredits().getCrew().size() > 0) {
             this.rvMovieCrew.setLayoutManager(getHorizontalLayoutManager());
             this.rvMovieCrew.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
             MovieCrewAdapter adapter = new MovieCrewAdapter(this, this.movieDetail.getCredits().getCrew());
@@ -240,7 +260,9 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
     }
 
     private void fillMovieCast() {
-        if (this.movieDetail.getCredits() != null && this.movieDetail.getCredits().getCast() != null && this.movieDetail.getCredits().getCast().size() > 0) {
+        if (this.movieDetail.getCredits() != null &&
+                this.movieDetail.getCredits().getCast() != null &&
+                this.movieDetail.getCredits().getCast().size() > 0) {
             this.rvMovieCast.setLayoutManager(getHorizontalLayoutManager());
             this.rvMovieCast.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
             MovieCastAdapter adapter = new MovieCastAdapter(this, this.movieDetail.getCredits().getCast());
@@ -249,13 +271,25 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
         }
     }
 
+    private void fillSimilarMovies() {
+        if (this.movieDetail.getSimilarMovies() != null &&
+                this.movieDetail.getSimilarMovies().getMovies() != null &&
+                this.movieDetail.getSimilarMovies().getMovies().size() > 0) {
+            this.rvSimilarMovies.setLayoutManager(getHorizontalLayoutManager());
+            this.rvSimilarMovies.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
+            this.rvSimilarMoviesAdapter = new FeedAdapter(this);
+            this.rvSimilarMoviesAdapter.setMovies(this.movieDetail.getSimilarMovies().getMovies());
+            this.rvSimilarMovies.setAdapter(this.rvSimilarMoviesAdapter);
+            this.layoutSimilarMovies.setVisibility(View.VISIBLE);
+
+        }
+    }
+
 
     private void fillMovieVideos() {
         if (this.movieDetail.getVideos() != null &&
                 this.movieDetail.getVideos().getVideos() != null &&
                 this.movieDetail.getVideos().getVideos().size() > 0) {
-
-
             this.rvMovieVideos.setLayoutManager(getHorizontalLayoutManager());
             this.rvMovieVideos.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
             this.rvVideosAdapter = new MovieVideosAdapter(this, this.movieDetail.getVideos().getVideos());
@@ -295,8 +329,20 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
 
     @Override
     public void onItemClick(View view, int position) {
-        Video video = this.rvVideosAdapter.getItem(position);
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(video.getYoutubeUrl()));
-        startActivity(intent);
+        switch (view.getId()) {
+            case R.id.recyclerViewMovieVideos:
+                Video video = this.rvVideosAdapter.getItem(position);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(video.getYoutubeUrl()));
+                startActivity(intent);
+                break;
+            case R.id.recyclerViewSimilarMovies:
+                Movie movie = this.rvSimilarMoviesAdapter.getItem(position);
+                Intent i = new Intent(this, MovieDetailActivity.class);
+                i.putExtra(INTENT_MOVIE_DETAIL_ID, movie.getIdTmdb());
+                startActivity(i);
+                break;
+        }
+
+
     }
 }

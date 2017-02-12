@@ -36,6 +36,7 @@ public class Movie {
     @Expose
     private double voteAverage;
     private Long moviesFeedKey;
+    private Long similarMovieKey;
 
 
     @Generated(hash = 1263461133)
@@ -43,10 +44,10 @@ public class Movie {
     }
 
 
-    @Generated(hash = 1808365304)
+    @Generated(hash = 992495951)
     public Movie(Long idDb, int idTmdb, String posterPath, String originalTitle,
             String title, String overview, String backdropPath, double voteAverage,
-            Long moviesFeedKey) {
+            Long moviesFeedKey, Long similarMovieKey) {
         this.idDb = idDb;
         this.idTmdb = idTmdb;
         this.posterPath = posterPath;
@@ -56,6 +57,7 @@ public class Movie {
         this.backdropPath = backdropPath;
         this.voteAverage = voteAverage;
         this.moviesFeedKey = moviesFeedKey;
+        this.similarMovieKey = similarMovieKey;
     }
 
 
@@ -136,5 +138,15 @@ public class Movie {
 
     public void setVoteAverage(double voteAverage) {
         this.voteAverage = voteAverage;
+    }
+
+
+    public Long getSimilarMovieKey() {
+        return this.similarMovieKey;
+    }
+
+
+    public void setSimilarMovieKey(Long similarMovieKey) {
+        this.similarMovieKey = similarMovieKey;
     }
 }

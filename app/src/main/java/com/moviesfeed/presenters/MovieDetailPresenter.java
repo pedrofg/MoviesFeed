@@ -10,6 +10,7 @@ import com.moviesfeed.models.Cast;
 import com.moviesfeed.models.Crew;
 import com.moviesfeed.models.DaoSession;
 import com.moviesfeed.models.Genre;
+import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
 import com.moviesfeed.models.MovieImages;
@@ -17,6 +18,8 @@ import com.moviesfeed.models.MoviePoster;
 import com.moviesfeed.models.Video;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import nucleus.presenter.RxPresenter;
@@ -146,6 +149,7 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
             movieDetail.getVideos().getVideos();
             movieDetail.getCredits().getCast();
             movieDetail.getCredits().getCrew();
+            movieDetail.getSimilarMovies().getMovies();
         }
         Log.d(MovieDetailPresenter.class.getName(), "loadMovieDetailDb() movieDetail: " + movieDetail);
         return movieDetail;
@@ -160,6 +164,8 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
         movieDetail.getVideos().setId(movieDetail.getId());
         movieDetail.setCreditsId(movieDetail.getId());
         movieDetail.getCredits().setIdDb(movieDetail.getId());
+        movieDetail.setSimilarId(movieDetail.getId());
+        movieDetail.getSimilarMovies().setId(movieDetail.getId());
 
         for (Genre genre : movieDetail.getGenres()) {
             genre.setMovieDetailId(movieDetail.getId());
@@ -171,12 +177,10 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
             mp.setMovieImagesId(movieDetail.getImages().getId());
         }
         for (Video video : movieDetail.getVideos().getVideos()) {
-            if (TextUtils.isEmpty(video.getKey()) ||
-                    TextUtils.isEmpty(video.getSite()) ||
-                    !video.getSite().equals(Video.YOUTUBE_SITE)) {
-                movieDetail.getVideos().getVideos().remove(video);
-            } else {
+            if (Validator.validateVideo(video)) {
                 video.setMovieVideosId(movieDetail.getVideos().getId());
+            } else {
+                movieDetail.getVideos().getVideos().remove(video);
             }
 
         }
@@ -186,6 +190,16 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
         for (Cast cast : movieDetail.getCredits().getCast()) {
             cast.setCreditsKey(movieDetail.getCredits().getIdDb());
         }
+
+        List<Movie> filteredMovies = new ArrayList<>();
+        for (Movie movie : movieDetail.getSimilarMovies().getMovies()) {
+            if (Validator.validateMovie(movie)) {
+                movie.setSimilarMovieKey(movieDetail.getSimilarId());
+                filteredMovies.add(movie);
+            }
+        }
+
+        movieDetail.getSimilarMovies().setMovies(filteredMovies);
 
         App.getDaoSession().getGenreDao().insertOrReplaceInTx(movieDetail.getGenres());
         App.getDaoSession().getMovieImagesDao().insertOrReplace(movieDetail.getImages());
@@ -197,6 +211,8 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
         App.getDaoSession().getCrewDao().insertOrReplaceInTx(movieDetail.getCredits().getCrew());
         App.getDaoSession().getCastDao().insertOrReplaceInTx(movieDetail.getCredits().getCast());
         App.getDaoSession().getMovieDetailDao().insertOrReplace(movieDetail);
+        App.getDaoSession().getSimilarMoviesDao().insertOrReplace(movieDetail.getSimilarMovies());
+        App.getDaoSession().getMovieDao().insertOrReplaceInTx(movieDetail.getSimilarMovies().getMovies());
         return movieDetail;
     }
 
