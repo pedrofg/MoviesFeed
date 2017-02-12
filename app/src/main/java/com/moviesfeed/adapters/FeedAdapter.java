@@ -16,24 +16,22 @@ import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
 import com.squareup.picasso.Callback;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
-    private MoviesFeed moviesFeed;
     public static final int VIEW_PROGRESS = 0;
     public static final int VIEW_ITEM = 1;
     private boolean isErrorProgress;
+    private List<Movie> listMovies;
 
 
     public FeedAdapter(Context context) {
         this.context = context;
-    }
-
-    public MoviesFeed getMoviesFeed() {
-        return this.moviesFeed;
     }
 
     @Override
@@ -41,12 +39,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return getItem(position) != null ? VIEW_ITEM : VIEW_PROGRESS;
     }
 
-    public void setMoviesFeed(MoviesFeed moviesFeed) {
-        this.moviesFeed = moviesFeed;
+    public void setMovies(List<Movie> listMovies) {
+        this.listMovies = listMovies;
     }
 
     public Movie getItem(int position) {
-        return this.moviesFeed.getMovies().get(position);
+        return this.listMovies.get(position);
     }
 
     @Override
@@ -70,7 +68,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FeedViewHolder) {
             ((FeedViewHolder) holder).progressItem.setVisibility(View.VISIBLE);
-            final String url = MoviesApi.URL_MOVIE_POSTER + moviesFeed.getMovies().get(position).getPosterPath();
+            final String url = MoviesApi.URL_MOVIE_POSTER + this.listMovies.get(position).getPosterPath();
 
             ImageLoader.loadImage(context, url, ((FeedViewHolder) holder).imgMoviePoster, new BorderTransform(20, 0),
                     R.dimen.grid_movie_thumbnail_width, R.dimen.grid_movie_thumbnail_height, 0, false,
@@ -100,19 +98,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return moviesFeed != null ? moviesFeed.getMovies().size() : 0;
+        return this.listMovies != null ? this.listMovies.size() : 0;
     }
 
 
     public void addProgress(boolean errorProgress) {
         this.isErrorProgress = errorProgress;
-        this.moviesFeed.getMovies().add(null);
+        this.listMovies.add(null);
         notifyItemInserted(getItemCount() - 1);
     }
 
     public void removeProgress() {
         if (getItem(getItemCount() - 1) == null) {
-            this.moviesFeed.getMovies().remove(getItemCount() - 1);
+            this.listMovies.remove(getItemCount() - 1);
             notifyItemRemoved(getItemCount());
         }
     }

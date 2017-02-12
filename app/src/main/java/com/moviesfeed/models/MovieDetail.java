@@ -68,9 +68,16 @@ public class MovieDetail {
     @SerializedName("credits")
     @Expose
     private Credits credits;
+    @ToOne(joinProperty = "similarId")
+    @SerializedName("similar")
+    @Expose
+    private SimilarMovies similarMovies;
+
+
     private Long imagesId;
     private Long videosId;
     private Long creditsId;
+    private Long similarId;
 
     /**
      * Used to resolve relations
@@ -88,11 +95,13 @@ public class MovieDetail {
     private transient Long videos__resolvedKey;
     @Generated(hash = 2130436260)
     private transient Long credits__resolvedKey;
+    @Generated(hash = 1068834957)
+    private transient Long similarMovies__resolvedKey;
 
-    @Generated(hash = 1538373129)
+    @Generated(hash = 981060198)
     public MovieDetail(int budget, String homepage, Long id, String imdbId, String overview,
                        String posterPath, String releaseDate, long revenue, int runtime, String title,
-                       double voteAverage, Long imagesId, Long videosId, Long creditsId) {
+                       double voteAverage, Long imagesId, Long videosId, Long creditsId, Long similarId) {
         this.budget = budget;
         this.homepage = homepage;
         this.id = id;
@@ -107,6 +116,7 @@ public class MovieDetail {
         this.imagesId = imagesId;
         this.videosId = videosId;
         this.creditsId = creditsId;
+        this.similarId = similarId;
     }
 
     @Generated(hash = 850277392)
@@ -464,6 +474,48 @@ public class MovieDetail {
             this.credits = credits;
             creditsId = credits == null ? null : credits.getIdDb();
             credits__resolvedKey = creditsId;
+        }
+    }
+
+    public Long getSimilarId() {
+        return this.similarId;
+    }
+
+    public void setSimilarId(Long similarId) {
+        this.similarId = similarId;
+    }
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Keep
+    @Generated(hash = 1470876945)
+    public SimilarMovies getSimilarMovies() {
+        Long __key = this.similarId;
+        if (similarMovies == null && (similarMovies__resolvedKey == null || !similarMovies__resolvedKey.equals(__key))) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            SimilarMoviesDao targetDao = daoSession.getSimilarMoviesDao();
+            SimilarMovies similarMoviesNew = targetDao.load(__key);
+            synchronized (this) {
+                similarMovies = similarMoviesNew;
+                similarMovies__resolvedKey = __key;
+            }
+        }
+        return similarMovies;
+    }
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 1880056691)
+    public void setSimilarMovies(SimilarMovies similarMovies) {
+        synchronized (this) {
+            this.similarMovies = similarMovies;
+            similarId = similarMovies == null ? null : similarMovies.getId();
+            similarMovies__resolvedKey = similarId;
         }
     }
 

@@ -298,12 +298,12 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
             if (isNextPage) {
                 removeProgressBottomGrid();
 
-                this.rvAdapter.setMoviesFeed(moviesFeed);
+                this.rvAdapter.setMovies(moviesFeed.getMovies());
 
                 int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
                 this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
             } else {
-                this.rvAdapter.setMoviesFeed(moviesFeed);
+                this.rvAdapter.setMovies(moviesFeed.getMovies());
             }
 
 
@@ -312,8 +312,6 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
             contentUpdated(true);
             this.txtError.setText(getString(R.string.no_movies_found));
         }
-
-
     }
 
     public void requestMoviesFeedError(boolean thereIsCache, boolean isNetworkError) {

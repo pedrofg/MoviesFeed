@@ -36,5 +36,6 @@
     <string name="horror">Horror</string>
     <string name="documentary">Documentary</string>
     <string name="war">War</string>
+    <string name="similar_movies">Similar Movies</string>
 
 </resources>

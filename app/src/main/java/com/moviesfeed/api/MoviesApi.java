@@ -46,7 +46,7 @@ public interface MoviesApi {
     @GET("/3/movie/{filter}?api_key=" + KEY)
     Observable<MoviesFeed> getMoviesFilterBy(@Path("filter") String filter, @Query("page") int page);
 
-    @GET("/3/movie/{id}?api_key=" + KEY + "&append_to_response=images,videos,credits")
+    @GET("/3/movie/{id}?api_key=" + KEY + "&append_to_response=images,videos,credits,similar")
     Observable<MovieDetail> getMovieDetail(@Path("id") int movieId);
 
     @GET("/3/search/movie?api_key=" + KEY + "&include_adult=false")

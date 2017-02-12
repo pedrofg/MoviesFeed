@@ -87,7 +87,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp">
 
             <View
                 android:layout_width="match_parent"
@@ -291,6 +292,7 @@
                     android:layout_below="@id/layoutCast"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
                     android:visibility="gone">
 
                     <com.moviesfeed.activities.uicomponents.CustomTextView
@@ -307,6 +309,34 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txtCrew"
+                        android:layout_marginTop="20dp"
+                        android:background="@android:color/white" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutSimilarMovies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/layout_cast_height"
+                    android:layout_below="@id/layoutCrew"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone">
+
+                    <com.moviesfeed.activities.uicomponents.CustomTextView
+                        android:id="@+id/txtSimilarMovies"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/similar_movies"
+                        android:textColor="@android:color/black"
+                        android:textSize="20dp"
+                        app:typeface="Roboto-Regular.ttf" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerViewSimilarMovies"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txtSimilarMovies"
                         android:layout_marginTop="20dp"
                         android:background="@android:color/white" />
                 </RelativeLayout>
