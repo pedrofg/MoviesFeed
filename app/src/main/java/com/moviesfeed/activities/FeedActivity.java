@@ -3,8 +3,6 @@ package com.moviesfeed.activities;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,14 +83,9 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, GRID_COLUMNS);
-        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup);
-        this.rvMoviesFeed.setLayoutManager(gridLayoutManager);
 
-        this.endlessScrollListener = new EndlessScrollListener(gridLayoutManager, this);
-        this.rvMoviesFeed.addOnScrollListener(endlessScrollListener);
+        createGrid();
 
-        setRvAdapter();
         this.rvMoviesFeed.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
         this.rvMoviesFeed.setHasFixedSize(true);
 
@@ -108,12 +100,6 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
         if (savedInstanceState == null)
             requestMoviesFeed(Filters.POPULARITY);
-    }
-
-
-    private void setRvAdapter() {
-        this.rvAdapter = new FeedAdapter(this);
-        this.rvMoviesFeed.setAdapter(rvAdapter);
     }
 
     GridLayoutManager.SpanSizeLookup onSpanSizeLookup = new GridLayoutManager.SpanSizeLookup() {
@@ -153,7 +139,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
 
             this.navigationView.getMenu().findItem(this.checkedMenuItem).setChecked(false);
             this.toolbar.setTitle(query);
-            refreshGrid();
+            createGrid();
             updatingContent();
             getPresenter().requestSearchMoviesFeed(query);
         }
@@ -207,7 +193,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
             return false;
         } else {
             this.toolbar.setTitle(menuItem.getTitle());
-            refreshGrid();
+            createGrid();
             requestMoviesFeed(filter);
             return true;
         }
@@ -219,14 +205,22 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         getPresenter().requestMoviesFeed(filter);
     }
 
-    private void refreshGrid() {
-        Log.i(FeedActivity.class.getName(), "refreshGrid()");
+    private void createGrid() {
+        Log.i(FeedActivity.class.getName(), "createGrid()");
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, GRID_COLUMNS);
+        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup);
+        this.rvMoviesFeed.setLayoutManager(gridLayoutManager);
+
+        this.rvMoviesFeed.clearOnScrollListeners();
+        this.endlessScrollListener = new EndlessScrollListener(gridLayoutManager, this);
+        this.rvMoviesFeed.addOnScrollListener(endlessScrollListener);
 
         this.swipeRefreshLayout.setRefreshing(false);
-        this.endlessScrollListener.reset();
         this.rvMoviesFeed.scrollToPosition(0);
 
-        setRvAdapter();
+        this.rvAdapter = new FeedAdapter(this);
+        this.rvMoviesFeed.setAdapter(rvAdapter);
     }
 
     @Override
@@ -288,30 +282,30 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     }
 
     public void requestMoviesFeedSuccess(MoviesFeed moviesFeed, boolean isNextPage, boolean isUpdating, int insertedMoviesCount) {
-        Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage);
-        if (moviesFeed.getMovies().size() > 0) {
+        Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage + " isUpdating: " + isUpdating + " insertedMoviesCount: " + insertedMoviesCount);
 
-            if (isUpdating) {
-                refreshGrid();
-            }
-
-            if (isNextPage) {
-                removeProgressBottomGrid();
-
-                this.rvAdapter.setMovies(moviesFeed.getMovies());
-
-                int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
-                this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
-            } else {
-                this.rvAdapter.setMovies(moviesFeed.getMovies());
-            }
-
-
-            contentUpdated(false);
-        } else {
-            contentUpdated(true);
-            this.txtError.setText(getString(R.string.no_movies_found));
+        if (isUpdating) {
+            createGrid();
         }
+
+        if (isNextPage) {
+            removeProgressBottomGrid();
+        }
+
+        this.rvAdapter.setMovies(moviesFeed.getMovies());
+
+        if (insertedMoviesCount != 0) {
+            int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
+            this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
+        }
+
+        if (this.endlessScrollListener.shouldLoadMoreItems(this.rvMoviesFeed)) {
+            Log.i(FeedActivity.class.getName(), "forceNextPage = true");
+            this.endlessScrollListener.setLoading(true);
+            this.requestNextPage();
+        }
+
+        contentUpdated(false);
     }
 
     public void requestMoviesFeedError(boolean thereIsCache, boolean isNetworkError) {
@@ -363,7 +357,6 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
                 public void onAnimationRepeat(Animation animation) {
                 }
             });
-
         }
     }
 
@@ -378,8 +371,8 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
     }
 
     @Override
-    public void requestNextPage(int currentPage) {
-        Log.i(FeedActivity.class.getName(), "requestNextPage() - page number: " + currentPage);
+    public void requestNextPage() {
+        Log.i(FeedActivity.class.getName(), "requestNextPage()");
         removeProgressBottomGrid();
         addProgressBottomGrid(false);
         getPresenter().requestNextPage();

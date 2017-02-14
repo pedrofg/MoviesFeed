@@ -13,7 +13,6 @@ public class EndlessScrollListener extends RecyclerView.OnScrollListener {
     private int visibleThreshold = 3; // The minimum amount of items to have below your current scroll position before loading more.
     int firstVisibleItem, visibleItemCount, totalItemCount;
 
-    private int currentPage = 1;
     int isProgressVisible;
 
     private GridLayoutManager gridLayoutManager;
@@ -28,9 +27,7 @@ public class EndlessScrollListener extends RecyclerView.OnScrollListener {
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
-        visibleItemCount = recyclerView.getChildCount();
         totalItemCount = gridLayoutManager.getItemCount();
-        firstVisibleItem = gridLayoutManager.findFirstVisibleItemPosition();
 
         if (loading) {
             if (totalItemCount > previousTotal + isProgressVisible) {
@@ -39,8 +36,7 @@ public class EndlessScrollListener extends RecyclerView.OnScrollListener {
                 previousTotal = totalItemCount;
             }
         }
-        if (!loading && totalItemCount != 0 && (totalItemCount - visibleItemCount - isProgressVisible)
-                <= (firstVisibleItem + visibleThreshold)) {
+        if (!loading && totalItemCount != 0 && shouldLoadMoreItems(recyclerView)) {
             Log.i(FeedActivity.class.getName(), "totalItemCount: " + totalItemCount);
             Log.i(FeedActivity.class.getName(), "visibleItemCount: " + visibleItemCount);
             Log.i(FeedActivity.class.getName(), "isProgressVisible: " + isProgressVisible);
@@ -48,13 +44,22 @@ public class EndlessScrollListener extends RecyclerView.OnScrollListener {
             Log.i(FeedActivity.class.getName(), "visibleThreshold: " + visibleThreshold);
             // End has been reached
 
-            // Do something
-            currentPage++;
-
-            refreshList.requestNextPage(currentPage);
+            refreshList.requestNextPage();
 
             loading = true;
         }
+    }
+
+    public boolean shouldLoadMoreItems(RecyclerView recyclerView) {
+        visibleItemCount = recyclerView.getChildCount();
+        totalItemCount = gridLayoutManager.getItemCount();
+        firstVisibleItem = gridLayoutManager.findFirstVisibleItemPosition();
+
+        return (totalItemCount - visibleItemCount - isProgressVisible) <= (firstVisibleItem + visibleThreshold);
+    }
+
+    public void setLoading(boolean loading) {
+        this.loading = loading;
     }
 
     public void addProgressItem() {
@@ -65,14 +70,7 @@ public class EndlessScrollListener extends RecyclerView.OnScrollListener {
         isProgressVisible = 0;
     }
 
-    public void reset() {
-        this.loading = true;
-        this.previousTotal = 0;
-        this.currentPage = 1;
-        this.isProgressVisible = 0;
-    }
-
     public interface RefreshList {
-        void requestNextPage(int currentPage);
+        void requestNextPage();
     }
 }
