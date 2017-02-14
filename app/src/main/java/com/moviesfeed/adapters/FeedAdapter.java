@@ -103,15 +103,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     public void addProgress(boolean errorProgress) {
-        this.isErrorProgress = errorProgress;
-        this.listMovies.add(null);
-        notifyItemInserted(getItemCount() - 1);
+        if (this.listMovies != null) {
+            this.isErrorProgress = errorProgress;
+            this.listMovies.add(null);
+            notifyItemInserted(getItemCount() - 1);
+        }
     }
 
     public void removeProgress() {
-        if (getItem(getItemCount() - 1) == null) {
-            this.listMovies.remove(getItemCount() - 1);
-            notifyItemRemoved(getItemCount());
+        if (this.listMovies != null && this.listMovies.size() > 0) {
+            if (getItem(getItemCount() - 1) == null) {
+                this.listMovies.remove(getItemCount() - 1);
+                notifyItemRemoved(getItemCount());
+            }
         }
     }
 

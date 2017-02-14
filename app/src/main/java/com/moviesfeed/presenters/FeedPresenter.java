@@ -47,6 +47,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
 
     private boolean isRequestingNextPage;
     private boolean isUpdating;
+    private boolean loadingItems;
     private String searchQuery;
 
     @Override
@@ -130,10 +131,10 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                     @Override
                     public void call(FeedActivity activity, List<Movie> movies) {
                         Log.d(FeedPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
+                        loadingItems = false;
                         activity.requestMoviesFeedSuccess(moviesFeed.clone(), isRequestingNextPage, isUpdating, movies.size());
 
                         isUpdating = false;
-                        isRequestingNextPage = false;
                     }
                 },
                 handleError());
@@ -189,7 +190,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                     page--;
                 isRequestingNextPage = false;
                 isUpdating = false;
-
+                loadingItems = false;
                 boolean isNetworkError = false;
                 if (throwable instanceof IOException && !Util.isNetworkAvailable(activity))
                     isNetworkError = true;
@@ -216,8 +217,9 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         }
 
         Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() filtered movies: " + filteredMovies.size());
+        Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() page: " + page);
 
-        if (isRequestingNextPage) {
+        if (this.isRequestingNextPage) {
             Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() isRequestingNextPage");
             this.moviesFeed.getMovies().addAll(filteredMovies);
             this.moviesFeed.setPage(page);
@@ -259,28 +261,33 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     }
 
     private void requestAPI(boolean isRequestingNextPage) {
-        this.isRequestingNextPage = isRequestingNextPage;
+        if (!loadingItems) {
+            Log.d(FeedPresenter.class.getName(), "requestAPI() loadingItems = false");
+            this.loadingItems = true;
+            this.isRequestingNextPage = isRequestingNextPage;
 
-        if (isRequestingNextPage) {
-            this.page++;
+            if (isRequestingNextPage) {
+                this.page++;
+            } else {
+                this.page = FIRST_PAGE;
+            }
+
+            stop(REQUEST_MOVIES_FEED_FILTER_BY_API);
+            stop(REQUEST_MOVIES_FEED_SORT_BY_API);
+            stop(REQUEST_SEARCH_MOVIES_API);
+
+            if (this.filterBy == Filters.SEARCH) {
+                start(REQUEST_SEARCH_MOVIES_API);
+            } else if (this.filterBy.getId() >= Filters.REVENUE.getId()) {
+                start(REQUEST_MOVIES_FEED_SORT_BY_API);
+            } else {
+                start(REQUEST_MOVIES_FEED_FILTER_BY_API);
+            }
+
+            Log.d(FeedPresenter.class.getName(), "requestAPI() isRequestingNextPage: " + this.isRequestingNextPage + " page: " + this.page + " filterBy: " + this.filterBy);
         } else {
-            this.page = FIRST_PAGE;
+            Log.d(FeedPresenter.class.getName(), "requestAPI() loadingItems = true");
         }
-
-
-        stop(REQUEST_MOVIES_FEED_FILTER_BY_API);
-        stop(REQUEST_MOVIES_FEED_SORT_BY_API);
-        stop(REQUEST_SEARCH_MOVIES_API);
-
-        if (this.filterBy == Filters.SEARCH) {
-            start(REQUEST_SEARCH_MOVIES_API);
-        } else if (this.filterBy.getId() >= Filters.REVENUE.getId()) {
-            start(REQUEST_MOVIES_FEED_SORT_BY_API);
-        } else {
-            start(REQUEST_MOVIES_FEED_FILTER_BY_API);
-        }
-
-        Log.d(FeedPresenter.class.getName(), "requestAPI() isRequestingNextPage: " + this.isRequestingNextPage + " page: " + this.page + " filterBy: " + this.filterBy);
     }
 
 
