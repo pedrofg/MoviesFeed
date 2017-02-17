@@ -27,6 +27,10 @@ public class MoviesFeed {
     @SerializedName("results")
     @Expose
     private List<Movie> movies;
+    @SerializedName("total_pages")
+    @Expose
+    private int totalPages;
+    private boolean allMoviesDownloaded;
 
     @Convert(converter = Filters.FiltersConverter.class, columnType = Long.class)
     private Filters filter;
@@ -41,10 +45,12 @@ public class MoviesFeed {
     @Generated(hash = 1393672384)
     private transient MoviesFeedDao myDao;
 
-    public MoviesFeed clone() {
+    public MoviesFeed cloneMoviesFeed() {
         MoviesFeed newMoviesFeed = new MoviesFeed();
         newMoviesFeed.setId(this.id);
         newMoviesFeed.setPage(this.page);
+        newMoviesFeed.setTotalPages(this.totalPages);
+        newMoviesFeed.setAllMoviesDownloaded(this.allMoviesDownloaded);
         if (this.movies != null) {
             newMoviesFeed.setMovies(new ArrayList<Movie>());
             newMoviesFeed.getMovies().addAll(this.movies);
@@ -59,10 +65,13 @@ public class MoviesFeed {
     }
 
 
-    @Generated(hash = 1970418266)
-    public MoviesFeed(Long id, int page, Filters filter) {
+    @Generated(hash = 1916335549)
+    public MoviesFeed(Long id, int page, int totalPages, boolean allMoviesDownloaded,
+                      Filters filter) {
         this.id = id;
         this.page = page;
+        this.totalPages = totalPages;
+        this.allMoviesDownloaded = allMoviesDownloaded;
         this.filter = filter;
     }
 
@@ -171,6 +180,26 @@ public class MoviesFeed {
 
     public void setFilter(Filters filter) {
         this.filter = filter;
+    }
+
+
+    public int getTotalPages() {
+        return this.totalPages;
+    }
+
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
+
+
+    public boolean getAllMoviesDownloaded() {
+        return this.allMoviesDownloaded;
+    }
+
+
+    public void setAllMoviesDownloaded(boolean allMoviesDownloaded) {
+        this.allMoviesDownloaded = allMoviesDownloaded;
     }
 
 
