@@ -14,12 +14,11 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class Video {
 
-
     @Id(autoincrement = true)
     private Long idDB;
     @SerializedName("id")
     @Expose
-    private String id;
+    private String idTmdb;
     @SerializedName("key")
     @Expose
     private String key;
@@ -41,11 +40,11 @@ public class Video {
     public static final String YOUTUBE_THUMBNAIL_URL = "http://img.youtube.com/vi/" + REPLACE_KEY + "/0.jpg";
     public static final String YOUTUBE_URL = "http://www.youtube.com/watch?v=";
 
-    @Generated(hash = 1030048613)
-    public Video(Long idDB, String id, String key, String name, String site, int size, String type,
+    @Generated(hash = 800922857)
+    public Video(Long idDB, String idTmdb, String key, String name, String site, int size, String type,
             Long movieVideosId) {
         this.idDB = idDB;
-        this.id = id;
+        this.idTmdb = idTmdb;
         this.key = key;
         this.name = name;
         this.site = site;
@@ -58,13 +57,6 @@ public class Video {
     public Video() {
     }
 
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getKey() {
         return this.key;
@@ -128,6 +120,14 @@ public class Video {
 
     public void setIdDB(Long idDB) {
         this.idDB = idDB;
+    }
+
+    public String getIdTmdb() {
+        return this.idTmdb;
+    }
+
+    public void setIdTmdb(String idTmdb) {
+        this.idTmdb = idTmdb;
     }
 
 }

@@ -73,7 +73,7 @@ public abstract class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapt
                 });
     }
 
-    private String formatText(String text, int maxLenght) {
+    private String ellipsizeText(String text, int maxLenght) {
         if (text.length() > maxLenght) {
             return text.substring(0, maxLenght) + "...";
         } else {
@@ -82,11 +82,11 @@ public abstract class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapt
     }
 
     public String formatTitle(String text) {
-        return formatText(text, MAX_TITLE_LENGTH);
+        return ellipsizeText(text, MAX_TITLE_LENGTH);
     }
 
     public String formatSubTitle(String text) {
-        return formatText(text, MAX_SUB_TITLE_LENGTH);
+        return ellipsizeText(text, MAX_SUB_TITLE_LENGTH);
     }
 
 

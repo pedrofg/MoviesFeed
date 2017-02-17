@@ -12,7 +12,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -72,12 +71,17 @@ public class MovieDetail {
     @SerializedName("similar")
     @Expose
     private SimilarMovies similarMovies;
+    @ToOne(joinProperty = "reviewId")
+    @SerializedName("reviews")
+    @Expose
+    private MovieReviews movieReviews;
 
 
     private Long imagesId;
     private Long videosId;
     private Long creditsId;
     private Long similarId;
+    private Long reviewId;
 
     /**
      * Used to resolve relations
@@ -97,11 +101,13 @@ public class MovieDetail {
     private transient Long credits__resolvedKey;
     @Generated(hash = 1068834957)
     private transient Long similarMovies__resolvedKey;
+    @Generated(hash = 1855526851)
+    private transient Long movieReviews__resolvedKey;
 
-    @Generated(hash = 981060198)
-    public MovieDetail(int budget, String homepage, Long id, String imdbId, String overview,
-                       String posterPath, String releaseDate, long revenue, int runtime, String title,
-                       double voteAverage, Long imagesId, Long videosId, Long creditsId, Long similarId) {
+    @Generated(hash = 325877183)
+    public MovieDetail(int budget, String homepage, Long id, String imdbId, String overview, String posterPath,
+                       String releaseDate, long revenue, int runtime, String title, double voteAverage, Long imagesId, Long videosId,
+                       Long creditsId, Long similarId, Long reviewId) {
         this.budget = budget;
         this.homepage = homepage;
         this.id = id;
@@ -117,6 +123,7 @@ public class MovieDetail {
         this.videosId = videosId;
         this.creditsId = creditsId;
         this.similarId = similarId;
+        this.reviewId = reviewId;
     }
 
     @Generated(hash = 850277392)
@@ -517,6 +524,49 @@ public class MovieDetail {
             similarId = similarMovies == null ? null : similarMovies.getId();
             similarMovies__resolvedKey = similarId;
         }
+    }
+
+    public Long getReviewId() {
+        return this.reviewId;
+    }
+
+    public void setReviewId(Long reviewId) {
+        this.reviewId = reviewId;
+    }
+
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 1908886004)
+    public void setMovieReviews(MovieReviews movieReviews) {
+        synchronized (this) {
+            this.movieReviews = movieReviews;
+            reviewId = movieReviews == null ? null : movieReviews.getIdDB();
+            movieReviews__resolvedKey = reviewId;
+        }
+    }
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Keep
+    @Generated(hash = 49908367)
+    public MovieReviews getMovieReviews() {
+        Long __key = this.reviewId;
+        if (movieReviews == null && (movieReviews__resolvedKey == null || !movieReviews__resolvedKey.equals(__key))) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            MovieReviewsDao targetDao = daoSession.getMovieReviewsDao();
+            MovieReviews movieReviewsNew = targetDao.load(__key);
+            synchronized (this) {
+                movieReviews = movieReviewsNew;
+                movieReviews__resolvedKey = __key;
+            }
+        }
+        return movieReviews;
     }
 
     /** called by internal mechanisms, do not call yourself. */

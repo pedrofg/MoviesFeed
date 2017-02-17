@@ -1,20 +1,18 @@
 package com.moviesfeed.presenters;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.moviesfeed.App;
 import com.moviesfeed.activities.MovieDetailActivity;
 import com.moviesfeed.models.Cast;
 import com.moviesfeed.models.Crew;
-import com.moviesfeed.models.DaoSession;
 import com.moviesfeed.models.Genre;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
-import com.moviesfeed.models.MovieImages;
 import com.moviesfeed.models.MoviePoster;
+import com.moviesfeed.models.Review;
 import com.moviesfeed.models.Video;
 
 import java.io.IOException;
@@ -27,7 +25,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action2;
 import rx.functions.Func0;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -150,6 +147,7 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
             movieDetail.getCredits().getCast();
             movieDetail.getCredits().getCrew();
             movieDetail.getSimilarMovies().getMovies();
+            movieDetail.getMovieReviews().getReviews();
         }
         Log.d(MovieDetailPresenter.class.getName(), "loadMovieDetailDb() movieDetail: " + movieDetail);
         return movieDetail;
@@ -166,29 +164,31 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
         movieDetail.getCredits().setIdDb(movieDetail.getId());
         movieDetail.setSimilarId(movieDetail.getId());
         movieDetail.getSimilarMovies().setId(movieDetail.getId());
+        movieDetail.getMovieReviews().setIdDB(movieDetail.getId());
+        movieDetail.setReviewId(movieDetail.getId());
 
         for (Genre genre : movieDetail.getGenres()) {
             genre.setMovieDetailId(movieDetail.getId());
         }
         for (MovieBackdrop mb : movieDetail.getImages().getBackdrops()) {
-            mb.setMovieImagesId(movieDetail.getImages().getId());
+            mb.setMovieImagesId(movieDetail.getImagesId());
         }
         for (MoviePoster mp : movieDetail.getImages().getPosters()) {
-            mp.setMovieImagesId(movieDetail.getImages().getId());
+            mp.setMovieImagesId(movieDetail.getImagesId());
         }
         for (Video video : movieDetail.getVideos().getVideos()) {
             if (Validator.validateVideo(video)) {
-                video.setMovieVideosId(movieDetail.getVideos().getId());
+                video.setMovieVideosId(movieDetail.getVideosId());
             } else {
                 movieDetail.getVideos().getVideos().remove(video);
             }
 
         }
         for (Crew crew : movieDetail.getCredits().getCrew()) {
-            crew.setCreditsKey(movieDetail.getCredits().getIdDb());
+            crew.setCreditsKey(movieDetail.getCreditsId());
         }
         for (Cast cast : movieDetail.getCredits().getCast()) {
-            cast.setCreditsKey(movieDetail.getCredits().getIdDb());
+            cast.setCreditsKey(movieDetail.getCreditsId());
         }
 
         List<Movie> filteredMovies = new ArrayList<>();
@@ -200,6 +200,10 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
         }
 
         movieDetail.getSimilarMovies().setMovies(filteredMovies);
+
+        for (Review review : movieDetail.getMovieReviews().getReviews()) {
+            review.setMovieReviewId(movieDetail.getReviewId());
+        }
 
         App.getDaoSession().getGenreDao().insertOrReplaceInTx(movieDetail.getGenres());
         App.getDaoSession().getMovieImagesDao().insertOrReplace(movieDetail.getImages());
@@ -213,6 +217,8 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
         App.getDaoSession().getMovieDetailDao().insertOrReplace(movieDetail);
         App.getDaoSession().getSimilarMoviesDao().insertOrReplace(movieDetail.getSimilarMovies());
         App.getDaoSession().getMovieDao().insertOrReplaceInTx(movieDetail.getSimilarMovies().getMovies());
+        App.getDaoSession().getMovieReviewsDao().insertOrReplace(movieDetail.getMovieReviews());
+        App.getDaoSession().getReviewDao().insertOrReplaceInTx(movieDetail.getMovieReviews().getReviews());
         return movieDetail;
     }
 

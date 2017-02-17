@@ -12,7 +12,7 @@ import com.moviesfeed.R;
  * Created by Pedro on 2017-02-05.
  */
 
-public class CustomTextView extends AppCompatTextView {
+public class CustomTextView extends EllipsizingTextView {
 
     public static final String FONTS_PATH = "fonts/";
 
