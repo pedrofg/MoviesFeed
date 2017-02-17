@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <com.moviesfeed.activities.uicomponents.CustomTextView
+        android:id="@+id/txtReviewAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="18dp"
+        app:typeface="Roboto-Light.ttf" />
+
+
+    <com.moviesfeed.activities.uicomponents.CustomTextView
+        android:id="@+id/txtReviewUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:autoLink="web"
+        android:textColor="@android:color/black"
+        android:textColorLink="@color/colorPrimary"
+        app:typeface="Roboto-Light.ttf" />
+
+
+    <com.moviesfeed.activities.uicomponents.CustomTextView
+        android:id="@+id/txtReviewContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/txtReviewUrl"
+        android:layout_below="@id/txtReviewAuthor"
+        android:textColor="@android:color/black"
+        android:textIsSelectable="true"
+        android:textSize="16dp"
+        app:typeface="Roboto-Thin.ttf" />
+
+</RelativeLayout>

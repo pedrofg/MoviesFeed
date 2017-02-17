@@ -25,6 +25,7 @@ import com.moviesfeed.adapters.MovieCastAdapter;
 import com.moviesfeed.adapters.MovieCrewAdapter;
 import com.moviesfeed.adapters.MovieImagesAdapter;
 import com.moviesfeed.adapters.MovieVideosAdapter;
+import com.moviesfeed.adapters.ReviewsAdapter;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
@@ -45,9 +46,6 @@ import static com.moviesfeed.activities.FeedActivity.INTENT_MOVIE_DETAIL_ID;
 @RequiresPresenter(MovieDetailPresenter.class)
 public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailPresenter> implements RecyclerItemClickListener.OnItemClickListener {
 
-    public static final String MINUTES = "m";
-    public static final String EMPTY_STRING = " ";
-    public static final int MAX_ALPHA = 255;
     @BindView(R.id.toolbarMovieDetail)
     Toolbar toolbar;
     @BindView(R.id.txtMovieTitle)
@@ -98,7 +96,14 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
     RecyclerView rvSimilarMovies;
     @BindView(R.id.layoutSimilarMovies)
     View layoutSimilarMovies;
+    @BindView(R.id.recyclerViewReviews)
+    RecyclerView rvReviews;
+    @BindView(R.id.layoutReviews)
+    View layoutReviews;
 
+    public static final String MINUTES = "m";
+    public static final String EMPTY_STRING = " ";
+    public static final int MAX_ALPHA = 255;
     private MovieVideosAdapter rvVideosAdapter;
     private FeedAdapter rvSimilarMoviesAdapter;
     private MovieDetail movieDetail;
@@ -230,7 +235,7 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
         fillMovieCast();
         fillMovieCrew();
         fillSimilarMovies();
-
+        fillReviews();
     }
 
 
@@ -281,6 +286,19 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
             this.rvSimilarMoviesAdapter.setMovies(this.movieDetail.getSimilarMovies().getMovies());
             this.rvSimilarMovies.setAdapter(this.rvSimilarMoviesAdapter);
             this.layoutSimilarMovies.setVisibility(View.VISIBLE);
+
+        }
+    }
+
+    private void fillReviews() {
+        if (this.movieDetail.getMovieReviews() != null &&
+                this.movieDetail.getMovieReviews().getReviews() != null &&
+                this.movieDetail.getMovieReviews().getReviews().size() > 0) {
+            this.rvReviews.setLayoutManager(getHorizontalLayoutManager());
+            this.rvReviews.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
+            ReviewsAdapter reviewsAdapter = new ReviewsAdapter(this, this.movieDetail.getMovieReviews().getReviews());
+            this.rvReviews.setAdapter(reviewsAdapter);
+            this.layoutReviews.setVisibility(View.VISIBLE);
 
         }
     }
