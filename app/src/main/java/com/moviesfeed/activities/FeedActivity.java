@@ -271,18 +271,9 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         this.layoutError.setVisibility(View.GONE);
     }
 
-    @OnClick(R.id.txtError)
-    public void txtErrorClickListener(View view) {
-        updatingContent();
-        if (getPresenter().getCurrentFilter() == Filters.SEARCH) {
-            getPresenter().requestSearchMoviesFeed(getPresenter().getSearchQuery());
-        } else {
-            getPresenter().requestMoviesFeed(getPresenter().getCurrentFilter());
-        }
-    }
-
-    public void requestMoviesFeedSuccess(MoviesFeed moviesFeed, boolean isNextPage, boolean isUpdating, int insertedMoviesCount) {
-        Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() moviesFeed id: " + moviesFeed.getId() + " isNextPage: " + isNextPage + " isUpdating: " + isUpdating + " insertedMoviesCount: " + insertedMoviesCount);
+    public void requestMoviesFeedSuccess(MoviesFeed moviesFeed, boolean isNextPage, boolean isUpdating, int insertedMoviesCount, boolean allMoviesDownloaded) {
+        Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() moviesFeed id: " + moviesFeed.getId() +
+                " isNextPage: " + isNextPage + " isUpdating: " + isUpdating + " insertedMoviesCount: " + insertedMoviesCount + " allMoviesDownloaded: " + allMoviesDownloaded);
 
         if (isUpdating) {
             createGrid();
@@ -299,14 +290,26 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
             this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
         }
 
-        if (this.endlessScrollListener.shouldLoadMoreItems(this.rvMoviesFeed)) {
-            Log.i(FeedActivity.class.getName(), "forceNextPage = true");
+        contentUpdated(false);
+
+        if (allMoviesDownloaded) {
+            Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() allMoviesDownloaded = true");
+
+            if (moviesFeed.getMovies().size() == 0) {
+                showNoMoviesFoundScreen();
+            } else {
+                Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() clearOnScrollListeners");
+
+                this.rvMoviesFeed.clearOnScrollListeners();
+            }
+        } else if (this.endlessScrollListener.shouldLoadMoreItems(this.rvMoviesFeed)) {
+            Log.i(FeedActivity.class.getName(), "requestMoviesFeedSuccess() forceNextPage = true");
+
             this.endlessScrollListener.setLoading(true);
             this.requestNextPage();
         }
-
-        contentUpdated(false);
     }
+
 
     public void requestMoviesFeedError(boolean thereIsCache, boolean isNetworkError) {
         Log.i(FeedActivity.class.getName(), "requestMoviesFeedError() - thereIsCache: " + thereIsCache + " isNetworkError: " + isNetworkError);
@@ -319,10 +322,18 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         } else {
             message.append(getString(R.string.tap_here_try_again));
             this.txtError.setText(message);
+            this.txtError.setOnClickListener(this);
             contentUpdated(true);
         }
 
         this.swipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void showNoMoviesFoundScreen() {
+        Log.i(FeedActivity.class.getName(), "showNoMoviesFoundScreen");
+        this.txtError.setText(getString(R.string.no_movies_found));
+        this.txtError.setOnClickListener(null);
+        contentUpdated(true);
     }
 
 
@@ -357,6 +368,13 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
                 public void onAnimationRepeat(Animation animation) {
                 }
             });
+        } else if (v.getId() == R.id.txtError) {
+            updatingContent();
+            if (getPresenter().getCurrentFilter() == Filters.SEARCH) {
+                getPresenter().requestSearchMoviesFeed(getPresenter().getSearchQuery());
+            } else {
+                getPresenter().requestMoviesFeed(getPresenter().getCurrentFilter());
+            }
         }
     }
 

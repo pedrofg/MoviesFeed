@@ -1,7 +1,6 @@
 package com.moviesfeed.presenters;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.moviesfeed.App;
@@ -132,7 +131,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                     public void call(FeedActivity activity, List<Movie> movies) {
                         Log.d(FeedPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
                         loadingItems = false;
-                        activity.requestMoviesFeedSuccess(moviesFeed.clone(), isRequestingNextPage, isUpdating, movies.size());
+                        activity.requestMoviesFeedSuccess(moviesFeed.cloneMoviesFeed(), isRequestingNextPage, isUpdating, movies.size(), moviesFeed.getAllMoviesDownloaded());
 
                         isUpdating = false;
                     }
@@ -159,7 +158,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                     public void call(FeedActivity activity, MoviesFeed moviesFeed) {
                         if (moviesFeed != null) {
                             Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED_DB success moviesFeed != null");
-                            activity.requestMoviesFeedSuccess(moviesFeed.clone(), false, false, moviesFeed.getMovies().size());
+                            activity.requestMoviesFeedSuccess(moviesFeed.cloneMoviesFeed(), false, false, moviesFeed.getMovies().size(), moviesFeed.getAllMoviesDownloaded());
                         } else {
                             Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED_DB success moviesFeed == null");
                             requestAPI(false);
@@ -204,29 +203,44 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         };
     }
 
+    private boolean checkAllMoviesDownloaded(MoviesFeed response) {
+        return response.getPage() == response.getTotalPages() || response.getMovies().size() == 0;
+    }
+
     private List<Movie> updateMoviesFeedDb(final MoviesFeed response) {
-        response.setFilterAndId(filterBy);
+        if (this.moviesFeed == null) {
+            this.moviesFeed = new MoviesFeed();
+        }
+        this.moviesFeed.setFilterAndId(this.filterBy);
+        this.moviesFeed.setPage(response.getPage());
+
+        if (checkAllMoviesDownloaded(response)) {
+            this.moviesFeed.setAllMoviesDownloaded(true);
+            Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() checkAllMoviesDownloaded == true");
+        }
 
         final List<Movie> filteredMovies = new ArrayList<>();
 
-        for (Movie movie : response.getMovies()) {
-            if (Validator.validateMovie(movie)) {
-                filteredMovies.add(movie);
-                movie.setMoviesFeedKey(response.getId());
+        if (response.getMovies().size() > 0) {
+            for (Movie movie : response.getMovies()) {
+                if (Validator.validateMovie(movie)) {
+                    filteredMovies.add(movie);
+                    movie.setMoviesFeedKey(this.moviesFeed.getId());
+                }
             }
+
+            Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() filtered movies: " + filteredMovies.size());
         }
 
-        Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() filtered movies: " + filteredMovies.size());
         Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() page: " + page);
 
         if (this.isRequestingNextPage) {
             Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() isRequestingNextPage");
             this.moviesFeed.getMovies().addAll(filteredMovies);
-            this.moviesFeed.setPage(page);
         } else if (page == FIRST_PAGE) {
             Log.d(FeedPresenter.class.getName(), "updateMoviesFeedDb() FIRST_PAGE");
-            response.setMovies(filteredMovies);
-            this.moviesFeed = response;
+            this.moviesFeed.setMovies(filteredMovies);
+            this.moviesFeed.setTotalPages(response.getTotalPages());
         }
 
         if (isUpdating) {
@@ -252,7 +266,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     private MoviesFeed loadMoviesFeedDb() {
         MoviesFeed moviesFeed = App.getDaoSession().getMoviesFeedDao().load(filterBy.getId());
         if (moviesFeed != null) {
-            moviesFeed.setMovies(moviesFeed.getMovies());
+            moviesFeed.getMovies();
             this.moviesFeed = moviesFeed;
             this.page = moviesFeed.getPage();
         }
@@ -271,6 +285,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
             } else {
                 this.page = FIRST_PAGE;
             }
+
 
             stop(REQUEST_MOVIES_FEED_FILTER_BY_API);
             stop(REQUEST_MOVIES_FEED_SORT_BY_API);
@@ -323,6 +338,7 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     }
 
     public void refreshMoviesFeed() {
+        this.moviesFeed = null;
         this.isUpdating = true;
         Log.d(FeedPresenter.class.getName(), "refreshMoviesFeed() isUpdating: " + this.isUpdating);
         requestAPI(false);
