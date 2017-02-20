@@ -1,12 +1,15 @@
 package com.moviesfeed.presenters;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.moviesfeed.App;
 import com.moviesfeed.activities.MovieDetailActivity;
+import com.moviesfeed.api.MoviesApi;
+import com.moviesfeed.daggercomponents.DaggerAppComponent;
 import com.moviesfeed.models.Cast;
 import com.moviesfeed.models.Crew;
+import com.moviesfeed.models.DaoSession;
 import com.moviesfeed.models.Genre;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MovieBackdrop;
@@ -14,14 +17,20 @@ import com.moviesfeed.models.MovieDetail;
 import com.moviesfeed.models.MoviePoster;
 import com.moviesfeed.models.Review;
 import com.moviesfeed.models.Video;
+import com.moviesfeed.modules.ApiModule;
+import com.moviesfeed.modules.DatabaseModule;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import nucleus.presenter.RxPresenter;
 import rx.Observable;
+import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action2;
 import rx.functions.Func0;
@@ -38,6 +47,16 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
 
     private int movieId;
     private MovieDetail lastResponse;
+    @Inject
+    public MoviesApi api;
+    @Inject
+    public DaoSession daoSession;
+    @Inject
+    @Named(ApiModule.IO_SCHEDULER)
+    public Scheduler ioScheduler;
+    @Inject
+    @Named(ApiModule.MAIN_THREAD_SCHEDULER)
+    public Scheduler mainThreadScheduler;
 
     @Override
     protected void onCreate(Bundle savedState) {
@@ -47,13 +66,19 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
         createRequestMovieDetailAPI();
     }
 
+    public void init(Context context) {
+        DaggerAppComponent.builder()
+                .apiModule(new ApiModule())
+                .databaseModule(new DatabaseModule(context)).build().inject(this);
+    }
+
     private void createRequestMovieDetailAPI() {
         restartableFirst(REQUEST_MOVIE_DETAIL_API,
                 new Func0<Observable<MovieDetail>>() {
                     @Override
                     public Observable<MovieDetail> call() {
-                        return App.getServerApi().getMovieDetail(movieId).subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                        return api.getMovieDetail(movieId).subscribeOn(ioScheduler)
+                                .observeOn(mainThreadScheduler);
                     }
                 },
                 new Action2<MovieDetailActivity, MovieDetail>() {
@@ -77,8 +102,8 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
                             public MovieDetail call() throws Exception {
                                 return loadMovieDetailDb();
                             }
-                        }).subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                        }).subscribeOn(ioScheduler)
+                                .observeOn(mainThreadScheduler);
 
                     }
                 },
@@ -106,15 +131,15 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
                             public MovieDetail call() throws Exception {
                                 return updateMovieDetailDb(lastResponse);
                             }
-                        }).subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                        }).subscribeOn(ioScheduler)
+                                .observeOn(mainThreadScheduler);
 
                     }
                 },
                 new Action2<MovieDetailActivity, MovieDetail>() {
                     @Override
                     public void call(MovieDetailActivity activity, MovieDetail movieDetail) {
-                        Log.d(FeedPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
+                        Log.d(MovieDetailPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
                         activity.requestMovieDetailSuccess(movieDetail);
                     }
                 },
@@ -137,20 +162,23 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
     }
 
     private MovieDetail loadMovieDetailDb() {
-        MovieDetail movieDetail = App.getDaoSession().getMovieDetailDao().loadDeep((long) this.movieId);
-        //Doing that the GreenDao gets() will load the objects while still in another thread.
-        if (movieDetail != null) {
-            movieDetail.getGenres();
-            movieDetail.getImages().getBackdrops();
-            movieDetail.getImages().getPosters();
-            movieDetail.getVideos().getVideos();
-            movieDetail.getCredits().getCast();
-            movieDetail.getCredits().getCrew();
-            movieDetail.getSimilarMovies().getMovies();
-            movieDetail.getMovieReviews().getReviews();
+        if (verifyDb()) {
+            MovieDetail movieDetail = daoSession.getMovieDetailDao().loadDeep((long) this.movieId);
+            //Doing that the GreenDao gets() will load the objects while still in another thread.
+            if (movieDetail != null) {
+                movieDetail.getGenres();
+                movieDetail.getImages().getBackdrops();
+                movieDetail.getImages().getPosters();
+                movieDetail.getVideos().getVideos();
+                movieDetail.getCredits().getCast();
+                movieDetail.getCredits().getCrew();
+                movieDetail.getSimilarMovies().getMovies();
+                movieDetail.getMovieReviews().getReviews();
+            }
+            Log.d(MovieDetailPresenter.class.getName(), "loadMovieDetailDb() movieDetail: " + movieDetail);
+            return movieDetail;
         }
-        Log.d(MovieDetailPresenter.class.getName(), "loadMovieDetailDb() movieDetail: " + movieDetail);
-        return movieDetail;
+        return null;
     }
 
 
@@ -205,21 +233,47 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
             review.setMovieReviewId(movieDetail.getReviewId());
         }
 
-        App.getDaoSession().getGenreDao().insertOrReplaceInTx(movieDetail.getGenres());
-        App.getDaoSession().getMovieImagesDao().insertOrReplace(movieDetail.getImages());
-        App.getDaoSession().getMovieBackdropDao().insertOrReplaceInTx(movieDetail.getImages().getBackdrops());
-        App.getDaoSession().getMoviePosterDao().insertOrReplaceInTx(movieDetail.getImages().getPosters());
-        App.getDaoSession().getMovieVideosDao().insertOrReplaceInTx(movieDetail.getVideos());
-        App.getDaoSession().getVideoDao().insertOrReplaceInTx(movieDetail.getVideos().getVideos());
-        App.getDaoSession().getCreditsDao().insertOrReplace(movieDetail.getCredits());
-        App.getDaoSession().getCrewDao().insertOrReplaceInTx(movieDetail.getCredits().getCrew());
-        App.getDaoSession().getCastDao().insertOrReplaceInTx(movieDetail.getCredits().getCast());
-        App.getDaoSession().getMovieDetailDao().insertOrReplace(movieDetail);
-        App.getDaoSession().getSimilarMoviesDao().insertOrReplace(movieDetail.getSimilarMovies());
-        App.getDaoSession().getMovieDao().insertOrReplaceInTx(movieDetail.getSimilarMovies().getMovies());
-        App.getDaoSession().getMovieReviewsDao().insertOrReplace(movieDetail.getMovieReviews());
-        App.getDaoSession().getReviewDao().insertOrReplaceInTx(movieDetail.getMovieReviews().getReviews());
+        if (verifyDb()) {
+            Log.d(MovieDetailPresenter.class.getName(), "daoSession != null");
+            daoSession.getGenreDao().insertOrReplaceInTx(movieDetail.getGenres());
+            daoSession.getMovieImagesDao().insertOrReplace(movieDetail.getImages());
+            daoSession.getMovieBackdropDao().insertOrReplaceInTx(movieDetail.getImages().getBackdrops());
+            daoSession.getMoviePosterDao().insertOrReplaceInTx(movieDetail.getImages().getPosters());
+            daoSession.getMovieVideosDao().insertOrReplaceInTx(movieDetail.getVideos());
+            daoSession.getVideoDao().insertOrReplaceInTx(movieDetail.getVideos().getVideos());
+            daoSession.getCreditsDao().insertOrReplace(movieDetail.getCredits());
+            daoSession.getCrewDao().insertOrReplaceInTx(movieDetail.getCredits().getCrew());
+            daoSession.getCastDao().insertOrReplaceInTx(movieDetail.getCredits().getCast());
+            daoSession.getMovieDetailDao().insertOrReplace(movieDetail);
+            daoSession.getSimilarMoviesDao().insertOrReplace(movieDetail.getSimilarMovies());
+            daoSession.getMovieDao().insertOrReplaceInTx(movieDetail.getSimilarMovies().getMovies());
+            daoSession.getMovieReviewsDao().insertOrReplace(movieDetail.getMovieReviews());
+            daoSession.getReviewDao().insertOrReplaceInTx(movieDetail.getMovieReviews().getReviews());
+        } else {
+            Log.d(MovieDetailPresenter.class.getName(), "daoSession null");
+        }
         return movieDetail;
+    }
+
+    private boolean verifyDb() {
+        boolean isDbValid = daoSession != null &&
+                daoSession.getGenreDao() != null &&
+                daoSession.getMovieImagesDao() != null &&
+                daoSession.getMovieBackdropDao() != null &&
+                daoSession.getMoviePosterDao() != null &&
+                daoSession.getMovieVideosDao() != null &&
+                daoSession.getVideoDao() != null &&
+                daoSession.getCreditsDao() != null &&
+                daoSession.getCrewDao() != null &&
+                daoSession.getCastDao() != null &&
+                daoSession.getMovieDetailDao() != null &&
+                daoSession.getSimilarMoviesDao() != null &&
+                daoSession.getMovieDao() != null &&
+                daoSession.getMovieReviewsDao() != null &&
+                daoSession.getReviewDao() != null;
+
+        Log.d(MovieDetailPresenter.class.getName(), "verifyDb() = " + isDbValid);
+        return isDbValid;
     }
 
     public void requestMovieDetail(int movieId) {

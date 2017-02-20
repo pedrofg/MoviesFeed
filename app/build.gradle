@@ -1,3 +1,7 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'com.neenbedankt.android-apt'
+
 buildscript {
     repositories {
         mavenCentral()
@@ -8,8 +12,6 @@ buildscript {
     }
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 24
@@ -43,9 +45,24 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     compile 'io.reactivex:rxandroid:1.2.1'
-    compile 'io.reactivex:rxjava:1.1.6'
+    compile 'io.reactivex:rxjava:1.1.7'
     compile 'com.jakewharton:butterknife:8.4.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
     compile 'org.greenrobot:greendao:3.2.0'
+    compile 'org.mockito:mockito-all:1.10.19'
+    compile('org.powermock:powermock-api-mockito:1.6.2') {
+        exclude module: 'hamcrest-core'
+        exclude module: 'objenesis'
+    }
+    compile('org.powermock:powermock-module-junit4:1.6.2') {
+        exclude module: 'hamcrest-core'
+        exclude module: 'objenesis'
+    }
+
+    apt 'com.google.dagger:dagger-compiler:2.5'
+    testApt 'com.google.dagger:dagger-compiler:2.5'
+    compile 'com.google.dagger:dagger:2.5'
+    provided 'javax.annotation:jsr250-api:1.0'
+
 }

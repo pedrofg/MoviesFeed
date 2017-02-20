@@ -1,14 +1,19 @@
 package com.moviesfeed.presenters;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.moviesfeed.App;
 import com.moviesfeed.activities.FeedActivity;
 import com.moviesfeed.api.Filters;
+import com.moviesfeed.api.MoviesApi;
+import com.moviesfeed.daggercomponents.DaggerAppComponent;
+import com.moviesfeed.models.DaoSession;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MovieDao;
 import com.moviesfeed.models.MoviesFeed;
+import com.moviesfeed.modules.ApiModule;
+import com.moviesfeed.modules.DatabaseModule;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -18,8 +23,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import nucleus.presenter.RxPresenter;
 import rx.Observable;
+import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action2;
 import rx.functions.Func0;
@@ -43,20 +52,37 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     private MoviesFeed lastResponse;
     private int page = 1;
 
-
     private boolean isRequestingNextPage;
     private boolean isUpdating;
     private boolean loadingItems;
     private String searchQuery;
+    @Inject
+    public MoviesApi api;
+    @Inject
+    public DaoSession daoSession;
+    @Inject
+    @Named(ApiModule.IO_SCHEDULER)
+    public Scheduler ioScheduler;
+    @Inject
+    @Named(ApiModule.MAIN_THREAD_SCHEDULER)
+    public Scheduler mainThreadScheduler;
 
     @Override
-    protected void onCreate(Bundle savedState) {
+    public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
+
         createRequestMoviesFeedSortByAPI();
         createRequestMoviesFeedFilterByAPI();
         createUpdateMoviesFeed();
         createLoadMoviesFeedDb();
         createRequestSearchMoviesAPI();
+
+    }
+
+    public void init(Context context) {
+        DaggerAppComponent.builder()
+                .apiModule(new ApiModule())
+                .databaseModule(new DatabaseModule(context)).build().inject(this);
     }
 
 
@@ -65,9 +91,9 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                 new Func0<Observable<MoviesFeed>>() {
                     @Override
                     public Observable<MoviesFeed> call() {
-                        return App.getServerApi().getMoviesFilterBy(filterBy.toString(), page)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                        return api.getMoviesFilterBy(filterBy.toString(), page)
+                                .subscribeOn(ioScheduler)
+                                .observeOn(mainThreadScheduler);
                     }
                 },
                 handleRequestMovieFeedAPISuccess(),
@@ -81,13 +107,13 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                     @Override
                     public Observable<MoviesFeed> call() {
                         if (filterBy == Filters.REVENUE) {
-                            return App.getServerApi().getDiscoverMovie(filterBy.toString() + FeedPresenter.DESC, page)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread());
+                            return api.getDiscoverMovie(filterBy.toString() + FeedPresenter.DESC, page)
+                                    .subscribeOn(ioScheduler)
+                                    .observeOn(mainThreadScheduler);
                         } else {
-                            return App.getServerApi().getMovieByGenre(Integer.valueOf(filterBy.toString()), getFormattedDate(), page)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread());
+                            return api.getMovieByGenre(Integer.valueOf(filterBy.toString()), getFormattedDate(), page)
+                                    .subscribeOn(ioScheduler)
+                                    .observeOn(mainThreadScheduler);
                         }
                     }
                 },
@@ -100,9 +126,9 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                 new Func0<Observable<MoviesFeed>>() {
                     @Override
                     public Observable<MoviesFeed> call() {
-                        return App.getServerApi().getSearchMovie(searchQuery, page)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                        return api.getSearchMovie(searchQuery, page)
+                                .subscribeOn(ioScheduler)
+                                .observeOn(mainThreadScheduler);
                     }
                 },
                 handleRequestMovieFeedAPISuccess(),
@@ -121,8 +147,8 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                             public List<Movie> call() throws Exception {
                                 return updateMoviesFeedDb(lastResponse);
                             }
-                        }).subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                        }).subscribeOn(ioScheduler)
+                                .observeOn(mainThreadScheduler);
 
                     }
                 },
@@ -148,8 +174,8 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                             public MoviesFeed call() {
                                 return loadMoviesFeedDb();
                             }
-                        }).subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                        }).subscribeOn(ioScheduler)
+                                .observeOn(mainThreadScheduler);
 
                     }
                 },
@@ -248,30 +274,44 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
             deleteMoviesFeedDb(this.moviesFeed.getId());
         }
 
-        App.getDaoSession().getMoviesFeedDao().insertOrReplace(this.moviesFeed);
-        App.getDaoSession().getMovieDao().insertOrReplaceInTx(this.moviesFeed.getMovies());
+        if (verifyDb()) {
+            daoSession.getMoviesFeedDao().insertOrReplace(this.moviesFeed);
+            daoSession.getMovieDao().insertOrReplaceInTx(this.moviesFeed.getMovies());
+        }
 
         return filteredMovies;
     }
 
     private void deleteMoviesFeedDb(Long id) {
-        Log.d(FeedPresenter.class.getName(), "deleteMoviesFeedDb() id: " + id);
-        QueryBuilder qb = App.getDaoSession().getMovieDao().queryBuilder();
-        qb.where(MovieDao.Properties.MoviesFeedKey.eq(id));
-        qb.buildDelete().executeDeleteWithoutDetachingEntities();
+        if (verifyDb()) {
+            Log.d(FeedPresenter.class.getName(), "deleteMoviesFeedDb() id: " + id);
 
-        App.getDaoSession().getMoviesFeedDao().deleteByKey(id);
+            QueryBuilder qb = daoSession.getMovieDao().queryBuilder();
+            qb.where(MovieDao.Properties.MoviesFeedKey.eq(id));
+            qb.buildDelete().executeDeleteWithoutDetachingEntities();
+            daoSession.getMoviesFeedDao().deleteByKey(id);
+        }
     }
 
     private MoviesFeed loadMoviesFeedDb() {
-        MoviesFeed moviesFeed = App.getDaoSession().getMoviesFeedDao().load(filterBy.getId());
-        if (moviesFeed != null) {
-            moviesFeed.getMovies();
-            this.moviesFeed = moviesFeed;
-            this.page = moviesFeed.getPage();
+        if (verifyDb()) {
+            MoviesFeed moviesFeed = daoSession.getMoviesFeedDao().load(filterBy.getId());
+            if (moviesFeed != null) {
+                moviesFeed.getMovies();
+                this.moviesFeed = moviesFeed;
+                this.page = moviesFeed.getPage();
+            }
+            Log.d(FeedPresenter.class.getName(), "loadMoviesFeedDb() moviesFeed: " + moviesFeed);
+            return moviesFeed;
         }
-        Log.d(FeedPresenter.class.getName(), "loadMoviesFeedDb() moviesFeed: " + moviesFeed);
-        return moviesFeed;
+
+        return null;
+    }
+
+    private boolean verifyDb() {
+        boolean isDbValid = daoSession != null && daoSession.getMoviesFeedDao() != null && daoSession.getMovieDao() != null;
+        Log.d(FeedPresenter.class.getName(), "verifyDb() = " + isDbValid);
+        return isDbValid;
     }
 
     private void requestAPI(boolean isRequestingNextPage) {
@@ -285,7 +325,6 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
             } else {
                 this.page = FIRST_PAGE;
             }
-
 
             stop(REQUEST_MOVIES_FEED_FILTER_BY_API);
             stop(REQUEST_MOVIES_FEED_SORT_BY_API);
@@ -333,10 +372,6 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         requestAPI(false);
     }
 
-    public String getSearchQuery() {
-        return this.searchQuery;
-    }
-
     public void refreshMoviesFeed() {
         this.moviesFeed = null;
         this.isUpdating = true;
@@ -349,9 +384,16 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
         requestAPI(true);
     }
 
-    public Filters getCurrentFilter() {
-        return filterBy;
+    public void tryAgain() {
+        if (this.filterBy == Filters.SEARCH) {
+            requestSearchMoviesFeed(this.searchQuery);
+        } else {
+            requestMoviesFeed(this.filterBy);
+        }
     }
 
+    public boolean isSameFilter(Filters filter) {
+        return this.filterBy == filter;
+    }
 
 }

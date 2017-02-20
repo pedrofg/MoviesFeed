@@ -34,7 +34,6 @@ import com.moviesfeed.presenters.FeedPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusAppCompatActivity;
 
@@ -72,6 +71,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         Log.i(FeedActivity.class.getName(), "onCreate()");
         setContentView(R.layout.activity_feed_root);
         ButterKnife.bind(this);
+        getPresenter().init(this);
 
         this.toolbar.setTitle(getString(R.string.popularity));
         setSupportActionBar(toolbar);
@@ -82,7 +82,6 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-
 
         createGrid();
 
@@ -189,14 +188,16 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
         Log.i(FeedActivity.class.getName(), "onNavigationItemSelected() filter: " + filter.toString());
         drawerLayout.closeDrawer(GravityCompat.START);
 
-        if (filter == getPresenter().getCurrentFilter()) {
-            return false;
-        } else {
+        if (!getPresenter().isSameFilter(filter)) {
+            Log.i(FeedActivity.class.getName(), "onNavigationItemSelected() filter changed");
             this.toolbar.setTitle(menuItem.getTitle());
             createGrid();
             requestMoviesFeed(filter);
             return true;
         }
+
+        return false;
+
     }
 
     private void requestMoviesFeed(Filters filter) {
@@ -370,11 +371,7 @@ public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implem
             });
         } else if (v.getId() == R.id.txtError) {
             updatingContent();
-            if (getPresenter().getCurrentFilter() == Filters.SEARCH) {
-                getPresenter().requestSearchMoviesFeed(getPresenter().getSearchQuery());
-            } else {
-                getPresenter().requestMoviesFeed(getPresenter().getCurrentFilter());
-            }
+            getPresenter().tryAgain();
         }
     }
 
