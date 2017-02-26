@@ -15,3 +15,7 @@ https://github.com/square/retrofit
 https://github.com/ReactiveX/RxAndroid
 
 https://github.com/JakeWharton/butterknife
+
+https://github.com/google/dagger
+
+https://github.com/mockito/mockito
