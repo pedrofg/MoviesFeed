@@ -1,6 +1,6 @@
 package com.moviesfeed.adapters;
 
-import android.content.Context;
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,14 +9,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.moviesfeed.activities.uicomponents.ImageLoader;
 import com.moviesfeed.R;
-import com.moviesfeed.activities.uicomponents.CircularTransform;
 import com.moviesfeed.api.MoviesApi;
-import com.squareup.picasso.Callback;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by Pedro on 2017-01-28.
@@ -27,11 +28,11 @@ public abstract class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapt
 
     public static final int MAX_TITLE_LENGTH = 16;
     public static final int MAX_SUB_TITLE_LENGTH = 16;
-    private Context context;
+    private Activity activity;
     private int listSize;
 
-    public CastCrewAdapter(Context context, int listSize) {
-        this.context = context;
+    public CastCrewAdapter(Activity activity, int listSize) {
+        this.activity = activity;
         this.listSize = listSize;
     }
 
@@ -57,20 +58,24 @@ public abstract class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapt
     public void loadImage(String path, final MovieCastCrewViewHolder holder) {
         final String url = MoviesApi.URL_MOVIE_POSTER + path;
 
-        ImageLoader.loadImage(context, url, holder.imgMovieCastCrew, new CircularTransform(),
-                R.dimen.movie_cast_thumbnail_width, R.dimen.movie_cast_thumbnail_height, R.drawable.no_profile, false,
-                new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        holder.imgMovieCastCrew.setVisibility(View.VISIBLE);
-                        holder.progressItem.setVisibility(View.GONE);
-                    }
+        ImageLoader.loadImageGlide(activity, url, holder.imgMovieCastCrew, new CropCircleTransformation(activity), R.drawable.no_profile, false, new RequestListener() {
+            @Override
+            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+                showImageLayout(holder);
+                return false;
+            }
 
-                    @Override
-                    public void onError() {
-                        holder.progressItem.setVisibility(View.GONE);
-                    }
-                });
+            @Override
+            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+                showImageLayout(holder);
+                return false;
+            }
+        });
+    }
+
+    private void showImageLayout(MovieCastCrewViewHolder holder) {
+        holder.imgMovieCastCrew.setVisibility(View.VISIBLE);
+        holder.progressItem.setVisibility(View.GONE);
     }
 
     private String ellipsizeText(String text, int maxLenght) {

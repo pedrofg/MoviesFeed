@@ -1,5 +1,6 @@
 package com.moviesfeed.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.moviesfeed.R;
@@ -13,11 +14,11 @@ import java.util.List;
 public class MovieCastAdapter extends CastCrewAdapter {
 
     private List<Cast> listCast;
-    private Context context;
+    private Activity activity;
 
-    public MovieCastAdapter(Context context, List<Cast> listCast) {
-        super(context, listCast.size());
-        this.context = context;
+    public MovieCastAdapter(Activity activity, List<Cast> listCast) {
+        super(activity, listCast.size());
+        this.activity = activity;
         this.listCast = listCast;
     }
 
@@ -29,7 +30,7 @@ public class MovieCastAdapter extends CastCrewAdapter {
 
         holder.txtMovieCastName.setText(formatTitle(cast.getName()));
 
-        holder.txtMovieCastAs.setText(context.getString(R.string.as) + formatSubTitle(cast.getCharacter()));
+        holder.txtMovieCastAs.setText(activity.getString(R.string.as) + formatSubTitle(cast.getCharacter()));
 
         loadImage(cast.getProfilePath(), holder);
     }

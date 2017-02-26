@@ -44,7 +44,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="@dimen/movie_detail_img_backdrop_height"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         android:visibility="gone">
@@ -253,7 +253,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txtVideos"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="@dimen/movie_detail_title_margin_bottom"
                         android:background="@android:color/white" />
                 </RelativeLayout>
 
@@ -282,7 +282,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txtCast"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="@dimen/movie_detail_title_margin_bottom"
                         android:background="@android:color/white" />
                 </RelativeLayout>
 
@@ -310,7 +310,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txtCrew"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="@dimen/movie_detail_title_margin_bottom"
                         android:background="@android:color/white" />
                 </RelativeLayout>
 
@@ -338,7 +338,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txtSimilarMovies"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="@dimen/movie_detail_title_margin_bottom"
                         android:background="@android:color/white" />
                 </RelativeLayout>
 
@@ -366,7 +366,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txtReviews"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="@dimen/movie_detail_title_margin_bottom"
                         android:background="@android:color/white" />
                 </RelativeLayout>
             </RelativeLayout>

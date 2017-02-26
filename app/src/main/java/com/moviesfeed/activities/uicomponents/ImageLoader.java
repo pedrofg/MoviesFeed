@@ -1,13 +1,11 @@
 package com.moviesfeed.activities.uicomponents;
 
-import android.content.Context;
+import android.app.Activity;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
-import com.squareup.picasso.Transformation;
+import com.bumptech.glide.DrawableTypeRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
 
 /**
  * Created by Pedro on 2017-02-07.
@@ -15,62 +13,24 @@ import com.squareup.picasso.Transformation;
 
 public abstract class ImageLoader {
 
-    public static void loadImage(final Context context, final String url, final ImageView imageView,
-                                 final Transformation transformation, final int widthDimenId, final int heightDimenId,
-                                 final int idDrawableError, final boolean crop, final Callback callback) {
+    public static void loadImageGlide(final Activity activity, final String url, final ImageView imageView,
+                                      final com.bumptech.glide.load.Transformation transformation, final int idDrawableError,
+                                      final boolean crop, final RequestListener callback) {
 
-        RequestCreator rcCache = getRequestCreator(context, url, idDrawableError, true, transformation, widthDimenId, heightDimenId, crop);
+        DrawableTypeRequest<String> request = Glide.with(activity).load(url);
 
-        rcCache.into(imageView, new Callback() {
-            @Override
-            public void onSuccess() {
-                callback.onSuccess();
-            }
+        if (crop)
+            request.centerCrop();
 
-            @Override
-            public void onError() {
-                RequestCreator rcDownload = getRequestCreator(context, url, idDrawableError, false, transformation, widthDimenId, heightDimenId, crop);
-                rcDownload.into(imageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        callback.onSuccess();
-                    }
+        if (transformation != null)
+            request.bitmapTransform(transformation);
 
-                    @Override
-                    public void onError() {
-                        if (idDrawableError != 0) {
-                            RequestCreator rcErrorImg = getRequestCreator(context, null, idDrawableError, true, transformation, widthDimenId, heightDimenId, crop);
-                            rcErrorImg.into(imageView, callback);
-                        } else {
-                            callback.onError();
-                        }
-                    }
-                });
-            }
-        });
+        if (idDrawableError != 0)
+            request.error(idDrawableError);
 
+        request.listener(callback);
+
+        request.into(imageView);
     }
 
-    private static RequestCreator getRequestCreator(Context context, String url, int resourceError, boolean useCache, Transformation transformation, int widthDimenId, int heightDimenId, boolean crop) {
-        RequestCreator requestCreator;
-
-        if (url != null)
-            requestCreator = Picasso.with(context).load(url);
-        else
-            requestCreator = Picasso.with(context).load(resourceError);
-
-        if (widthDimenId != 0 && heightDimenId != 0) {
-            requestCreator.resizeDimen(widthDimenId, heightDimenId);
-        }
-        if (transformation != null) {
-            requestCreator.transform(transformation);
-        }
-        if (crop) {
-            requestCreator.centerCrop();
-        }
-        if (useCache) {
-            requestCreator.networkPolicy(NetworkPolicy.OFFLINE);
-        }
-        return requestCreator;
-    }
 }

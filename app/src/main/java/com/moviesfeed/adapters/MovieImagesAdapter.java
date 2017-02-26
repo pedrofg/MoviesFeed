@@ -1,6 +1,6 @@
 package com.moviesfeed.adapters;
 
-import android.content.Context;
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +9,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.moviesfeed.activities.uicomponents.ImageLoader;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.moviesfeed.R;
+import com.moviesfeed.activities.uicomponents.ImageLoader;
 import com.moviesfeed.api.MoviesApi;
 import com.moviesfeed.models.MovieBackdrop;
-import com.squareup.picasso.Callback;
 
 import java.util.List;
 
@@ -26,10 +27,10 @@ import butterknife.ButterKnife;
 public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.MovieImagesViewHolder> {
 
     private List<MovieBackdrop> listMovieImages;
-    private Context context;
+    private Activity activity;
 
-    public MovieImagesAdapter(Context context, List<MovieBackdrop> listMovieBackdrop) {
-        this.context = context;
+    public MovieImagesAdapter(Activity activity, List<MovieBackdrop> listMovieBackdrop) {
+        this.activity = activity;
         this.listMovieImages = listMovieBackdrop;
     }
 
@@ -48,18 +49,19 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
         holder.progressItem.setVisibility(View.VISIBLE);
         final String url = MoviesApi.URL_MOVIE_BACKGROUND + mb.getFilePath();
 
-        ImageLoader.loadImage(context, url, holder.imgMovieBackdrop, null, 0, 0, 0, false,
-                new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        holder.progressItem.setVisibility(View.GONE);
-                    }
 
-                    @Override
-                    public void onError() {
-                        //TODO handle error
-                    }
-                });
+        ImageLoader.loadImageGlide(activity, url, holder.imgMovieBackdrop, null, 0, false, new RequestListener() {
+            @Override
+            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+                holder.progressItem.setVisibility(View.GONE);
+                return false;
+            }
+        });
 
         holder.txtPosition.setText(++position + " - " + this.listMovieImages.size());
     }

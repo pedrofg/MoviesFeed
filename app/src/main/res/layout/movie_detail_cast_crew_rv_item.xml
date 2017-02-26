@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/imgMovieCastCrew"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/movie_cast_thumbnail_width"
+            android:layout_height="@dimen/movie_cast_thumbnail_height"
             android:layout_centerHorizontal="true"
             android:visibility="gone" />
 

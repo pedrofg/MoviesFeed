@@ -1,5 +1,5 @@
 <resources>
-    <dimen name="grid_movie_thumbnail_height">190dp</dimen>
+    <dimen name="grid_movie_thumbnail_height">200dp</dimen>
     <dimen name="grid_movie_thumbnail_width">115dp</dimen>
     <dimen name="movie_video_height">110dp</dimen>
     <dimen name="movie_video_width">200dp</dimen>
@@ -11,4 +11,6 @@
     <dimen name="movie_cast_thumbnail_width">100dp</dimen>
     <dimen name="movie_cast_width">110dp</dimen>
     <dimen name="layout_cast_height">235dp</dimen>
+    <dimen name="movie_detail_title_margin_bottom">10dp</dimen>
+    <dimen name="movie_detail_img_backdrop_height">300dp</dimen>
 </resources>
