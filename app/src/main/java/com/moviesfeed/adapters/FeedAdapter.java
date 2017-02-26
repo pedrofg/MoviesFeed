@@ -1,6 +1,6 @@
 package com.moviesfeed.adapters;
 
-import android.content.Context;
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,30 +8,30 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.moviesfeed.activities.uicomponents.ImageLoader;
 import com.moviesfeed.R;
-import com.moviesfeed.activities.uicomponents.BorderTransform;
 import com.moviesfeed.api.MoviesApi;
 import com.moviesfeed.models.Movie;
-import com.moviesfeed.models.MoviesFeed;
-import com.squareup.picasso.Callback;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context context;
+    private Activity activity;
     public static final int VIEW_PROGRESS = 0;
     public static final int VIEW_ITEM = 1;
     private boolean isErrorProgress;
     private List<Movie> listMovies;
 
 
-    public FeedAdapter(Context context) {
-        this.context = context;
+    public FeedAdapter(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
@@ -70,19 +70,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((FeedViewHolder) holder).progressItem.setVisibility(View.VISIBLE);
             final String url = MoviesApi.URL_MOVIE_POSTER + this.listMovies.get(position).getPosterPath();
 
-            ImageLoader.loadImage(context, url, ((FeedViewHolder) holder).imgMoviePoster, new BorderTransform(20, 0),
-                    R.dimen.grid_movie_thumbnail_width, R.dimen.grid_movie_thumbnail_height, 0, false,
-                    new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            ((FeedViewHolder) holder).progressItem.setVisibility(View.GONE);
-                        }
 
-                        @Override
-                        public void onError() {
-                            //TODO handle error
-                        }
-                    });
+            ImageLoader.loadImageGlide(activity, url, ((FeedViewHolder) holder).imgMoviePoster, new RoundedCornersTransformation(activity, 20, 0), 0, false, new RequestListener() {
+                @Override
+                public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    ((FeedViewHolder) holder).progressItem.setVisibility(View.GONE);
+                    return false;
+                }
+            });
+
 
         } else {
             if (this.isErrorProgress) {

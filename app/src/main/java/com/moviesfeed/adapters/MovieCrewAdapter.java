@@ -1,5 +1,6 @@
 package com.moviesfeed.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.moviesfeed.models.Crew;
@@ -13,8 +14,8 @@ public class MovieCrewAdapter extends CastCrewAdapter {
 
     private List<Crew> listCrew;
 
-    public MovieCrewAdapter(Context context, List<Crew> listCrew) {
-        super(context, listCrew.size());
+    public MovieCrewAdapter(Activity activity, List<Crew> listCrew) {
+        super(activity, listCrew.size());
         this.listCrew = listCrew;
     }
 

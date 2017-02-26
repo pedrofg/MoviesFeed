@@ -6,9 +6,8 @@
 
     <ImageView
         android:id="@+id/imgMovieVideo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:layout_width="@dimen/movie_video_width"
+        android:layout_height="@dimen/movie_video_height" />
 
     <ImageView
         android:id="@+id/imgIconPlay"

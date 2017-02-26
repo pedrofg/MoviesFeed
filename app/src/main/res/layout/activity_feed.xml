@@ -18,12 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
-        android:paddingTop="5dp"
+        android:layout_marginTop="5dp"
         android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingLeft="3dp">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rvMoviesFeed"

@@ -6,8 +6,9 @@
 
     <ImageView
         android:id="@+id/movieItemPoster"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="@dimen/grid_movie_thumbnail_width"
+        android:layout_height="@dimen/grid_movie_thumbnail_height"
+        android:scaleType="fitXY" />
 
     <ProgressBar
         android:id="@+id/movieItemProgressBar"
