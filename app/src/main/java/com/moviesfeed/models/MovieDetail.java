@@ -576,4 +576,5 @@ public class MovieDetail {
         myDao = daoSession != null ? daoSession.getMovieDetailDao() : null;
     }
 
+
 }

@@ -53,7 +53,6 @@ public class FeedPresenterTest {
     public static final int MOVIE_VOTE_AVERAGE = 10;
     public static final int TOTAL_PAGES = 1;
 
-    @Mock
     private FeedActivity activity;
     private FeedPresenter presenter;
 
@@ -205,6 +204,40 @@ public class FeedPresenterTest {
         Assert.assertEquals(moviesFeedList.get(0).getTotalPages(), TOTAL_PAGES);
 
         verify(this.activity, never()).requestMoviesFeedError(anyBoolean(), anyBoolean());
+    }
+
+    @Test
+    public void testDownloadError() {
+        when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return Observable.just(null);
+            }
+        });
+
+        presenter.requestMoviesFeed(Filters.POPULARITY);
+
+
+        when(this.presenter.api.getMovieByGenre(anyInt(), anyString(), anyInt())).then(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return Observable.just(null);
+            }
+        });
+
+        presenter.requestMoviesFeed(Filters.COMEDY);
+
+
+        when(this.presenter.api.getSearchMovie(anyString(), anyInt())).then(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return Observable.just(null);
+            }
+        });
+
+        presenter.requestSearchMoviesFeed(MOVIE_TITLE);
+
+        verify(this.activity, times(3)).requestMoviesFeedError(anyBoolean(), anyBoolean());
     }
 
 

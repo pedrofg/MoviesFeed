@@ -7,6 +7,7 @@ import android.util.Log;
 import com.moviesfeed.activities.MovieDetailActivity;
 import com.moviesfeed.api.MoviesApi;
 import com.moviesfeed.daggercomponents.DaggerAppComponent;
+import com.moviesfeed.exceptions.NullResponseException;
 import com.moviesfeed.models.Cast;
 import com.moviesfeed.models.Crew;
 import com.moviesfeed.models.DaoSession;
@@ -59,7 +60,7 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
     public Scheduler mainThreadScheduler;
 
     @Override
-    protected void onCreate(Bundle savedState) {
+    public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
         createLoadMovieDetailDb();
         createUpdateMovieDetailDb();
@@ -84,10 +85,13 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
                 new Action2<MovieDetailActivity, MovieDetail>() {
                     @Override
                     public void call(MovieDetailActivity activity, final MovieDetail response) {
-                        Log.d(MovieDetailPresenter.class.getName(), "REQUEST_MOVIE_DETAIL_API success");
-                        lastResponse = response;
-                        start(REQUEST_UPDATE_MOVIE_DETAIL_DB);
-
+                        if (response != null) {
+                            Log.d(MovieDetailPresenter.class.getName(), "REQUEST_MOVIE_DETAIL_API success");
+                            lastResponse = response;
+                            start(REQUEST_UPDATE_MOVIE_DETAIL_DB);
+                        } else {
+                            handleError().call(activity, new NullResponseException());
+                        }
                     }
                 },
                 handleError());
@@ -195,42 +199,66 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
         movieDetail.getMovieReviews().setIdDB(movieDetail.getId());
         movieDetail.setReviewId(movieDetail.getId());
 
-        for (Genre genre : movieDetail.getGenres()) {
-            genre.setMovieDetailId(movieDetail.getId());
-        }
-        for (MovieBackdrop mb : movieDetail.getImages().getBackdrops()) {
-            mb.setMovieImagesId(movieDetail.getImagesId());
-        }
-        for (MoviePoster mp : movieDetail.getImages().getPosters()) {
-            mp.setMovieImagesId(movieDetail.getImagesId());
-        }
-        for (Video video : movieDetail.getVideos().getVideos()) {
-            if (Validator.validateVideo(video)) {
-                video.setMovieVideosId(movieDetail.getVideosId());
-            } else {
-                movieDetail.getVideos().getVideos().remove(video);
-            }
-
-        }
-        for (Crew crew : movieDetail.getCredits().getCrew()) {
-            crew.setCreditsKey(movieDetail.getCreditsId());
-        }
-        for (Cast cast : movieDetail.getCredits().getCast()) {
-            cast.setCreditsKey(movieDetail.getCreditsId());
-        }
-
-        List<Movie> filteredMovies = new ArrayList<>();
-        for (Movie movie : movieDetail.getSimilarMovies().getMovies()) {
-            if (Validator.validateMovie(movie)) {
-                movie.setSimilarMovieKey(movieDetail.getSimilarId());
-                filteredMovies.add(movie);
+        if (movieDetail.getGenres() != null) {
+            for (Genre genre : movieDetail.getGenres()) {
+                genre.setMovieDetailId(movieDetail.getId());
             }
         }
 
-        movieDetail.getSimilarMovies().setMovies(filteredMovies);
+        if (movieDetail.getImages() != null) {
+            if (movieDetail.getImages().getBackdrops() != null) {
+                for (MovieBackdrop mb : movieDetail.getImages().getBackdrops()) {
+                    mb.setMovieImagesId(movieDetail.getImagesId());
+                }
+            }
 
-        for (Review review : movieDetail.getMovieReviews().getReviews()) {
-            review.setMovieReviewId(movieDetail.getReviewId());
+            if (movieDetail.getImages().getPosters() != null) {
+                for (MoviePoster mp : movieDetail.getImages().getPosters()) {
+                    mp.setMovieImagesId(movieDetail.getImagesId());
+                }
+            }
+        }
+
+
+        if (movieDetail.getVideos() != null && movieDetail.getVideos().getVideos() != null) {
+            for (Video video : movieDetail.getVideos().getVideos()) {
+                if (Validator.validateVideo(video)) {
+                    video.setMovieVideosId(movieDetail.getVideosId());
+                } else {
+                    movieDetail.getVideos().getVideos().remove(video);
+                }
+            }
+        }
+
+        if (movieDetail.getCredits() != null) {
+            if (movieDetail.getCredits().getCrew() != null) {
+                for (Crew crew : movieDetail.getCredits().getCrew()) {
+                    crew.setCreditsKey(movieDetail.getCreditsId());
+                }
+            }
+            if (movieDetail.getCredits().getCast() != null) {
+                for (Cast cast : movieDetail.getCredits().getCast()) {
+                    cast.setCreditsKey(movieDetail.getCreditsId());
+                }
+            }
+        }
+
+        if (movieDetail.getSimilarMovies() != null && movieDetail.getSimilarMovies().getMovies() != null) {
+            List<Movie> filteredMovies = new ArrayList<>();
+            for (Movie movie : movieDetail.getSimilarMovies().getMovies()) {
+                if (Validator.validateMovie(movie)) {
+                    movie.setSimilarMovieKey(movieDetail.getSimilarId());
+                    filteredMovies.add(movie);
+                }
+            }
+
+            movieDetail.getSimilarMovies().setMovies(filteredMovies);
+        }
+
+        if (movieDetail.getMovieReviews() != null && movieDetail.getMovieReviews().getReviews() != null) {
+            for (Review review : movieDetail.getMovieReviews().getReviews()) {
+                review.setMovieReviewId(movieDetail.getReviewId());
+            }
         }
 
         if (verifyDb()) {

@@ -6,11 +6,6 @@
         <b>Nucelus</b>
         \r\n
         \r\n
-        info.android15.nucleus:nucleus:4.0.0
-        \r\n
-        info.android15.nucleus:nucleus-support-v7:4.0.0
-        \r\n
-        \r\n
         The MIT License (MIT)
         \r\n
         \r\n
@@ -38,14 +33,9 @@
         SOFTWARE.
         \r\n
         \r\n
+
+
         <b>Retrofit</b>
-        \r\n
-        \r\n
-        com.squareup.retrofit2:retrofit:2.1.0
-        \r\n
-        com.squareup.retrofit2:converter-gson:2.1.0
-        \r\n
-        com.squareup.retrofit2:adapter-rxjava:2.1.0
         \r\n
         \r\n
         Copyright 2013 Square, Inc.
@@ -66,12 +56,9 @@
         limitations under the License.
         \r\n
         \r\n
+
+
         <b>RxAndroid and RxJava</b>
-        \r\n
-        \r\n
-        io.reactivex:rxandroid:1.2.1
-        \r\n
-        io.reactivex:rxjava:1.1.6
         \r\n
         \r\n
         Copyright 2015 The RxAndroid authors
@@ -92,12 +79,9 @@
         limitations under the License.
         \r\n
         \r\n
+
+
        <b>Butter Knife</b>
-        \r\n
-        \r\n
-        com.jakewharton:butterknife:8.2.1
-        \r\n
-        com.jakewharton:butterknife-compiler:8.2.1
         \r\n
         \r\n
         Copyright 2013 Jake Wharton
@@ -118,10 +102,9 @@
         limitations under the License.
         \r\n
         \r\n
+
+
         <b>Picasso 2 OkHttp 3 Downloader</b>
-        \r\n
-        \r\n
-        com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0
         \r\n
         \r\n
         Copyright 2016 Jake Wharton
@@ -142,6 +125,8 @@
         limitations under the License.
         \r\n
         \r\n
+
+
         <b>Green DAO</b>
         \r\n
         \r\n
@@ -160,6 +145,59 @@
         limitations under the License.
         \r\n
         \r\n
+
+
+        <b>Dagger 2</b>
+        \r\n
+        \r\n
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+        \r\n
+        \r\n
+        http://www.apache.org/licenses/LICENSE-2.0
+        \r\n
+        \r\n
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+        \r\n
+        \r\n
+
+
+        <b>Mockito</b>
+        \r\n
+        \r\n
+       The MIT License
+        \r\n
+        \r\n
+        Copyright (c) 2007 Mockito contributors
+        \r\n
+        \r\n
+        http://www.apache.org/licenses/LICENSE-2.0
+        \r\n
+        \r\n
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        \r\n
+        \r\n
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+        THE SOFTWARE.
+        \r\n
+        \r\n
+
+
         <b>TMDb</b>
         \r\n
         \r\n
