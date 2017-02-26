@@ -8,6 +8,7 @@ import com.moviesfeed.activities.FeedActivity;
 import com.moviesfeed.api.Filters;
 import com.moviesfeed.api.MoviesApi;
 import com.moviesfeed.daggercomponents.DaggerAppComponent;
+import com.moviesfeed.exceptions.NullResponseException;
 import com.moviesfeed.models.DaoSession;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MovieDao;
@@ -199,8 +200,12 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
             @Override
             public void call(final FeedActivity activity, final MoviesFeed response) {
                 Log.d(FeedPresenter.class.getName(), "handleRequestMovieFeedAPISuccess()");
-                lastResponse = response;
-                start(REQUEST_UPDATE_MOVIES_FEED_DB);
+                if (response != null) {
+                    lastResponse = response;
+                    start(REQUEST_UPDATE_MOVIES_FEED_DB);
+                } else {
+                    handleError().call(activity, new NullResponseException());
+                }
             }
         };
     }

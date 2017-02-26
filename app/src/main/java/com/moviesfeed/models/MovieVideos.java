@@ -8,6 +8,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
@@ -24,25 +25,34 @@ public class MovieVideos {
     @SerializedName("results")
     @Expose
     private List<Video> videos;
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 941434168)
     private transient MovieVideosDao myDao;
+
     @Generated(hash = 597379550)
     public MovieVideos(Long id) {
         this.id = id;
     }
+
     @Generated(hash = 986930177)
     public MovieVideos() {
     }
+
     public Long getId() {
         return this.id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
@@ -64,11 +74,15 @@ public class MovieVideos {
         }
         return videos;
     }
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 1923228979)
     public synchronized void resetVideos() {
         videos = null;
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
      * Entity must attached to an entity context.
@@ -80,6 +94,7 @@ public class MovieVideos {
         }
         myDao.delete(this);
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -91,6 +106,7 @@ public class MovieVideos {
         }
         myDao.refresh(this);
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
      * Entity must attached to an entity context.
@@ -102,6 +118,11 @@ public class MovieVideos {
         }
         myDao.update(this);
     }
+
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1810704095)
     public void __setDaoSession(DaoSession daoSession) {

@@ -166,6 +166,10 @@ public class MovieReviews {
         reviews = null;
     }
 
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1364655968)
     public void __setDaoSession(DaoSession daoSession) {

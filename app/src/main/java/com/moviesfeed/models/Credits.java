@@ -8,6 +8,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
@@ -27,25 +28,34 @@ public class Credits {
     @SerializedName("crew")
     @Expose
     private List<Crew> crew;
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1476102523)
     private transient CreditsDao myDao;
+
     @Generated(hash = 1594016963)
     public Credits(Long idDb) {
         this.idDb = idDb;
     }
+
     @Generated(hash = 688025143)
     public Credits() {
     }
+
     public Long getIdDb() {
         return this.idDb;
     }
+
     public void setIdDb(Long idDb) {
         this.idDb = idDb;
     }
+
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
@@ -67,11 +77,15 @@ public class Credits {
         }
         return cast;
     }
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 711953200)
     public synchronized void resetCast() {
         cast = null;
     }
+
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
@@ -93,11 +107,15 @@ public class Credits {
         }
         return crew;
     }
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 901153372)
     public synchronized void resetCrew() {
         crew = null;
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
      * Entity must attached to an entity context.
@@ -109,6 +127,7 @@ public class Credits {
         }
         myDao.delete(this);
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -120,6 +139,7 @@ public class Credits {
         }
         myDao.refresh(this);
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
      * Entity must attached to an entity context.
@@ -131,6 +151,15 @@ public class Credits {
         }
         myDao.update(this);
     }
+
+    public void setCast(List<Cast> cast) {
+        this.cast = cast;
+    }
+
+    public void setCrew(List<Crew> crew) {
+        this.crew = crew;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 666285910)
     public void __setDaoSession(DaoSession daoSession) {
