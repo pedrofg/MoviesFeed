@@ -19,3 +19,5 @@ https://github.com/JakeWharton/butterknife
 https://github.com/google/dagger
 
 https://github.com/mockito/mockito
+
+https://github.com/JakeWharton/picasso2-okhttp3-downloader
