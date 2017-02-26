@@ -114,6 +114,7 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
+        getPresenter().init(this);
 
         this.movieId = getIntent().getIntExtra(INTENT_MOVIE_DETAIL_ID, 0);
 

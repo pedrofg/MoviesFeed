@@ -23,39 +23,39 @@ public enum Filters {
     @Override
     public String toString() {
         String name = "";
-        if (id == 0) {
+        if (id == POPULARITY.getId()) {
             name = MoviesApi.FILTER_POPULARITY;
-        } else if (id == 1) {
+        } else if (id == UPCOMING.getId()) {
             name = MoviesApi.FILTER_UPCOMING;
-        } else if (id == 2) {
+        } else if (id == NOW_PLAYING.getId()) {
             name = MoviesApi.FILTER_NOW_PLAYING;
-        } else if (id == 3) {
+        } else if (id == TOP_RATED.getId()) {
             name = MoviesApi.FILTER_TOP_RATED;
-        } else if (id == 4) {
+        } else if (id == REVENUE.getId()) {
             name = MoviesApi.FILTER_REVENUE;
-        } else if (id == 5) {
+        } else if (id == ACTION.getId()) {
             name = MoviesApi.GENRE_ACTION;
-        } else if (id == 6) {
+        } else if (id == ANIMATION.getId()) {
             name = MoviesApi.GENRE_ANIMATION;
-        } else if (id == 7) {
+        } else if (id == COMEDY.getId()) {
             name = MoviesApi.GENRE_COMEDY;
-        } else if (id == 8) {
+        } else if (id == ROMANCE.getId()) {
             name = MoviesApi.GENRE_ROMANCE;
-        } else if (id == 9) {
+        } else if (id == DRAMA.getId()) {
             name = MoviesApi.GENRE_DRAMA;
-        } else if (id == 10) {
+        } else if (id == SCIENCE_FICTION.getId()) {
             name = MoviesApi.GENRE_SCIENCE_FICTION;
-        } else if (id == 11) {
+        } else if (id == MUSIC.getId()) {
             name = MoviesApi.GENRE_MUSIC;
-        } else if (id == 12) {
+        } else if (id == THRILLER.getId()) {
             name = MoviesApi.GENRE_THRILLER;
-        } else if (id == 13) {
+        } else if (id == HORROR.getId()) {
             name = MoviesApi.GENRE_HORROR;
-        } else if (id == 14) {
+        } else if (id == DOCUMENTARY.getId()) {
             name = MoviesApi.GENRE_DOCUMENTARY;
-        } else if (id == 15) {
+        } else if (id == WAR.getId()) {
             name = MoviesApi.GENRE_WAR;
-        } else if (id == 16) {
+        } else if (id == SEARCH.getId()) {
             name = MoviesApi.FILTER_SEARCH;
         }
         return name;
