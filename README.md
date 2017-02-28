@@ -20,4 +20,4 @@ https://github.com/google/dagger
 
 https://github.com/mockito/mockito
 
-https://github.com/JakeWharton/picasso2-okhttp3-downloader
+https://github.com/bumptech/glide
