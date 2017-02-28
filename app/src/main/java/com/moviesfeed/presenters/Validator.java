@@ -2,6 +2,8 @@ package com.moviesfeed.presenters;
 
 import android.text.TextUtils;
 
+import com.moviesfeed.models.Cast;
+import com.moviesfeed.models.Crew;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.Video;
 
@@ -26,6 +28,24 @@ public abstract class Validator {
         if (TextUtils.isEmpty(video.getKey()) ||
                 TextUtils.isEmpty(video.getSite()) ||
                 !video.getSite().equals(Video.YOUTUBE_SITE)) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean validateCast(Cast cast) {
+        if (TextUtils.isEmpty(cast.getProfilePath()) ||
+                TextUtils.isEmpty(cast.getName()) ||
+                TextUtils.isEmpty(cast.getCharacter())) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean validateCrew(Crew crew) {
+        if (TextUtils.isEmpty(crew.getProfilePath()) ||
+                TextUtils.isEmpty(crew.getName()) ||
+                TextUtils.isEmpty(crew.getJob())) {
             return false;
         }
         return true;

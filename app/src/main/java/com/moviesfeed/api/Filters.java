@@ -69,7 +69,7 @@ public enum Filters {
                 return null;
             }
             for (Filters role : Filters.values()) {
-                if (role.id == databaseValue) {
+                if (role.getId() == databaseValue) {
                     return role;
                 }
             }
@@ -78,7 +78,7 @@ public enum Filters {
 
         @Override
         public Long convertToDatabaseValue(Filters entityProperty) {
-            return entityProperty == null ? null : entityProperty.id;
+            return entityProperty == null ? null : entityProperty.getId();
         }
     }
 

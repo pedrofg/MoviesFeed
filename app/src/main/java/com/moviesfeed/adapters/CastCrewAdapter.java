@@ -14,27 +14,34 @@ import com.bumptech.glide.request.target.Target;
 import com.moviesfeed.activities.uicomponents.ImageLoader;
 import com.moviesfeed.R;
 import com.moviesfeed.api.MoviesApi;
+import com.moviesfeed.models.Cast;
+import com.moviesfeed.models.Crew;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.Provides;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by Pedro on 2017-01-28.
  */
 
-public abstract class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieCastCrewViewHolder> {
+public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieCastCrewViewHolder> {
 
 
-    public static final int MAX_TITLE_LENGTH = 16;
-    public static final int MAX_SUB_TITLE_LENGTH = 16;
+    public static final int MAX_TEXT_LINE = 2;
     private Activity activity;
-    private int listSize;
+    private List<Cast> listCast;
+    private List<Crew> listCrew;
 
-    public CastCrewAdapter(Activity activity, int listSize) {
+    public CastCrewAdapter(Activity activity, List<Cast> listCast, List<Crew> listcrew) {
         this.activity = activity;
-        this.listSize = listSize;
+        this.listCast = listCast;
+        this.listCrew = listcrew;
     }
+
 
     @Override
     public MovieCastCrewViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -48,17 +55,44 @@ public abstract class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapt
     public void onBindViewHolder(MovieCastCrewViewHolder holder, int position) {
         holder.progressItem.setVisibility(View.VISIBLE);
 
+        String title = "";
+        String subTitle = "";
+        String url = "";
+
+        //position + 1 because list.size()
+        if (this.listCast.size() >= position + 1) {
+            Cast cast = this.listCast.get(position);
+            title = cast.getName();
+            subTitle = activity.getString(R.string.as) + cast.getCharacter();
+            url = cast.getProfilePath();
+        } else {
+            //- listCast.size() to position starts from the beginning of listCrew.
+            Crew crew = this.listCrew.get(position - this.listCast.size());
+
+            title = crew.getName();
+            subTitle = crew.getJob();
+            url = crew.getProfilePath();
+        }
+
+        holder.txtMovieCastName.setMaxLines(MAX_TEXT_LINE);
+        holder.txtMovieCastAs.setMaxLines(MAX_TEXT_LINE);
+
+        holder.txtMovieCastName.setText(title);
+        holder.txtMovieCastAs.setText(subTitle);
+
+        loadImage(url, holder);
     }
 
     @Override
     public int getItemCount() {
-        return this.listSize;
+        return this.listCast.size() + this.listCrew.size();
     }
+
 
     public void loadImage(String path, final MovieCastCrewViewHolder holder) {
         final String url = MoviesApi.URL_MOVIE_POSTER + path;
 
-        ImageLoader.loadImageGlide(activity, url, holder.imgMovieCastCrew, new CropCircleTransformation(activity), R.drawable.no_profile, false, new RequestListener() {
+        ImageLoader.loadImageGlide(activity, url, holder.imgMovieCastCrew, new CropCircleTransformation(activity), R.drawable.no_profile, false, false, new RequestListener() {
             @Override
             public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
                 showImageLayout(holder);
@@ -84,14 +118,6 @@ public abstract class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapt
         } else {
             return text;
         }
-    }
-
-    public String formatTitle(String text) {
-        return ellipsizeText(text, MAX_TITLE_LENGTH);
-    }
-
-    public String formatSubTitle(String text) {
-        return ellipsizeText(text, MAX_SUB_TITLE_LENGTH);
     }
 
 

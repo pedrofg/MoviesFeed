@@ -23,6 +23,7 @@ import com.moviesfeed.modules.DatabaseModule;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -188,6 +189,7 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
 
     private MovieDetail updateMovieDetailDb(MovieDetail movieDetail) {
 
+        //set ids with the TmdbID so the database relations will work.
         movieDetail.setImagesId(movieDetail.getId());
         movieDetail.getImages().setId(movieDetail.getId());
         movieDetail.setVideosId(movieDetail.getId());
@@ -221,24 +223,46 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
 
 
         if (movieDetail.getVideos() != null && movieDetail.getVideos().getVideos() != null) {
-            for (Video video : movieDetail.getVideos().getVideos()) {
+            Iterator<Video> videoIterator = movieDetail.getVideos().getVideos().iterator();
+
+            while (videoIterator.hasNext()) {
+                Video video = videoIterator.next();
+
                 if (Validator.validateVideo(video)) {
                     video.setMovieVideosId(movieDetail.getVideosId());
                 } else {
-                    movieDetail.getVideos().getVideos().remove(video);
+                    videoIterator.remove();
                 }
             }
         }
 
         if (movieDetail.getCredits() != null) {
+
             if (movieDetail.getCredits().getCrew() != null) {
-                for (Crew crew : movieDetail.getCredits().getCrew()) {
-                    crew.setCreditsKey(movieDetail.getCreditsId());
+                Iterator<Crew> crewIterator = movieDetail.getCredits().getCrew().iterator();
+
+                while (crewIterator.hasNext()) {
+                    Crew crew = crewIterator.next();
+
+                    if (Validator.validateCrew(crew)) {
+                        crew.setCreditsKey(movieDetail.getCreditsId());
+                    } else {
+                        crewIterator.remove();
+                    }
                 }
+
             }
             if (movieDetail.getCredits().getCast() != null) {
-                for (Cast cast : movieDetail.getCredits().getCast()) {
-                    cast.setCreditsKey(movieDetail.getCreditsId());
+                Iterator<Cast> castIterator = movieDetail.getCredits().getCast().iterator();
+
+                while (castIterator.hasNext()) {
+                    Cast cast = castIterator.next();
+
+                    if (Validator.validateCast(cast)) {
+                        cast.setCreditsKey(movieDetail.getCreditsId());
+                    } else {
+                        castIterator.remove();
+                    }
                 }
             }
         }

@@ -20,9 +20,8 @@ import com.moviesfeed.R;
 import com.moviesfeed.activities.uicomponents.AppBarStateChangeListener;
 import com.moviesfeed.activities.uicomponents.DividerItemDecoration;
 import com.moviesfeed.activities.uicomponents.RecyclerItemClickListener;
+import com.moviesfeed.adapters.CastCrewAdapter;
 import com.moviesfeed.adapters.FeedAdapter;
-import com.moviesfeed.adapters.MovieCastAdapter;
-import com.moviesfeed.adapters.MovieCrewAdapter;
 import com.moviesfeed.adapters.MovieImagesAdapter;
 import com.moviesfeed.adapters.MovieVideosAdapter;
 import com.moviesfeed.adapters.ReviewsAdapter;
@@ -82,14 +81,10 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
     RecyclerView rvMovieVideos;
     @BindView(R.id.layoutVideos)
     View layoutVideos;
-    @BindView(R.id.recyclerViewMovieCast)
-    RecyclerView rvMovieCast;
-    @BindView(R.id.layoutCast)
-    View layoutCast;
-    @BindView(R.id.recyclerViewMovieCrew)
-    RecyclerView rvMovieCrew;
-    @BindView(R.id.layoutCrew)
-    View layoutCrew;
+    @BindView(R.id.recyclerViewMovieCastCrew)
+    RecyclerView rvMovieCastCrew;
+    @BindView(R.id.layoutCastCrew)
+    View layoutCastCrew;
     @BindView(R.id.layoutDetailsError)
     View layoutError;
     @BindView(R.id.recyclerViewSimilarMovies)
@@ -108,6 +103,7 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
     private FeedAdapter rvSimilarMoviesAdapter;
     private MovieDetail movieDetail;
     private int movieId;
+    private DividerItemDecoration dividerItemDecoration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,10 +142,9 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
         this.rvMovieVideos.setHasFixedSize(true);
         this.rvSimilarMovies.setHasFixedSize(true);
         this.rvMovieImages.setHasFixedSize(true);
-        this.rvMovieCrew.setHasFixedSize(true);
-        this.rvMovieCast.setHasFixedSize(true);
+        this.rvMovieCastCrew.setHasFixedSize(true);
 
-
+        this.dividerItemDecoration = new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false);
         requestMovieDetail();
     }
 
@@ -233,8 +228,7 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
         contentUpdated(false);
         fillMovieImages();
         fillMovieVideos();
-        fillMovieCast();
-        fillMovieCrew();
+        fillMovieCastAndCrew();
         fillSimilarMovies();
         fillReviews();
     }
@@ -253,27 +247,16 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
         }
     }
 
-    private void fillMovieCrew() {
-        if (this.movieDetail.getCredits() != null &&
-                this.movieDetail.getCredits().getCrew() != null &&
-                this.movieDetail.getCredits().getCrew().size() > 0) {
-            this.rvMovieCrew.setLayoutManager(getHorizontalLayoutManager());
-            this.rvMovieCrew.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
-            MovieCrewAdapter adapter = new MovieCrewAdapter(this, this.movieDetail.getCredits().getCrew());
-            this.rvMovieCrew.setAdapter(adapter);
-            this.layoutCrew.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void fillMovieCast() {
+    private void fillMovieCastAndCrew() {
         if (this.movieDetail.getCredits() != null &&
                 this.movieDetail.getCredits().getCast() != null &&
-                this.movieDetail.getCredits().getCast().size() > 0) {
-            this.rvMovieCast.setLayoutManager(getHorizontalLayoutManager());
-            this.rvMovieCast.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
-            MovieCastAdapter adapter = new MovieCastAdapter(this, this.movieDetail.getCredits().getCast());
-            this.rvMovieCast.setAdapter(adapter);
-            this.layoutCast.setVisibility(View.VISIBLE);
+                this.movieDetail.getCredits().getCrew() != null &&
+                (this.movieDetail.getCredits().getCast().size() > 0 || this.movieDetail.getCredits().getCrew().size() > 0)) {
+            this.rvMovieCastCrew.setLayoutManager(getHorizontalLayoutManager());
+            this.rvMovieCastCrew.addItemDecoration(this.dividerItemDecoration);
+            CastCrewAdapter adapter = new CastCrewAdapter(this, this.movieDetail.getCredits().getCast(), this.movieDetail.getCredits().getCrew());
+            this.rvMovieCastCrew.setAdapter(adapter);
+            this.layoutCastCrew.setVisibility(View.VISIBLE);
         }
     }
 
@@ -282,7 +265,7 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
                 this.movieDetail.getSimilarMovies().getMovies() != null &&
                 this.movieDetail.getSimilarMovies().getMovies().size() > 0) {
             this.rvSimilarMovies.setLayoutManager(getHorizontalLayoutManager());
-            this.rvSimilarMovies.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
+            this.rvSimilarMovies.addItemDecoration(this.dividerItemDecoration);
             this.rvSimilarMoviesAdapter = new FeedAdapter(this);
             this.rvSimilarMoviesAdapter.setMovies(this.movieDetail.getSimilarMovies().getMovies());
             this.rvSimilarMovies.setAdapter(this.rvSimilarMoviesAdapter);
@@ -296,7 +279,7 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
                 this.movieDetail.getMovieReviews().getReviews() != null &&
                 this.movieDetail.getMovieReviews().getReviews().size() > 0) {
             this.rvReviews.setLayoutManager(getHorizontalLayoutManager());
-            this.rvReviews.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
+            this.rvReviews.addItemDecoration(this.dividerItemDecoration);
             ReviewsAdapter reviewsAdapter = new ReviewsAdapter(this, this.movieDetail.getMovieReviews().getReviews());
             this.rvReviews.setAdapter(reviewsAdapter);
             this.layoutReviews.setVisibility(View.VISIBLE);
@@ -310,7 +293,7 @@ public class MovieDetailActivity extends AnimatedTransitionActivity<MovieDetailP
                 this.movieDetail.getVideos().getVideos() != null &&
                 this.movieDetail.getVideos().getVideos().size() > 0) {
             this.rvMovieVideos.setLayoutManager(getHorizontalLayoutManager());
-            this.rvMovieVideos.addItemDecoration(new DividerItemDecoration(getDrawable(R.drawable.list_separator), false, false));
+            this.rvMovieVideos.addItemDecoration(this.dividerItemDecoration);
             this.rvVideosAdapter = new MovieVideosAdapter(this, this.movieDetail.getVideos().getVideos());
             this.rvMovieVideos.setAdapter(this.rvVideosAdapter);
             this.layoutVideos.setVisibility(View.VISIBLE);
