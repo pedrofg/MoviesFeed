@@ -259,7 +259,7 @@
 
 
                 <RelativeLayout
-                    android:id="@+id/layoutCast"
+                    android:id="@+id/layoutCastCrew"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_cast_height"
                     android:layout_below="@id/layoutVideos"
@@ -269,47 +269,19 @@
                     android:visibility="gone">
 
                     <com.moviesfeed.activities.uicomponents.CustomTextView
-                        android:id="@+id/txtCast"
+                        android:id="@+id/txtCastCrew"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/cast"
+                        android:text="@string/cast_crew"
                         android:textColor="@android:color/black"
                         android:textSize="20dp"
                         app:typeface="Roboto-Regular.ttf" />
 
                     <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recyclerViewMovieCast"
+                        android:id="@+id/recyclerViewMovieCastCrew"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/txtCast"
-                        android:layout_marginTop="@dimen/movie_detail_title_margin_bottom"
-                        android:background="@android:color/white" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layoutCrew"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_cast_height"
-                    android:layout_below="@id/layoutCast"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="10dp"
-                    android:visibility="gone">
-
-                    <com.moviesfeed.activities.uicomponents.CustomTextView
-                        android:id="@+id/txtCrew"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/crew"
-                        android:textColor="@android:color/black"
-                        android:textSize="20dp"
-                        app:typeface="Roboto-Regular.ttf" />
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recyclerViewMovieCrew"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/txtCrew"
+                        android:layout_below="@id/txtCastCrew"
                         android:layout_marginTop="@dimen/movie_detail_title_margin_bottom"
                         android:background="@android:color/white" />
                 </RelativeLayout>
@@ -317,8 +289,8 @@
                 <RelativeLayout
                     android:id="@+id/layoutSimilarMovies"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_cast_height"
-                    android:layout_below="@id/layoutCrew"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layoutCastCrew"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:layout_marginTop="10dp"

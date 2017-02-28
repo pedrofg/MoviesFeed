@@ -10,7 +10,7 @@
     <dimen name="movie_cast_thumbnail_height">110dp</dimen>
     <dimen name="movie_cast_thumbnail_width">100dp</dimen>
     <dimen name="movie_cast_width">110dp</dimen>
-    <dimen name="layout_cast_height">235dp</dimen>
+    <dimen name="layout_cast_height">225dp</dimen>
     <dimen name="movie_detail_title_margin_bottom">10dp</dimen>
     <dimen name="movie_detail_img_backdrop_height">300dp</dimen>
 </resources>

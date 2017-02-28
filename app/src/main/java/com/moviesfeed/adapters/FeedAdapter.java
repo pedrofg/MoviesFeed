@@ -71,7 +71,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final String url = MoviesApi.URL_MOVIE_POSTER + this.listMovies.get(position).getPosterPath();
 
 
-            ImageLoader.loadImageGlide(activity, url, ((FeedViewHolder) holder).imgMoviePoster, new RoundedCornersTransformation(activity, 20, 0), 0, false, new RequestListener() {
+            ImageLoader.loadImageGlide(activity, url, ((FeedViewHolder) holder).imgMoviePoster, new RoundedCornersTransformation(activity, 20, 0), 0, false, true, new RequestListener() {
                 @Override
                 public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
                     return false;

@@ -11,12 +11,14 @@
         android:layout_height="@dimen/movie_cast_thumbnail_height"
         android:layout_centerHorizontal="true">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imgMovieCastCrew"
             android:layout_width="@dimen/movie_cast_thumbnail_width"
             android:layout_height="@dimen/movie_cast_thumbnail_height"
             android:layout_centerHorizontal="true"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:civ_border_color="#20000000"
+            app:civ_border_width="1dp" />
 
         <ProgressBar
             android:id="@+id/progressMovieCastCrew"
@@ -34,7 +36,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/layoutImg"
         android:layout_centerHorizontal="true"
-        android:maxLines="2"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="16dp"

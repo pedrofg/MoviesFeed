@@ -47,7 +47,7 @@ public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.
         Video video = this.listVideos.get(position);
 
 
-        ImageLoader.loadImageGlide(activity, video.getYoutubeThumbnailUrl(), holder.imgMovieVideo, null, 0, true, new RequestListener() {
+        ImageLoader.loadImageGlide(activity, video.getYoutubeThumbnailUrl(), holder.imgMovieVideo, null, 0, true, true, new RequestListener() {
             @Override
             public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
                 return false;

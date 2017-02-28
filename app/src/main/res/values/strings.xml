@@ -9,8 +9,7 @@
     <string name="tap_here_try_again">\nTap here to try again.</string>
     <string name="please_try_again">Please try again.</string>
     <string name="videos">Videos</string>
-    <string name="cast">Cast</string>
-    <string name="crew">Crew</string>
+    <string name="cast_crew">Cast and Crew</string>
     <string name="tell_a_friend">Tell a Friend</string>
     <string name="third_party_apis">Third-Party APIs</string>
     <string name="settings">Settings</string>

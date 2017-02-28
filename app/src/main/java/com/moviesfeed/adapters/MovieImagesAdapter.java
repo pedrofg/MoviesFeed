@@ -50,7 +50,7 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
         final String url = MoviesApi.URL_MOVIE_BACKGROUND + mb.getFilePath();
 
 
-        ImageLoader.loadImageGlide(activity, url, holder.imgMovieBackdrop, null, 0, false, new RequestListener() {
+        ImageLoader.loadImageGlide(activity, url, holder.imgMovieBackdrop, null, 0, false, true, new RequestListener() {
             @Override
             public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
                 return false;
