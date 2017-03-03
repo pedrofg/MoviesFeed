@@ -1,21 +1,12 @@
 package com.moviesfeed.activities.uicomponents;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.widget.ImageView;
 
-import com.bumptech.glide.BitmapTypeRequest;
 import com.bumptech.glide.DrawableTypeRequest;
-import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Transformation;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 
 /**
  * Created by Pedro on 2017-02-07.
@@ -45,7 +36,8 @@ public abstract class ImageLoader {
         if (!animate)
             request.dontAnimate();
 
-        request.listener(callback);
+        if (callback != null)
+            request.listener(callback);
 
         request.into(imageView);
 

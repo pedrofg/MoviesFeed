@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/btnTellAFriend"
-        style="@style/TxtSettingsStyle"
+        style="@style/txtSettingsStyle"
         android:layout_below="@id/toolbarSettings"
         android:layout_marginTop="20dp"
         android:text="@string/tell_a_friend" />
@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/btnThirdApis"
-        style="@style/TxtSettingsStyle"
+        style="@style/txtSettingsStyle"
         android:layout_below="@id/separatorTellThird"
         android:text="@string/third_party_apis" />
 

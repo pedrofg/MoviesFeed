@@ -67,9 +67,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FeedViewHolder) {
-            ((FeedViewHolder) holder).progressItem.setVisibility(View.VISIBLE);
             final String url = MoviesApi.URL_MOVIE_POSTER + this.listMovies.get(position).getPosterPath();
 
+            ((FeedViewHolder) holder).layoutPlaceHolder.setVisibility(View.VISIBLE);
+            ((FeedViewHolder) holder).imgMoviePoster.setVisibility(View.GONE);
 
             ImageLoader.loadImageGlide(activity, url, ((FeedViewHolder) holder).imgMoviePoster, new RoundedCornersTransformation(activity, 20, 0), 0, false, true, new RequestListener() {
                 @Override
@@ -79,11 +80,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 @Override
                 public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
-                    ((FeedViewHolder) holder).progressItem.setVisibility(View.GONE);
+                    ((FeedViewHolder) holder).layoutPlaceHolder.setVisibility(View.GONE);
+                    ((FeedViewHolder) holder).imgMoviePoster.setVisibility(View.VISIBLE);
                     return false;
                 }
             });
-
 
         } else {
             if (this.isErrorProgress) {
@@ -124,8 +125,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     static class FeedViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.movieItemPoster)
         ImageView imgMoviePoster;
-        @BindView(R.id.movieItemProgressBar)
-        ProgressBar progressItem;
+        @BindView(R.id.layoutPlaceHolder)
+        View layoutPlaceHolder;
 
         public FeedViewHolder(View view) {
             super(view);
