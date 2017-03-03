@@ -112,15 +112,6 @@ public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieC
         holder.progressItem.setVisibility(View.GONE);
     }
 
-    private String ellipsizeText(String text, int maxLenght) {
-        if (text.length() > maxLenght) {
-            return text.substring(0, maxLenght) + "...";
-        } else {
-            return text;
-        }
-    }
-
-
     static class MovieCastCrewViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.imgMovieCastCrew)
         ImageView imgMovieCastCrew;
