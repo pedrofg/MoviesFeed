@@ -3,10 +3,10 @@ package com.moviesfeed.api;
 import com.moviesfeed.models.MovieDetail;
 import com.moviesfeed.models.MoviesFeed;
 
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import rx.Observable;
 
 /**
  * Created by Pedro on 8/17/2016.

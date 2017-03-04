@@ -4,8 +4,8 @@ import android.os.Bundle;
 
 import com.moviesfeed.R;
 
-import nucleus.presenter.Presenter;
-import nucleus.view.NucleusAppCompatActivity;
+import nucleus5.presenter.Presenter;
+import nucleus5.view.NucleusAppCompatActivity;
 
 /**
  * Created by Pedro on 2017-02-06.

@@ -34,8 +34,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
+import static com.moviesfeed.presenters.MovieDetailPresenter.NOT_FOUND;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
@@ -118,7 +119,7 @@ public class MovieDetailPresenterTest {
         when(this.presenter.api.getMovieDetail(anyInt())).then(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(null);
+                return Observable.just(NOT_FOUND);
             }
         });
 

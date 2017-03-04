@@ -27,13 +27,11 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import nucleus.presenter.RxPresenter;
-import rx.Observable;
-import rx.Scheduler;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action2;
-import rx.functions.Func0;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.functions.BiConsumer;
+import nucleus5.presenter.Factory;
+import nucleus5.presenter.RxPresenter;
 
 /**
  * Created by Pedro on 8/17/2016.
@@ -68,6 +66,9 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     @Named(ApiModule.MAIN_THREAD_SCHEDULER)
     public Scheduler mainThreadScheduler;
 
+    //create to supply rxjava/android 2.0 which null is not a valid return.
+    public static final MoviesFeed NOT_FOUND = new MoviesFeed();
+
     @Override
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -88,10 +89,10 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
 
 
     private void createRequestMoviesFeedFilterByAPI() {
-        restartableFirst(REQUEST_MOVIES_FEED_FILTER_BY_API,
-                new Func0<Observable<MoviesFeed>>() {
+
+        restartableFirst(REQUEST_MOVIES_FEED_FILTER_BY_API, new Factory<Observable<MoviesFeed>>() {
                     @Override
-                    public Observable<MoviesFeed> call() {
+                    public Observable<MoviesFeed> create() {
                         return api.getMoviesFilterBy(filterBy.toString(), page)
                                 .subscribeOn(ioScheduler)
                                 .observeOn(mainThreadScheduler);
@@ -99,14 +100,13 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                 },
                 handleRequestMovieFeedAPISuccess(),
                 handleError());
-
     }
 
     private void createRequestMoviesFeedSortByAPI() {
         restartableFirst(REQUEST_MOVIES_FEED_SORT_BY_API,
-                new Func0<Observable<MoviesFeed>>() {
+                new Factory<Observable<MoviesFeed>>() {
                     @Override
-                    public Observable<MoviesFeed> call() {
+                    public Observable<MoviesFeed> create() {
                         if (filterBy == Filters.REVENUE) {
                             return api.getDiscoverMovie(filterBy.toString() + FeedPresenter.DESC, page)
                                     .subscribeOn(ioScheduler)
@@ -124,9 +124,9 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
 
     private void createRequestSearchMoviesAPI() {
         restartableFirst(REQUEST_SEARCH_MOVIES_API,
-                new Func0<Observable<MoviesFeed>>() {
+                new Factory<Observable<MoviesFeed>>() {
                     @Override
-                    public Observable<MoviesFeed> call() {
+                    public Observable<MoviesFeed> create() {
                         return api.getSearchMovie(searchQuery, page)
                                 .subscribeOn(ioScheduler)
                                 .observeOn(mainThreadScheduler);
@@ -139,9 +139,9 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
 
     private void createUpdateMoviesFeed() {
         restartableFirst(REQUEST_UPDATE_MOVIES_FEED_DB,
-                new Func0<Observable<List<Movie>>>() {
+                new Factory<Observable<List<Movie>>>() {
                     @Override
-                    public Observable<List<Movie>> call() {
+                    public Observable<List<Movie>> create() {
 
                         return Observable.fromCallable(new Callable<List<Movie>>() {
                             @Override
@@ -153,9 +153,9 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
 
                     }
                 },
-                new Action2<FeedActivity, List<Movie>>() {
+                new BiConsumer<FeedActivity, List<Movie>>() {
                     @Override
-                    public void call(FeedActivity activity, List<Movie> movies) {
+                    public void accept(FeedActivity activity, List<Movie> movies) {
                         Log.d(FeedPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
                         loadingItems = false;
                         activity.requestMoviesFeedSuccess(moviesFeed.cloneMoviesFeed(), isRequestingNextPage, isUpdating, movies.size(), moviesFeed.getAllMoviesDownloaded());
@@ -167,9 +167,10 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     }
 
     private void createLoadMoviesFeedDb() {
-        restartableFirst(REQUEST_LOAD_MOVIES_FEED_DB, new Func0<Observable<MoviesFeed>>() {
+        restartableFirst(REQUEST_LOAD_MOVIES_FEED_DB,
+                new Factory<Observable<MoviesFeed>>() {
                     @Override
-                    public Observable<MoviesFeed> call() {
+                    public Observable<MoviesFeed> create() {
                         return Observable.fromCallable(new Callable<MoviesFeed>() {
                             @Override
                             public MoviesFeed call() {
@@ -180,10 +181,10 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
 
                     }
                 },
-                new Action2<FeedActivity, MoviesFeed>() {
+                new BiConsumer<FeedActivity, MoviesFeed>() {
                     @Override
-                    public void call(FeedActivity activity, MoviesFeed moviesFeed) {
-                        if (moviesFeed != null) {
+                    public void accept(FeedActivity activity, MoviesFeed moviesFeed) {
+                        if (moviesFeed != NOT_FOUND) {
                             Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED_DB success moviesFeed != null");
                             activity.requestMoviesFeedSuccess(moviesFeed.cloneMoviesFeed(), false, false, moviesFeed.getMovies().size(), moviesFeed.getAllMoviesDownloaded());
                         } else {
@@ -195,25 +196,25 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                 handleError());
     }
 
-    private Action2 handleRequestMovieFeedAPISuccess() {
-        return new Action2<FeedActivity, MoviesFeed>() {
+    private BiConsumer handleRequestMovieFeedAPISuccess() {
+        return new BiConsumer<FeedActivity, MoviesFeed>() {
             @Override
-            public void call(final FeedActivity activity, final MoviesFeed response) {
+            public void accept(FeedActivity feedActivity, MoviesFeed moviesFeed) throws Exception {
                 Log.d(FeedPresenter.class.getName(), "handleRequestMovieFeedAPISuccess()");
-                if (response != null) {
-                    lastResponse = response;
+                if (moviesFeed != NOT_FOUND) {
+                    lastResponse = moviesFeed;
                     start(REQUEST_UPDATE_MOVIES_FEED_DB);
                 } else {
-                    handleError().call(activity, new NullResponseException());
+                    handleError().accept(feedActivity, new NullResponseException());
                 }
             }
         };
     }
 
-    private Action2 handleError() {
-        return new Action2<FeedActivity, Throwable>() {
+    private BiConsumer handleError() {
+        return new BiConsumer<FeedActivity, Throwable>() {
             @Override
-            public void call(FeedActivity activity, Throwable throwable) {
+            public void accept(FeedActivity feedActivity, Throwable throwable) {
                 Log.e(FeedPresenter.class.getName(), "handleError() " + throwable.getMessage(), throwable);
 
                 if (isRequestingNextPage)
@@ -222,13 +223,13 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
                 isUpdating = false;
                 loadingItems = false;
                 boolean isNetworkError = false;
-                if (throwable instanceof IOException && !Util.isNetworkAvailable(activity))
+                if (throwable instanceof IOException && !Util.isNetworkAvailable(feedActivity))
                     isNetworkError = true;
 
                 if (moviesFeed == null) {
-                    activity.requestMoviesFeedError(false, isNetworkError);
+                    feedActivity.requestMoviesFeedError(false, isNetworkError);
                 } else {
-                    activity.requestMoviesFeedError(true, isNetworkError);
+                    feedActivity.requestMoviesFeedError(true, isNetworkError);
                 }
             }
         };
@@ -301,16 +302,18 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
     private MoviesFeed loadMoviesFeedDb() {
         if (verifyDb()) {
             MoviesFeed moviesFeed = daoSession.getMoviesFeedDao().load(filterBy.getId());
+            //Doing that the GreenDao gets() will load the objects while still in another thread.
             if (moviesFeed != null) {
+                Log.d(FeedPresenter.class.getName(), "loadMoviesFeedDb() moviesFeed: " + moviesFeed);
                 moviesFeed.getMovies();
                 this.moviesFeed = moviesFeed;
                 this.page = moviesFeed.getPage();
+                return moviesFeed;
+            } else {
+                return NOT_FOUND;
             }
-            Log.d(FeedPresenter.class.getName(), "loadMoviesFeedDb() moviesFeed: " + moviesFeed);
-            return moviesFeed;
         }
-
-        return null;
+        return NOT_FOUND;
     }
 
     private boolean verifyDb() {
