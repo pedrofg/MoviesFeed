@@ -24,8 +24,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
+import static com.moviesfeed.presenters.FeedPresenter.NOT_FOUND;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -100,9 +101,9 @@ public class FeedPresenterTest {
 
         final MoviesFeed moviesFeedTest = createMoviesFeed(Filters.POPULARITY);
 
-        when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(new Answer<Object>() {
+        when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(new Answer<Observable>() {
             @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
+            public Observable answer(InvocationOnMock invocation) throws Throwable {
                 return Observable.just(moviesFeedTest);
             }
         });
@@ -211,17 +212,16 @@ public class FeedPresenterTest {
         when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(null);
+                return Observable.just(NOT_FOUND);
             }
         });
 
         presenter.requestMoviesFeed(Filters.POPULARITY);
 
-
         when(this.presenter.api.getMovieByGenre(anyInt(), anyString(), anyInt())).then(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(null);
+                return Observable.just(NOT_FOUND);
             }
         });
 
@@ -231,7 +231,7 @@ public class FeedPresenterTest {
         when(this.presenter.api.getSearchMovie(anyString(), anyInt())).then(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(null);
+                return Observable.just(NOT_FOUND);
             }
         });
 

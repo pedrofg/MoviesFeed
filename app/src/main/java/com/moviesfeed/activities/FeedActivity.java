@@ -34,8 +34,8 @@ import com.moviesfeed.presenters.FeedPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import nucleus.factory.RequiresPresenter;
-import nucleus.view.NucleusAppCompatActivity;
+import nucleus5.factory.RequiresPresenter;
+import nucleus5.view.NucleusAppCompatActivity;
 
 @RequiresPresenter(FeedPresenter.class)
 public class FeedActivity extends NucleusAppCompatActivity<FeedPresenter> implements NavigationView.OnNavigationItemSelectedListener, EndlessScrollListener.RefreshList, RecyclerItemClickListener.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {

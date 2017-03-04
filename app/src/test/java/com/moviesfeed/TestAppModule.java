@@ -8,9 +8,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import rx.Scheduler;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.moviesfeed.modules.ApiModule.IO_SCHEDULER;
 import static com.moviesfeed.modules.ApiModule.MAIN_THREAD_SCHEDULER;
@@ -38,12 +37,12 @@ public class TestAppModule {
     @Provides
     @Named(IO_SCHEDULER)
     public Scheduler provideIOScheduler() {
-        return Schedulers.immediate();
+        return Schedulers.trampoline();
     }
 
     @Provides
     @Named(MAIN_THREAD_SCHEDULER)
     public Scheduler provideMainThreadScheduler() {
-        return Schedulers.immediate();
+        return Schedulers.trampoline();
     }
 }

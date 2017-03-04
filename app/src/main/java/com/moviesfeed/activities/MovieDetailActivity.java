@@ -37,7 +37,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import nucleus.factory.RequiresPresenter;
+import nucleus5.factory.RequiresPresenter;
 
 import static com.moviesfeed.activities.FeedActivity.INTENT_MOVIE_DETAIL_ID;
 
