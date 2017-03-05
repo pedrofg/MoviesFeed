@@ -78,23 +78,15 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
 
     private void createRequestMovieDetailAPI() {
         restartableFirst(REQUEST_MOVIE_DETAIL_API,
-                new Factory<Observable<MovieDetail>>() {
-                    @Override
-                    public Observable<MovieDetail> create() {
-                        return api.getMovieDetail(movieId).subscribeOn(ioScheduler)
-                                .observeOn(mainThreadScheduler);
-                    }
-                },
-                new BiConsumer<MovieDetailActivity, MovieDetail>() {
-                    @Override
-                    public void accept(MovieDetailActivity activity, final MovieDetail movieDetail) throws Exception {
-                        if (movieDetail != NOT_FOUND) {
-                            Log.d(MovieDetailPresenter.class.getName(), "REQUEST_MOVIE_DETAIL_API success");
-                            lastResponse = movieDetail;
-                            start(REQUEST_UPDATE_MOVIE_DETAIL_DB);
-                        } else {
-                            handleError().accept(activity, new NullResponseException());
-                        }
+                () -> api.getMovieDetail(movieId).subscribeOn(ioScheduler)
+                        .observeOn(mainThreadScheduler),
+                (activity, movieDetail) -> {
+                    if (movieDetail != NOT_FOUND) {
+                        Log.d(MovieDetailPresenter.class.getName(), "REQUEST_MOVIE_DETAIL_API success");
+                        lastResponse = movieDetail;
+                        start(REQUEST_UPDATE_MOVIE_DETAIL_DB);
+                    } else {
+                        handleError().accept(activity, new NullResponseException());
                     }
                 },
                 handleError());
@@ -102,29 +94,15 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
 
     private void createLoadMovieDetailDb() {
         restartableFirst(REQUEST_LOAD_MOVIE_DETAIL_DB,
-                new Factory<Observable<MovieDetail>>() {
-                    @Override
-                    public Observable<MovieDetail> create() {
-                        return Observable.fromCallable(new Callable<MovieDetail>() {
-                            @Override
-                            public MovieDetail call() throws Exception {
-                                return loadMovieDetailDb();
-                            }
-                        }).subscribeOn(ioScheduler)
-                                .observeOn(mainThreadScheduler);
-
-                    }
-                },
-                new BiConsumer<MovieDetailActivity, MovieDetail>() {
-                    @Override
-                    public void accept(MovieDetailActivity activity, MovieDetail movieDetail) {
-                        if (movieDetail != NOT_FOUND) {
-                            Log.d(MovieDetailPresenter.class.getName(), "REQUEST_LOAD_MOVIE_DETAIL_DB success movieDetail != null");
-                            activity.requestMovieDetailSuccess(movieDetail);
-                        } else {
-                            Log.d(MovieDetailPresenter.class.getName(), "REQUEST_LOAD_MOVIE_DETAIL_DB success movieDetail == null");
-                            start(REQUEST_MOVIE_DETAIL_API);
-                        }
+                () -> Observable.fromCallable(this::loadMovieDetailDb).subscribeOn(ioScheduler)
+                        .observeOn(mainThreadScheduler),
+                (activity, movieDetail) -> {
+                    if (movieDetail != NOT_FOUND) {
+                        Log.d(MovieDetailPresenter.class.getName(), "REQUEST_LOAD_MOVIE_DETAIL_DB success movieDetail != null");
+                        activity.requestMovieDetailSuccess(movieDetail);
+                    } else {
+                        Log.d(MovieDetailPresenter.class.getName(), "REQUEST_LOAD_MOVIE_DETAIL_DB success movieDetail == null");
+                        start(REQUEST_MOVIE_DETAIL_API);
                     }
                 },
                 handleError());
@@ -132,41 +110,24 @@ public class MovieDetailPresenter extends RxPresenter<MovieDetailActivity> {
 
     private void createUpdateMovieDetailDb() {
         restartableFirst(REQUEST_UPDATE_MOVIE_DETAIL_DB,
-                new Factory<Observable<MovieDetail>>() {
-                    @Override
-                    public Observable<MovieDetail> create() {
-                        return Observable.fromCallable(new Callable<MovieDetail>() {
-                            @Override
-                            public MovieDetail call() throws Exception {
-                                return updateMovieDetailDb(lastResponse);
-                            }
-                        }).subscribeOn(ioScheduler)
-                                .observeOn(mainThreadScheduler);
-
-                    }
-                },
-                new BiConsumer<MovieDetailActivity, MovieDetail>() {
-                    @Override
-                    public void accept(MovieDetailActivity activity, MovieDetail movieDetail) {
-                        Log.d(MovieDetailPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
-                        activity.requestMovieDetailSuccess(movieDetail);
-                    }
+                () -> Observable.fromCallable(() -> updateMovieDetailDb(lastResponse)).subscribeOn(ioScheduler)
+                        .observeOn(mainThreadScheduler),
+                (activity, movieDetail) -> {
+                    Log.d(MovieDetailPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
+                    activity.requestMovieDetailSuccess(movieDetail);
                 },
                 handleError());
     }
 
 
     private BiConsumer handleError() {
-        return new BiConsumer<MovieDetailActivity, Throwable>() {
-            @Override
-            public void accept(MovieDetailActivity activity, Throwable throwable) {
-                Log.e(MovieDetailPresenter.class.getName(), throwable.getMessage(), throwable);
-                boolean isNetworkError = false;
-                if (throwable instanceof IOException && !Util.isNetworkAvailable(activity))
-                    isNetworkError = true;
+        return (BiConsumer<MovieDetailActivity, Throwable>) (activity, throwable) -> {
+            Log.e(MovieDetailPresenter.class.getName(), throwable.getMessage(), throwable);
+            boolean isNetworkError = false;
+            if (throwable instanceof IOException && !Util.isNetworkAvailable(activity))
+                isNetworkError = true;
 
-                activity.requestMovieDetailError(isNetworkError);
-            }
+            activity.requestMovieDetailError(isNetworkError);
         };
     }
 

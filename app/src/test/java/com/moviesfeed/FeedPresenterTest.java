@@ -14,9 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -80,12 +77,7 @@ public class FeedPresenterTest {
 
         final MoviesFeed moviesFeedTest = createMoviesFeed(Filters.SEARCH);
 
-        when(this.presenter.api.getSearchMovie(anyString(), anyInt())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(moviesFeedTest);
-            }
-        });
+        when(this.presenter.api.getSearchMovie(anyString(), anyInt())).then(invocation -> Observable.just(moviesFeedTest));
 
         presenter.requestSearchMoviesFeed(MOVIE_TITLE);
 
@@ -101,12 +93,7 @@ public class FeedPresenterTest {
 
         final MoviesFeed moviesFeedTest = createMoviesFeed(Filters.POPULARITY);
 
-        when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(new Answer<Observable>() {
-            @Override
-            public Observable answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(moviesFeedTest);
-            }
-        });
+        when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(invocation -> Observable.just(moviesFeedTest));
 
         presenter.requestMoviesFeed(Filters.POPULARITY);
 
@@ -123,12 +110,7 @@ public class FeedPresenterTest {
 
         final MoviesFeed moviesFeedTest = createMoviesFeed(Filters.POPULARITY);
 
-        when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(moviesFeedTest);
-            }
-        });
+        when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(invocation -> Observable.just(moviesFeedTest));
 
         presenter.requestMoviesFeed(Filters.POPULARITY);
 
@@ -158,12 +140,7 @@ public class FeedPresenterTest {
     public void testRefreshMoviesFeed() {
         final MoviesFeed moviesFeedTest = createMoviesFeed(Filters.COMEDY);
 
-        when(this.presenter.api.getMovieByGenre(anyInt(), anyString(), anyInt())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(moviesFeedTest);
-            }
-        });
+        when(this.presenter.api.getMovieByGenre(anyInt(), anyString(), anyInt())).then(invocation -> Observable.just(moviesFeedTest));
 
         presenter.requestMoviesFeed(Filters.COMEDY);
 
@@ -187,12 +164,7 @@ public class FeedPresenterTest {
     public void testAllMoviesDownloaded() {
         final MoviesFeed moviesFeedTest = createMoviesFeed(Filters.POPULARITY);
 
-        when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(moviesFeedTest);
-            }
-        });
+        when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(invocation -> Observable.just(moviesFeedTest));
 
         presenter.requestMoviesFeed(Filters.POPULARITY);
 
@@ -209,31 +181,15 @@ public class FeedPresenterTest {
 
     @Test
     public void testDownloadError() {
-        when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(NOT_FOUND);
-            }
-        });
+        when(this.presenter.api.getMoviesFilterBy(anyString(), anyInt())).then(invocation -> Observable.just(NOT_FOUND));
 
         presenter.requestMoviesFeed(Filters.POPULARITY);
 
-        when(this.presenter.api.getMovieByGenre(anyInt(), anyString(), anyInt())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(NOT_FOUND);
-            }
-        });
+        when(this.presenter.api.getMovieByGenre(anyInt(), anyString(), anyInt())).then(invocation -> Observable.just(NOT_FOUND));
 
         presenter.requestMoviesFeed(Filters.COMEDY);
 
-
-        when(this.presenter.api.getSearchMovie(anyString(), anyInt())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(NOT_FOUND);
-            }
-        });
+        when(this.presenter.api.getSearchMovie(anyString(), anyInt())).then(invocation -> Observable.just(NOT_FOUND));
 
         presenter.requestSearchMoviesFeed(MOVIE_TITLE);
 

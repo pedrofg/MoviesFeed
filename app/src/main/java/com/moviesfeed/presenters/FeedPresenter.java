@@ -90,32 +90,24 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
 
     private void createRequestMoviesFeedFilterByAPI() {
 
-        restartableFirst(REQUEST_MOVIES_FEED_FILTER_BY_API, new Factory<Observable<MoviesFeed>>() {
-                    @Override
-                    public Observable<MoviesFeed> create() {
-                        return api.getMoviesFilterBy(filterBy.toString(), page)
-                                .subscribeOn(ioScheduler)
-                                .observeOn(mainThreadScheduler);
-                    }
-                },
+        restartableFirst(REQUEST_MOVIES_FEED_FILTER_BY_API, () -> api.getMoviesFilterBy(filterBy.toString(), page)
+                        .subscribeOn(ioScheduler)
+                        .observeOn(mainThreadScheduler),
                 handleRequestMovieFeedAPISuccess(),
                 handleError());
     }
 
     private void createRequestMoviesFeedSortByAPI() {
         restartableFirst(REQUEST_MOVIES_FEED_SORT_BY_API,
-                new Factory<Observable<MoviesFeed>>() {
-                    @Override
-                    public Observable<MoviesFeed> create() {
-                        if (filterBy == Filters.REVENUE) {
-                            return api.getDiscoverMovie(filterBy.toString() + FeedPresenter.DESC, page)
-                                    .subscribeOn(ioScheduler)
-                                    .observeOn(mainThreadScheduler);
-                        } else {
-                            return api.getMovieByGenre(Integer.valueOf(filterBy.toString()), getFormattedDate(), page)
-                                    .subscribeOn(ioScheduler)
-                                    .observeOn(mainThreadScheduler);
-                        }
+                () -> {
+                    if (filterBy == Filters.REVENUE) {
+                        return api.getDiscoverMovie(filterBy.toString() + FeedPresenter.DESC, page)
+                                .subscribeOn(ioScheduler)
+                                .observeOn(mainThreadScheduler);
+                    } else {
+                        return api.getMovieByGenre(Integer.valueOf(filterBy.toString()), getFormattedDate(), page)
+                                .subscribeOn(ioScheduler)
+                                .observeOn(mainThreadScheduler);
                     }
                 },
                 handleRequestMovieFeedAPISuccess(),
@@ -124,14 +116,9 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
 
     private void createRequestSearchMoviesAPI() {
         restartableFirst(REQUEST_SEARCH_MOVIES_API,
-                new Factory<Observable<MoviesFeed>>() {
-                    @Override
-                    public Observable<MoviesFeed> create() {
-                        return api.getSearchMovie(searchQuery, page)
-                                .subscribeOn(ioScheduler)
-                                .observeOn(mainThreadScheduler);
-                    }
-                },
+                () -> api.getSearchMovie(searchQuery, page)
+                        .subscribeOn(ioScheduler)
+                        .observeOn(mainThreadScheduler),
                 handleRequestMovieFeedAPISuccess(),
                 handleError());
 
@@ -139,98 +126,65 @@ public class FeedPresenter extends RxPresenter<FeedActivity> {
 
     private void createUpdateMoviesFeed() {
         restartableFirst(REQUEST_UPDATE_MOVIES_FEED_DB,
-                new Factory<Observable<List<Movie>>>() {
-                    @Override
-                    public Observable<List<Movie>> create() {
+                () -> Observable.fromCallable(() -> updateMoviesFeedDb(lastResponse))
+                        .subscribeOn(ioScheduler)
+                        .observeOn(mainThreadScheduler),
+                (activity, movies) -> {
+                    Log.d(FeedPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
+                    loadingItems = false;
+                    activity.requestMoviesFeedSuccess(moviesFeed.cloneMoviesFeed(), isRequestingNextPage, isUpdating, movies.size(), moviesFeed.getAllMoviesDownloaded());
 
-                        return Observable.fromCallable(new Callable<List<Movie>>() {
-                            @Override
-                            public List<Movie> call() throws Exception {
-                                return updateMoviesFeedDb(lastResponse);
-                            }
-                        }).subscribeOn(ioScheduler)
-                                .observeOn(mainThreadScheduler);
-
-                    }
-                },
-                new BiConsumer<FeedActivity, List<Movie>>() {
-                    @Override
-                    public void accept(FeedActivity activity, List<Movie> movies) {
-                        Log.d(FeedPresenter.class.getName(), "REQUEST_UPDATE_MOVIES_FEED_DB success");
-                        loadingItems = false;
-                        activity.requestMoviesFeedSuccess(moviesFeed.cloneMoviesFeed(), isRequestingNextPage, isUpdating, movies.size(), moviesFeed.getAllMoviesDownloaded());
-
-                        isUpdating = false;
-                    }
+                    isUpdating = false;
                 },
                 handleError());
     }
 
     private void createLoadMoviesFeedDb() {
         restartableFirst(REQUEST_LOAD_MOVIES_FEED_DB,
-                new Factory<Observable<MoviesFeed>>() {
-                    @Override
-                    public Observable<MoviesFeed> create() {
-                        return Observable.fromCallable(new Callable<MoviesFeed>() {
-                            @Override
-                            public MoviesFeed call() {
-                                return loadMoviesFeedDb();
-                            }
-                        }).subscribeOn(ioScheduler)
-                                .observeOn(mainThreadScheduler);
-
-                    }
-                },
-                new BiConsumer<FeedActivity, MoviesFeed>() {
-                    @Override
-                    public void accept(FeedActivity activity, MoviesFeed moviesFeed) {
-                        if (moviesFeed != NOT_FOUND) {
-                            Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED_DB success moviesFeed != null");
-                            activity.requestMoviesFeedSuccess(moviesFeed.cloneMoviesFeed(), false, false, moviesFeed.getMovies().size(), moviesFeed.getAllMoviesDownloaded());
-                        } else {
-                            Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED_DB success moviesFeed == null");
-                            requestAPI(false);
-                        }
+                () -> Observable.fromCallable(this::loadMoviesFeedDb)
+                        .subscribeOn(ioScheduler)
+                        .observeOn(mainThreadScheduler),
+                (activity, moviesFeed1) -> {
+                    if (moviesFeed1 != NOT_FOUND) {
+                        Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED_DB success moviesFeed != null");
+                        activity.requestMoviesFeedSuccess(moviesFeed1.cloneMoviesFeed(), false, false, moviesFeed1.getMovies().size(), moviesFeed1.getAllMoviesDownloaded());
+                    } else {
+                        Log.d(FeedPresenter.class.getName(), "REQUEST_LOAD_MOVIES_FEED_DB success moviesFeed == null");
+                        requestAPI(false);
                     }
                 },
                 handleError());
     }
 
     private BiConsumer handleRequestMovieFeedAPISuccess() {
-        return new BiConsumer<FeedActivity, MoviesFeed>() {
-            @Override
-            public void accept(FeedActivity feedActivity, MoviesFeed moviesFeed) throws Exception {
-                Log.d(FeedPresenter.class.getName(), "handleRequestMovieFeedAPISuccess()");
-                if (moviesFeed != NOT_FOUND) {
-                    lastResponse = moviesFeed;
-                    start(REQUEST_UPDATE_MOVIES_FEED_DB);
-                } else {
-                    handleError().accept(feedActivity, new NullResponseException());
-                }
+        return (BiConsumer<FeedActivity, MoviesFeed>) (feedActivity, moviesFeed) -> {
+            Log.d(FeedPresenter.class.getName(), "handleRequestMovieFeedAPISuccess()");
+            if (moviesFeed != NOT_FOUND) {
+                lastResponse = moviesFeed;
+                start(REQUEST_UPDATE_MOVIES_FEED_DB);
+            } else {
+                handleError().accept(feedActivity, new NullResponseException());
             }
         };
     }
 
     private BiConsumer handleError() {
-        return new BiConsumer<FeedActivity, Throwable>() {
-            @Override
-            public void accept(FeedActivity feedActivity, Throwable throwable) {
-                Log.e(FeedPresenter.class.getName(), "handleError() " + throwable.getMessage(), throwable);
+        return (BiConsumer<FeedActivity, Throwable>) (feedActivity, throwable) -> {
+            Log.e(FeedPresenter.class.getName(), "handleError() " + throwable.getMessage(), throwable);
 
-                if (isRequestingNextPage)
-                    page--;
-                isRequestingNextPage = false;
-                isUpdating = false;
-                loadingItems = false;
-                boolean isNetworkError = false;
-                if (throwable instanceof IOException && !Util.isNetworkAvailable(feedActivity))
-                    isNetworkError = true;
+            if (isRequestingNextPage)
+                page--;
+            isRequestingNextPage = false;
+            isUpdating = false;
+            loadingItems = false;
+            boolean isNetworkError = false;
+            if (throwable instanceof IOException && !Util.isNetworkAvailable(feedActivity))
+                isNetworkError = true;
 
-                if (moviesFeed == null) {
-                    feedActivity.requestMoviesFeedError(false, isNetworkError);
-                } else {
-                    feedActivity.requestMoviesFeedError(true, isNetworkError);
-                }
+            if (moviesFeed == null) {
+                feedActivity.requestMoviesFeedError(false, isNetworkError);
+            } else {
+                feedActivity.requestMoviesFeedError(true, isNetworkError);
             }
         };
     }

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Code Taken from http://stackoverflow.com/a/6763689 Author Micah Hainline.
  */
-public class EllipsizingTextView extends TextView {
+public class EllipsizingTextView extends android.support.v7.widget.AppCompatTextView {
 
     private static final String ELLIPSIS = "...";
 

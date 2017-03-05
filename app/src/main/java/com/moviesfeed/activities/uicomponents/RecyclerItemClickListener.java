@@ -2,9 +2,12 @@ package com.moviesfeed.activities.uicomponents;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
 
@@ -18,7 +21,7 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
 
     public RecyclerItemClickListener(Context context, OnItemClickListener listener) {
         mListener = listener;
-        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+        mGestureDetector = new GestureDetector(context, new SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 return true;
