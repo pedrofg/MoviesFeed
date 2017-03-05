@@ -98,12 +98,7 @@ public class MovieDetailPresenterTest {
 
         final MovieDetail movieDetail = createMovieDetail();
 
-        when(this.presenter.api.getMovieDetail(anyInt())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(movieDetail);
-            }
-        });
+        when(this.presenter.api.getMovieDetail(anyInt())).then(invocation -> Observable.just(movieDetail));
 
         presenter.requestMovieDetail(MOVIE_ID);
 
@@ -116,12 +111,7 @@ public class MovieDetailPresenterTest {
 
     @Test
     public void testDownloadError() {
-        when(this.presenter.api.getMovieDetail(anyInt())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Observable.just(NOT_FOUND);
-            }
-        });
+        when(this.presenter.api.getMovieDetail(anyInt())).then(invocation -> Observable.just(NOT_FOUND));
 
         presenter.requestMovieDetail(MOVIE_ID);
 
@@ -161,7 +151,7 @@ public class MovieDetailPresenterTest {
         movieDetail.setRevenue((long) REVENUE);
         movieDetail.setTitle(TITLE_TEST);
         movieDetail.setRuntime(RUNTIME);
-        movieDetail.setGenres(new ArrayList<Genre>());
+        movieDetail.setGenres(new ArrayList<>());
 
         Credits credits = new Credits();
 
@@ -185,24 +175,24 @@ public class MovieDetailPresenterTest {
 
 
         MovieImages movieImages = new MovieImages();
-        movieImages.setBackdrops(new ArrayList<MovieBackdrop>());
-        movieImages.setPosters(new ArrayList<MoviePoster>());
+        movieImages.setBackdrops(new ArrayList<>());
+        movieImages.setPosters(new ArrayList<>());
 
         movieDetail.setImages(movieImages);
 
 
         MovieVideos movieVideos = new MovieVideos();
-        movieVideos.setVideos(new ArrayList<Video>());
+        movieVideos.setVideos(new ArrayList<>());
 
         movieDetail.setVideos(movieVideos);
 
         SimilarMovies similarMovies = new SimilarMovies();
-        similarMovies.setMovies(new ArrayList<Movie>());
+        similarMovies.setMovies(new ArrayList<>());
 
         movieDetail.setSimilarMovies(similarMovies);
 
         MovieReviews movieReviews = new MovieReviews();
-        movieReviews.setReviews(new ArrayList<Review>());
+        movieReviews.setReviews(new ArrayList<>());
 
         movieDetail.setMovieReviews(movieReviews);
 

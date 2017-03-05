@@ -46,7 +46,6 @@ public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.
     public void onBindViewHolder(final MovieVideosViewHolder holder, int position) {
         Video video = this.listVideos.get(position);
 
-
         ImageLoader.loadImageGlide(activity, video.getYoutubeThumbnailUrl(), holder.imgMovieVideo, null, 0, true, true, new RequestListener() {
             @Override
             public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
@@ -61,23 +60,6 @@ public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.
                 return false;
             }
         });
-
-
-//        ImageLoader.loadImage(context, video.getYoutubeThumbnailUrl(), holder.imgMovieVideo, null, R.dimen.movie_video_width, R.dimen.movie_video_height, 0, true,
-//                new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        holder.imgMovieVideo.setVisibility(View.VISIBLE);
-//                        holder.imgIconPlay.setVisibility(View.VISIBLE);
-//                        holder.progressItem.setVisibility(View.GONE);
-//                    }
-//
-//                    @Override
-//                    public void onError() {
-//                        //TODO handle error
-//                    }
-//                });
-
     }
 
     @Override

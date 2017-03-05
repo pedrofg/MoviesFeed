@@ -1,13 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
-apply plugin: 'com.neenbedankt.android-apt'
 
 buildscript {
     repositories {
         mavenCentral()
-    }
-    dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 
@@ -22,12 +18,21 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+
+        jackOptions {
+            enabled true
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -38,7 +43,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:support-v4:24.1.1'
     compile 'com.android.support:design:24.1.1'
-
 
     compile "info.android15.nucleus5:nucleus:5.0.0-beta1"
     compile "info.android15.nucleus5:nucleus-support-v7:5.0.0-beta1"
@@ -51,7 +55,7 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxjava:2.0.5'
 
     compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 
     compile 'org.greenrobot:greendao:3.2.0'
 
@@ -65,9 +69,9 @@ dependencies {
         exclude module: 'objenesis'
     }
 
-    apt 'com.google.dagger:dagger-compiler:2.5'
-    testApt 'com.google.dagger:dagger-compiler:2.5'
-    compile 'com.google.dagger:dagger:2.5'
+    compile 'com.google.dagger:dagger:2.9'
+    testAnnotationProcessor 'com.google.dagger:dagger-compiler:2.9'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.9'
     provided 'javax.annotation:jsr250-api:1.0'
 
     compile 'com.github.bumptech.glide:glide:3.7.0'
