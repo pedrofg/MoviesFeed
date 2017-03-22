@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <com.moviesfeed.activities.uicomponents.CustomTextView
+    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
         android:id="@+id/txtReviewAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         app:typeface="Roboto-Light.ttf" />
 
 
-    <com.moviesfeed.activities.uicomponents.CustomTextView
+    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
         android:id="@+id/txtReviewUrl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         app:typeface="Roboto-Light.ttf" />
 
 
-    <com.moviesfeed.activities.uicomponents.CustomTextView
+    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
         android:id="@+id/txtReviewContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -11,8 +11,8 @@ import dagger.Provides;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.moviesfeed.modules.ApiModule.IO_SCHEDULER;
-import static com.moviesfeed.modules.ApiModule.MAIN_THREAD_SCHEDULER;
+import static com.moviesfeed.di.SchedulersModule.IO_SCHEDULER;
+import static com.moviesfeed.di.SchedulersModule.MAIN_THREAD_SCHEDULER;
 import static org.mockito.Mockito.mock;
 
 /**

@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 public interface MoviesApi {
 
     String BASE_URL = "http://api.themoviedb.org/";
-    String KEY = "";
+    String KEY = "a693e2d23dc4545ec74abd3d4ae13d91";
     String URL_MOVIE_POSTER = "http://image.tmdb.org/t/p/w300/";
     String URL_MOVIE_BACKGROUND = "http://image.tmdb.org/t/p/w1000/";
 
@@ -36,6 +36,8 @@ public interface MoviesApi {
     String GENRE_HORROR = "27";
     String GENRE_DOCUMENTARY = "99";
     String GENRE_WAR = "10752";
+
+    String DESC = ".desc";
 
     @GET("/3/discover/movie?api_key=" + KEY + "&include_adult=false")
     Observable<MoviesFeed> getDiscoverMovie(@Query("sort_by") String sortBy, @Query("page") int page);
