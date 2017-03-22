@@ -1,8 +1,7 @@
 package com.moviesfeed;
 
-import com.moviesfeed.daggercomponents.AppComponent;
-import com.moviesfeed.presenters.FeedPresenter;
-import com.moviesfeed.presenters.MovieDetailPresenter;
+import com.moviesfeed.ui.presenters.FeedPresenter;
+import com.moviesfeed.ui.presenters.MovieDetailPresenter;
 
 import javax.inject.Singleton;
 

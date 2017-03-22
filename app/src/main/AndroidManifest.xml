@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.FeedActivity"
+            android:name=".ui.activities.FeedActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -29,13 +29,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MovieDetailActivity"
+            android:name=".ui.activities.MovieDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ThirdPartyAPIsActivity"
+            android:name=".ui.activities.ThirdPartyAPIsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".ui.activities.SettingsActivity"
             android:screenOrientation="portrait"></activity>
     </application>
 
