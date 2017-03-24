@@ -84,7 +84,6 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
         Log.d(FeedPresenter.class.getName(), "tryAgain()");
         callback.updatingContent();
         this.feedInteractor.tryAgain();
-
     }
 
     public void navigationItemSelected(Filters filter) {

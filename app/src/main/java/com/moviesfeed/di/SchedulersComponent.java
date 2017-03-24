@@ -1,6 +1,7 @@
 package com.moviesfeed.di;
 
 import com.moviesfeed.interactors.FeedInteractor;
+import com.moviesfeed.interactors.MovieDetailInteractor;
 import com.moviesfeed.ui.presenters.MovieDetailPresenter;
 
 import dagger.Component;
@@ -13,6 +14,6 @@ import dagger.Component;
 public interface SchedulersComponent {
 
     void inject(FeedInteractor feedInteractor);
-
+    void inject(MovieDetailInteractor feedInteractor);
 
 }

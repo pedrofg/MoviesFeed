@@ -76,6 +76,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
 
         if (savedInstanceState == null) {
             this.presenter = new FeedPresenter();
+            this.presenter.init(context(), this);
             this.adapter = new FeedAdapter(this.context());
         }
     }
@@ -100,7 +101,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.presenter.init(context(), this);
+
 
         if (savedInstanceState == null) {
             this.loadFeed(Filters.POPULARITY);
