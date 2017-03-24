@@ -1,6 +1,7 @@
 package com.moviesfeed.ui.adapters;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,12 +32,12 @@ public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieC
 
 
     public static final int MAX_TEXT_LINE = 2;
-    private Activity activity;
+    private Context context;
     private List<Cast> listCast;
     private List<Crew> listCrew;
 
-    public CastCrewAdapter(Activity activity, List<Cast> listCast, List<Crew> listcrew) {
-        this.activity = activity;
+    public CastCrewAdapter(Context context, List<Cast> listCast, List<Crew> listcrew) {
+        this.context = context;
         this.listCast = listCast;
         this.listCrew = listcrew;
     }
@@ -62,7 +63,7 @@ public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieC
         if (this.listCast.size() >= position + 1) {
             Cast cast = this.listCast.get(position);
             title = cast.getName();
-            subTitle = activity.getString(R.string.as) + cast.getCharacter();
+            subTitle = context.getString(R.string.as) + cast.getCharacter();
             url = cast.getProfilePath();
         } else {
             //- listCast.size() to position starts from the beginning of listCrew.
@@ -91,7 +92,7 @@ public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieC
     public void loadImage(String path, final MovieCastCrewViewHolder holder) {
         final String url = MoviesApi.URL_MOVIE_POSTER + path;
 
-        ImageLoader.loadImageGlide(activity, url, holder.imgMovieCastCrew, new CropCircleTransformation(activity), R.drawable.no_profile, false, false, new RequestListener() {
+        ImageLoader.loadImageGlide(context, url, holder.imgMovieCastCrew, new CropCircleTransformation(context), R.drawable.no_profile, false, false, new RequestListener() {
             @Override
             public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
                 showImageLayout(holder);

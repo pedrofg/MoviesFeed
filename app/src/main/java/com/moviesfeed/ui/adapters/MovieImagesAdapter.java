@@ -1,6 +1,6 @@
 package com.moviesfeed.ui.adapters;
 
-import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,10 +27,10 @@ import butterknife.ButterKnife;
 public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.MovieImagesViewHolder> {
 
     private List<MovieBackdrop> listMovieImages;
-    private Activity activity;
+    private Context context;
 
-    public MovieImagesAdapter(Activity activity, List<MovieBackdrop> listMovieBackdrop) {
-        this.activity = activity;
+    public MovieImagesAdapter(Context context, List<MovieBackdrop> listMovieBackdrop) {
+        this.context = context;
         this.listMovieImages = listMovieBackdrop;
     }
 
@@ -50,7 +50,7 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
         final String url = MoviesApi.URL_MOVIE_BACKGROUND + mb.getFilePath();
 
 
-        ImageLoader.loadImageGlide(activity, url, holder.imgMovieBackdrop, null, 0, false, true, new RequestListener() {
+        ImageLoader.loadImageGlide(context, url, holder.imgMovieBackdrop, null, 0, false, true, new RequestListener() {
             @Override
             public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
                 return false;

@@ -143,8 +143,6 @@ public class FeedInteractor {
             observable = feedRepository.loadMoviesFeedByCategory(filter.toString(), page).subscribeOn(ioScheduler).observeOn(mainThreadScheduler);
         }
 
-//        observable.subscribeOn(ioScheduler).observeOn(mainThreadScheduler);
-
         DisposableObserver<MoviesFeed> observer = new DisposableObserver<MoviesFeed>() {
             @Override
             public void onNext(MoviesFeed moviesFeedDownloaded) {
@@ -188,7 +186,6 @@ public class FeedInteractor {
         if (isFromDb) {
             this.moviesFeedCache = moviesFeed;
         } else {
-
 
             if (this.moviesFeedCache == null) {
                 this.moviesFeedCache = new MoviesFeed();

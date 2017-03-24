@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 public interface MoviesApi {
 
     String BASE_URL = "http://api.themoviedb.org/";
-    String KEY = "a693e2d23dc4545ec74abd3d4ae13d91";
+    String KEY = "";
     String URL_MOVIE_POSTER = "http://image.tmdb.org/t/p/w300/";
     String URL_MOVIE_BACKGROUND = "http://image.tmdb.org/t/p/w1000/";
 

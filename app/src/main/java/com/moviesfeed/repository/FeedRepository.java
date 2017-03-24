@@ -29,6 +29,7 @@ public class FeedRepository {
     @Inject
     public DaoSession daoSession;
 
+    //create to supply rxjava/android 2.0 which null is not a valid return.
     public static final MoviesFeed NOT_FOUND = new MoviesFeed();
 
 

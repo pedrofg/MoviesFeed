@@ -1,6 +1,6 @@
 package com.moviesfeed.ui.adapters;
 
-import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +26,10 @@ import butterknife.ButterKnife;
 public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.MovieVideosViewHolder> {
 
     private List<Video> listVideos;
-    private Activity activity;
+    private Context context;
 
-    public MovieVideosAdapter(Activity activity, List<Video> listVideos) {
-        this.activity = activity;
+    public MovieVideosAdapter(Context context, List<Video> listVideos) {
+        this.context = context;
         this.listVideos = listVideos;
     }
 
@@ -46,7 +46,7 @@ public class MovieVideosAdapter extends RecyclerView.Adapter<MovieVideosAdapter.
     public void onBindViewHolder(final MovieVideosViewHolder holder, int position) {
         Video video = this.listVideos.get(position);
 
-        ImageLoader.loadImageGlide(activity, video.getYoutubeThumbnailUrl(), holder.imgMovieVideo, null, 0, true, true, new RequestListener() {
+        ImageLoader.loadImageGlide(context, video.getYoutubeThumbnailUrl(), holder.imgMovieVideo, null, 0, true, true, new RequestListener() {
             @Override
             public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
                 return false;

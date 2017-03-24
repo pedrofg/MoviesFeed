@@ -216,7 +216,9 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.Feed
     public void onMovieClicked(Movie movie) {
         Log.i(FeedActivity.class.getName(), "onItemClick, Movie Title: " + movie.getTitle());
         Intent intent = new Intent(this, MovieDetailActivity.class);
-        intent.putExtra(INTENT_MOVIE_DETAIL_ID, movie.getIdTmdb());
+        Bundle bundle = new Bundle();
+        bundle.putInt(INTENT_MOVIE_DETAIL_ID, movie.getIdTmdb());
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 }

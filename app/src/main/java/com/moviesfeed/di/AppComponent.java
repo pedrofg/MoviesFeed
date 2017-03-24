@@ -1,6 +1,7 @@
 package com.moviesfeed.di;
 
 import com.moviesfeed.repository.FeedRepository;
+import com.moviesfeed.repository.MovieDetailRepository;
 import com.moviesfeed.ui.presenters.FeedPresenter;
 import com.moviesfeed.ui.presenters.MovieDetailPresenter;
 
@@ -21,4 +22,6 @@ public interface AppComponent {
     void inject(MovieDetailPresenter o);
 
     void inject(FeedRepository feedRepository);
+
+    void inject(MovieDetailRepository feedRepository);
 }
