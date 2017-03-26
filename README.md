@@ -6,8 +6,6 @@ If you are interested and want to try it out please generate an API key on https
 
 Currently third-party apis:
 
-https://github.com/konmik/nucleus
-
 https://github.com/greenrobot/greenDAO
 
 https://github.com/square/retrofit
