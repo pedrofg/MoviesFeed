@@ -3,7 +3,6 @@ package com.moviesfeed.di;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.moviesfeed.App;
 import com.moviesfeed.models.DaoMaster;
 import com.moviesfeed.models.DaoSession;
 

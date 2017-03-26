@@ -1,17 +1,15 @@
 package com.moviesfeed.ui.activities;
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.moviesfeed.R;
-
-import nucleus5.presenter.Presenter;
-import nucleus5.view.NucleusAppCompatActivity;
 
 /**
  * Created by Pedro on 2017-02-06.
  */
 
-public class AnimatedTransitionActivity<P extends Presenter> extends NucleusAppCompatActivity<P> {
+public class AnimatedTransitionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

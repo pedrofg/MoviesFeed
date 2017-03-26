@@ -12,11 +12,9 @@ import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
 import com.moviesfeed.models.MoviePoster;
-import com.moviesfeed.models.MoviesFeed;
 import com.moviesfeed.models.Review;
 import com.moviesfeed.models.Video;
 import com.moviesfeed.repository.MovieDetailRepository;
-import com.moviesfeed.ui.presenters.MovieDetailPresenter;
 import com.moviesfeed.ui.presenters.Util;
 import com.moviesfeed.ui.presenters.Validator;
 

@@ -9,7 +9,6 @@ import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.ArrayList;

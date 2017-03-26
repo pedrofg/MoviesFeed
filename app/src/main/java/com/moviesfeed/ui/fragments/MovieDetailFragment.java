@@ -1,7 +1,6 @@
 package com.moviesfeed.ui.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,7 +25,6 @@ import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.Review;
 import com.moviesfeed.models.Video;
-import com.moviesfeed.ui.activities.MovieDetailActivity;
 import com.moviesfeed.ui.activities.uicomponents.AppBarStateChangeListener;
 import com.moviesfeed.ui.activities.uicomponents.DividerItemDecoration;
 import com.moviesfeed.ui.activities.uicomponents.RecyclerItemClickListener;
