@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/iconWhite"
-    android:orientation="vertical"
-    tools:context=".ui.activities.SettingsActivity">
+    android:fitsSystemWindows="true">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarSettings"
@@ -15,32 +11,38 @@
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
-    <TextView
-        android:id="@+id/btnTellAFriend"
-        style="@style/txtSettingsStyle"
-        android:layout_below="@id/toolbarSettings"
-        android:layout_marginTop="20dp"
-        android:text="@string/tell_a_friend" />
-
-    <View
-        android:id="@+id/separatorTellThird"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/btnTellAFriend"
-        android:background="@color/iconRed" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarSettings"
+        android:background="@color/iconWhite">
 
-    <TextView
-        android:id="@+id/btnThirdApis"
-        style="@style/txtSettingsStyle"
-        android:layout_below="@id/separatorTellThird"
-        android:text="@string/third_party_apis" />
+        <TextView
+            android:id="@+id/btnTellAFriend"
+            style="@style/txtSettingsStyle"
+            android:layout_marginTop="20dp"
+            android:text="@string/tell_a_friend" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:text="@string/copyright" />
+        <View
+            android:id="@+id/separatorTellThird"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/btnTellAFriend"
+            android:background="@color/iconRed" />
+
+        <TextView
+            android:id="@+id/btnThirdApis"
+            style="@style/txtSettingsStyle"
+            android:layout_below="@id/separatorTellThird"
+            android:text="@string/third_party_apis" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:text="@string/copyright" />
+    </RelativeLayout>
 
 </RelativeLayout>
