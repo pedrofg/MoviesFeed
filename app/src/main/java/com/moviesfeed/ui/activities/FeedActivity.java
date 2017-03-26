@@ -55,6 +55,7 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.Feed
         this.toolbar.setTitle(getString(R.string.popularity));
         setSupportActionBar(this.toolbar);
 
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         this.drawerLayout.addDrawerListener(toggle);

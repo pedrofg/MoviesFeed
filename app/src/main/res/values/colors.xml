@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">@color/iconRed</color>
-    <color name="colorPrimaryDark">@android:color/black</color>
-    <color name="colorAccent">@color/iconRed</color>
-    <color name="iconRed">#C23E3E</color>
+    <color name="colorPrimaryDark">@color/iconRedDarker</color>
+    <color name="colorAccent">#FF5252</color>
+    <color name="iconRed">#E53935</color>
+    <color name="iconRedDarker">#D32F2F</color>
     <color name="iconBlue">#27B6D1</color>
-    <color name="iconDarkerGray">#24374B</color>
-    <color name="iconGray">#868686</color>
     <color name="iconWhite">#FDF3F3</color>
     <color name="lightGray">#EFEBEB</color>
 

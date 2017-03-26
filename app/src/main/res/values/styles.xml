@@ -8,8 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@drawable/background_splash</item>
         <item name="autoCompleteTextViewStyle">@style/cursorColor</item>
-    </style>
 
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
 
     <style name="cursorColor" parent="Widget.AppCompat.AutoCompleteTextView">
         <item name="android:textCursorDrawable">@drawable/cursor</item>
