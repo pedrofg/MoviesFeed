@@ -1,6 +1,5 @@
 package com.moviesfeed.ui.activities.uicomponents;
 
-import android.app.Activity;
 import android.content.Context;
 import android.widget.ImageView;
 

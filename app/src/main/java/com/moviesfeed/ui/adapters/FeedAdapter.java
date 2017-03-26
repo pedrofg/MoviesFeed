@@ -1,6 +1,5 @@
 package com.moviesfeed.ui.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,10 +10,10 @@ import android.widget.ProgressBar;
 
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.moviesfeed.ui.activities.uicomponents.ImageLoader;
 import com.moviesfeed.R;
 import com.moviesfeed.api.MoviesApi;
 import com.moviesfeed.models.Movie;
+import com.moviesfeed.ui.activities.uicomponents.ImageLoader;
 
 import java.util.List;
 
