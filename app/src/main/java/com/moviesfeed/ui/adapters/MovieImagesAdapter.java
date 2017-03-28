@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -28,10 +27,16 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
 
     private List<MovieBackdrop> listMovieImages;
     private Context context;
+    private ImagesAdapterCallback callback;
 
-    public MovieImagesAdapter(Context context, List<MovieBackdrop> listMovieBackdrop) {
+    public interface ImagesAdapterCallback {
+        void onImageViewClicked(ImageView imageView);
+    }
+
+    public MovieImagesAdapter(Context context, List<MovieBackdrop> listMovieBackdrop, ImagesAdapterCallback callback) {
         this.context = context;
         this.listMovieImages = listMovieBackdrop;
+        this.callback = callback;
     }
 
     @Override
@@ -49,6 +54,8 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
         holder.progressItem.setVisibility(View.VISIBLE);
         final String url = MoviesApi.URL_MOVIE_BACKGROUND + mb.getFilePath();
 
+        holder.imgMovieBackdrop.setOnClickListener(v -> callback.onImageViewClicked((ImageView) v));
+
 
         ImageLoader.loadImageGlide(context, url, holder.imgMovieBackdrop, null, 0, false, true, new RequestListener() {
             @Override
@@ -63,7 +70,6 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
             }
         });
 
-        holder.txtPosition.setText(++position + " - " + this.listMovieImages.size());
     }
 
 
@@ -78,8 +84,6 @@ public class MovieImagesAdapter extends RecyclerView.Adapter<MovieImagesAdapter.
         ImageView imgMovieBackdrop;
         @BindView(R.id.progressMovieBackdrop)
         ProgressBar progressItem;
-        @BindView(R.id.txtPosition)
-        TextView txtPosition;
 
 
         public MovieImagesViewHolder(View view) {

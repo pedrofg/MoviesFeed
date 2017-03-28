@@ -18,7 +18,6 @@ import com.moviesfeed.R;
 import com.moviesfeed.api.Filters;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
-import com.moviesfeed.ui.activities.FeedActivity;
 import com.moviesfeed.ui.activities.uicomponents.EndlessScrollListener;
 import com.moviesfeed.ui.activities.uicomponents.RecyclerItemClickListener;
 import com.moviesfeed.ui.adapters.FeedAdapter;
@@ -73,8 +72,10 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(FeedFragment.class.getName(), "onCreate()");
 
         if (savedInstanceState == null) {
+            Log.i(FeedFragment.class.getName(), "savedInstanceState == null");
             this.presenter = new FeedPresenter();
             this.presenter.init(context(), this);
             this.adapter = new FeedAdapter(this.context());
@@ -93,6 +94,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
         this.swipeRefreshLayout.setOnRefreshListener(this);
         this.swipeRefreshLayout.setColorSchemeResources(R.color.iconRed);
 
+
         createGrid();
 
         return fragmentView;
@@ -110,11 +112,12 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
 
     @Override
     public void createGrid() {
-        Log.i(FeedActivity.class.getName(), "createGrid()");
+        Log.i(FeedFragment.class.getName(), "createGrid()");
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context(), GRID_COLUMNS);
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup);
         this.rvMoviesFeed.setLayoutManager(gridLayoutManager);
+
 
         this.rvMoviesFeed.clearOnScrollListeners();
         this.endlessScrollListener = new EndlessScrollListener(gridLayoutManager, this);
@@ -148,24 +151,28 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
 
     @Override
     public void onResume() {
+        Log.i(FeedFragment.class.getName(), "onResume()");
         super.onResume();
         this.presenter.resume();
     }
 
     @Override
     public void onPause() {
+        Log.i(FeedFragment.class.getName(), "onPause()");
         super.onPause();
         this.presenter.pause();
     }
 
     @Override
     public void onDestroy() {
+        Log.i(FeedFragment.class.getName(), "onDestroy()");
         super.onDestroy();
         this.presenter.destroy();
     }
 
     @Override
     public void onDestroyView() {
+        Log.i(FeedFragment.class.getName(), "onDestroyView()");
         super.onDestroyView();
         this.rvMoviesFeed.setAdapter(null);
         this.unbinder.unbind();
@@ -173,6 +180,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
 
     @Override
     public void onDetach() {
+        Log.i(FeedFragment.class.getName(), "onDetach()");
         super.onDetach();
         this.callback = null;
     }

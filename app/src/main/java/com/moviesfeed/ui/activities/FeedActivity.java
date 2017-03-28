@@ -70,9 +70,34 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.Feed
         this.checkedMenuItem = R.id.nav_popularity;
 
         if (savedInstanceState == null) {
+            Log.i(FeedActivity.class.getName(), "savedInstanceState == null");
             feedFragment = new FeedFragment();
             addFragment(R.id.fragmentContainer, feedFragment);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i(FeedActivity.class.getName(), "onResume()");
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i(FeedActivity.class.getName(), "onPause()");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.i(FeedActivity.class.getName(), "onStop()");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.i(FeedActivity.class.getName(), "onDestroy()");
+        super.onDestroy();
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {
@@ -110,7 +135,10 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.Feed
             Log.i(FeedActivity.class.getName(), "handleIntent() ACTION_SEARCH query: " + query);
 
             feedFragment.searchMovieFeed(query);
-            this.navigationView.getMenu().findItem(this.checkedMenuItem).setChecked(false);
+            if (this.checkedMenuItem != 0) {
+                this.navigationView.getMenu().findItem(this.checkedMenuItem).setChecked(false);
+                this.checkedMenuItem = 0;
+            }
             this.toolbar.setTitle(query);
         }
     }
