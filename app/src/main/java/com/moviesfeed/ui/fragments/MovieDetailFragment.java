@@ -74,7 +74,6 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     private DividerItemDecoration dividerItemDecoration;
     private FeedAdapter rvSimilarMoviesAdapter;
     private MovieVideosAdapter rvVideosAdapter;
-    private boolean expanded;
     private CustomLinearLayoutManager rvMovieImagesLayoutManager;
 
     @BindView(R.id.toolbarMovieDetail)
@@ -332,6 +331,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
         this.callback.openMovieDetail(movieId);
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
@@ -396,7 +396,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     }
 
     @Override
-    public void onImageViewClicked(ImageView imageView) {
+    public void animImagePoster(ImageView imageView, int height, ImageView.ScaleType scaleType) {
         TransitionManager.beginDelayedTransition(viewRoot, new TransitionSet()
                 .addTransition(new ChangeBounds())
                 .addTransition(new ChangeImageTransform()));
@@ -404,30 +404,33 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
         ViewGroup.LayoutParams params = imageView.getLayoutParams();
         CoordinatorLayout.LayoutParams paramsContainer = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
 
-        int height = expanded ? (int) context().getResources().getDimension(R.dimen.movie_detail_img_backdrop_height)
-                : ViewGroup.LayoutParams.MATCH_PARENT;
 
         params.height = height;
         paramsContainer.height = height;
 
+        imageView.setLayoutParams(params);
+        imageView.setScaleType(scaleType);
+
+    }
+
+    @Override
+    public void setScrollsEnable(boolean enable) {
+        CoordinatorLayout.LayoutParams paramsContainer = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
 
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) paramsContainer.getBehavior();
         behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
             @Override
             public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                return !expanded;
+                return enable;
             }
         });
 
-        this.rvMovieImagesLayoutManager.setScrollEnabled(expanded);
+        this.rvMovieImagesLayoutManager.setScrollEnabled(enable);
+    }
 
-
-        imageView.setLayoutParams(params);
-
-        imageView.setScaleType(expanded ? ImageView.ScaleType.FIT_XY
-                : ImageView.ScaleType.CENTER_CROP);
-
-        expanded = !expanded;
+    @Override
+    public void onImageViewClicked(ImageView imageView) {
+        this.presenter.onImagePosterClicked(imageView);
     }
 
 }

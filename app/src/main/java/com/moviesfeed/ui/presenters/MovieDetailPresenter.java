@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.moviesfeed.R;
 import com.moviesfeed.interactors.MovieDetailInteractor;
@@ -17,7 +19,7 @@ import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
 import com.moviesfeed.models.Review;
 import com.moviesfeed.models.Video;
-import com.moviesfeed.ui.activities.uicomponents.AppBarStateChangeListener.*;
+import com.moviesfeed.ui.activities.uicomponents.AppBarStateChangeListener.State;
 
 import java.util.List;
 
@@ -72,6 +74,10 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
         void openVideoUrl(Uri url);
 
         void openMovieDetail(int movieId);
+
+        void animImagePoster(ImageView imageView, int height, ImageView.ScaleType scaleType);
+
+        void setScrollsEnable(boolean blocked);
     }
 
     private MovieDetailInteractor movieDetailInteractor;
@@ -132,6 +138,25 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
 
     public void onSimilarMovieClicked(Movie movie) {
         this.callback.openMovieDetail(movie.getIdTmdb());
+    }
+
+    public void onImagePosterClicked(ImageView imageView) {
+
+        boolean isZoomed;
+        int imgDefaultHeight = (int) callback.context().getResources().getDimension(R.dimen.movie_detail_img_backdrop_height);
+
+        isZoomed = imageView.getHeight() != imgDefaultHeight;
+
+        int height = isZoomed ? imgDefaultHeight
+                : ViewGroup.LayoutParams.MATCH_PARENT;
+
+        ImageView.ScaleType scaleType = isZoomed ? ImageView.ScaleType.FIT_XY
+                : ImageView.ScaleType.CENTER_CROP;
+
+
+        callback.animImagePoster(imageView, height, scaleType);
+
+        callback.setScrollsEnable(isZoomed);
     }
 
 
