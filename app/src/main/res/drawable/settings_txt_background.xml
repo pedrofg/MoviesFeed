@@ -2,5 +2,5 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/lightGray" android:state_pressed="true" /> <!-- pressed -->
     <item android:drawable="@color/lightGray" android:state_focused="true" /> <!-- focused -->
-    <item android:drawable="@color/iconWhite" /> <!-- default -->
+    <item android:drawable="@color/background_holo_light" /> <!-- default -->
 </selector>

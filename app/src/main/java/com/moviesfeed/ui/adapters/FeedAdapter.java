@@ -72,7 +72,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((FeedViewHolder) holder).layoutPlaceHolder.setVisibility(View.VISIBLE);
             ((FeedViewHolder) holder).imgMoviePoster.setVisibility(View.GONE);
 
-            ImageLoader.loadImageGlide(context, url, ((FeedViewHolder) holder).imgMoviePoster, new RoundedCornersTransformation(context, 20, 0), 0, false, true, new RequestListener() {
+
+            ImageLoader.loadImageGlide(context, url, ((FeedViewHolder) holder).imgMoviePoster, new RoundedCornersTransformation(context, 10, 0), 0, false, true, new RequestListener() {
                 @Override
                 public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
                     return false;

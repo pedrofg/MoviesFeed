@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/movie_video_width"
-    android:layout_height="@dimen/movie_video_height"
-    android:background="@android:color/white">
+    android:layout_height="@dimen/movie_video_height">
+
 
     <ImageView
         android:id="@+id/imgMovieVideo"
@@ -27,5 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:indeterminate="true" />
+
 
 </RelativeLayout>

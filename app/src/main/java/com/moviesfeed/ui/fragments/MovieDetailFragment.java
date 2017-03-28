@@ -3,21 +3,29 @@ package com.moviesfeed.ui.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.TransitionManager;
+import android.transition.TransitionSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
 import com.moviesfeed.R;
 import com.moviesfeed.models.Cast;
 import com.moviesfeed.models.Crew;
@@ -26,6 +34,7 @@ import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.Review;
 import com.moviesfeed.models.Video;
 import com.moviesfeed.ui.activities.uicomponents.AppBarStateChangeListener;
+import com.moviesfeed.ui.activities.uicomponents.CustomLinearLayoutManager;
 import com.moviesfeed.ui.activities.uicomponents.DividerItemDecoration;
 import com.moviesfeed.ui.activities.uicomponents.RecyclerItemClickListener;
 import com.moviesfeed.ui.adapters.CastCrewAdapter;
@@ -48,7 +57,7 @@ import static com.moviesfeed.ui.activities.FeedActivity.INTENT_MOVIE_DETAIL_ID;
  * Created by Pedro on 2017-03-23.
  */
 
-public class MovieDetailFragment extends Fragment implements MovieDetailPresenter.MovieDetailPresenterCallback, RecyclerItemClickListener.OnItemClickListener {
+public class MovieDetailFragment extends Fragment implements MovieDetailPresenter.MovieDetailPresenterCallback, RecyclerItemClickListener.OnItemClickListener, MovieImagesAdapter.ImagesAdapterCallback {
 
 
     public interface MovieDetailFragmentCallback {
@@ -65,6 +74,8 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     private DividerItemDecoration dividerItemDecoration;
     private FeedAdapter rvSimilarMoviesAdapter;
     private MovieVideosAdapter rvVideosAdapter;
+    private boolean expanded;
+    private CustomLinearLayoutManager rvMovieImagesLayoutManager;
 
     @BindView(R.id.toolbarMovieDetail)
     Toolbar toolbar;
@@ -87,7 +98,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     @BindView(R.id.collapsingToolBar)
     CollapsingToolbarLayout collapsingToolBar;
     @BindView(R.id.recyclerViewMovieImages)
-    RecyclerView rvMovieImages;
+    RecyclerViewPager rvMovieImages;
     @BindView(R.id.progressLoadingMovies)
     ProgressBar progressLoadingMovies;
     @BindView(R.id.nestedScrollView)
@@ -100,22 +111,24 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     TextView txtMovieDetailError;
     @BindView(R.id.recyclerViewMovieVideos)
     RecyclerView rvMovieVideos;
-    @BindView(R.id.layoutVideos)
+    @BindView(R.id.cardViewVideos)
     View layoutVideos;
     @BindView(R.id.recyclerViewMovieCastCrew)
     RecyclerView rvMovieCastCrew;
-    @BindView(R.id.layoutCastCrew)
+    @BindView(R.id.cardViewCastCrew)
     View layoutCastCrew;
     @BindView(R.id.layoutDetailsError)
     View layoutError;
     @BindView(R.id.recyclerViewSimilarMovies)
     RecyclerView rvSimilarMovies;
-    @BindView(R.id.layoutSimilarMovies)
+    @BindView(R.id.cardViewSimilarMovies)
     View layoutSimilarMovies;
     @BindView(R.id.recyclerViewReviews)
     RecyclerView rvReviews;
-    @BindView(R.id.layoutReviews)
+    @BindView(R.id.cardViewReviews)
     View layoutReviews;
+    @BindView(R.id.viewRoot)
+    CoordinatorLayout viewRoot;
 
     public MovieDetailFragment() {
         setRetainInstance(true);
@@ -258,7 +271,6 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     @Override
     public void showSimilarMovies(List<Movie> movieList) {
         this.rvSimilarMovies.setLayoutManager(getHorizontalLayoutManager());
-        this.rvSimilarMovies.addItemDecoration(this.dividerItemDecoration);
         this.rvSimilarMoviesAdapter = new FeedAdapter(context());
         rvSimilarMoviesAdapter.setMovies(movieList);
         this.rvSimilarMovies.setAdapter(rvSimilarMoviesAdapter);
@@ -285,8 +297,9 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
 
     @Override
     public void showImages(List<MovieBackdrop> imageList) {
-        this.rvMovieImages.setLayoutManager(getHorizontalLayoutManager());
-        this.rvMovieImages.setAdapter(new MovieImagesAdapter(context(), imageList));
+        this.rvMovieImagesLayoutManager = new CustomLinearLayoutManager(context(), LinearLayoutManager.HORIZONTAL);
+        this.rvMovieImages.setLayoutManager(this.rvMovieImagesLayoutManager);
+        this.rvMovieImages.setAdapter(new MovieImagesAdapter(context(), imageList, this));
     }
 
     @Override
@@ -381,4 +394,40 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
         this.nestedScrollView.setVisibility(View.GONE);
         this.layoutError.setVisibility(View.GONE);
     }
+
+    @Override
+    public void onImageViewClicked(ImageView imageView) {
+        TransitionManager.beginDelayedTransition(viewRoot, new TransitionSet()
+                .addTransition(new ChangeBounds())
+                .addTransition(new ChangeImageTransform()));
+
+        ViewGroup.LayoutParams params = imageView.getLayoutParams();
+        CoordinatorLayout.LayoutParams paramsContainer = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+
+        int height = expanded ? (int) context().getResources().getDimension(R.dimen.movie_detail_img_backdrop_height)
+                : ViewGroup.LayoutParams.MATCH_PARENT;
+
+        params.height = height;
+        paramsContainer.height = height;
+
+
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) paramsContainer.getBehavior();
+        behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+            @Override
+            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                return !expanded;
+            }
+        });
+
+        this.rvMovieImagesLayoutManager.setScrollEnabled(expanded);
+
+
+        imageView.setLayoutParams(params);
+
+        imageView.setScaleType(expanded ? ImageView.ScaleType.FIT_XY
+                : ImageView.ScaleType.CENTER_CROP);
+
+        expanded = !expanded;
+    }
+
 }

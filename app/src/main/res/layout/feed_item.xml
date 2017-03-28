@@ -1,40 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/grid_movie_thumbnail_width"
-    android:layout_height="@dimen/grid_movie_thumbnail_height"
-    android:paddingBottom="5dp">
-
-    <ImageView
-        android:id="@+id/movieItemPoster"
-        android:layout_width="@dimen/grid_movie_thumbnail_width"
-        android:layout_height="@dimen/grid_movie_thumbnail_height"
-        android:scaleType="fitXY" />
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="5dp">
 
     <RelativeLayout
-        android:id="@+id/layoutPlaceHolder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:id="@+id/movieItemProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:indeterminate="true" />
-
+        android:layout_width="@dimen/grid_movie_thumbnail_width"
+        android:layout_height="@dimen/grid_movie_thumbnail_height">
 
         <ImageView
-            android:id="@+id/imgPlaceHolder"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_above="@id/movieItemProgressBar"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/ic_placeholder" />
+            android:id="@+id/movieItemPoster"
+            android:layout_width="@dimen/grid_movie_thumbnail_width"
+            android:layout_height="@dimen/grid_movie_thumbnail_height"
+            android:scaleType="fitXY" />
+
+        <RelativeLayout
+            android:id="@+id/layoutPlaceHolder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/movieItemProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:indeterminate="true" />
+
+
+            <ImageView
+                android:id="@+id/imgPlaceHolder"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_above="@id/movieItemProgressBar"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_placeholder" />
+        </RelativeLayout>
     </RelativeLayout>
-</RelativeLayout>
+</android.support.v7.widget.CardView>
