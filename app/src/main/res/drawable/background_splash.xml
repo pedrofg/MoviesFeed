@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/iconWhite" />
+    <item android:drawable="@color/background_holo_light" />
 
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/ic_launcher_splash" />
+            android:src="@drawable/ic_movies_feed_splash" />
     </item>
 </layer-list>
