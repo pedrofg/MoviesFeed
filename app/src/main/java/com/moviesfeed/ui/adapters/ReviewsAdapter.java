@@ -45,7 +45,11 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
         holder.txtReviewAuthor.setText(review.getAuthor());
         holder.txtReviewContent.setText(review.getContent());
         holder.txtReviewContent.setMaxLines(MAX_CONTENT_LINES);
-        holder.txtReviewUrl.setText(review.getUrl());
+    }
+
+
+    public Review getItem(int position) {
+        return this.listReviews.get(position);
     }
 
 
@@ -59,8 +63,6 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
         TextView txtReviewAuthor;
         @BindView(R.id.txtReviewContent)
         TextView txtReviewContent;
-        @BindView(R.id.txtReviewUrl)
-        TextView txtReviewUrl;
 
         public ReviewsViewHolder(View view) {
             super(view);

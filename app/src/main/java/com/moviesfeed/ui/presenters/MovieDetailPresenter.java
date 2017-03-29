@@ -78,6 +78,8 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
         void animImagePoster(ImageView imageView, int height, ImageView.ScaleType scaleType);
 
         void setScrollsEnable(boolean blocked);
+
+        void openReview(Uri url);
     }
 
     private MovieDetailInteractor movieDetailInteractor;
@@ -138,6 +140,11 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
 
     public void onSimilarMovieClicked(Movie movie) {
         this.callback.openMovieDetail(movie.getIdTmdb());
+    }
+
+    public void onReviewClicked(Review review) {
+        Uri url = Uri.parse(review.getUrl());
+        this.callback.openReview(url);
     }
 
     public void onImagePosterClicked(ImageView imageView) {

@@ -92,15 +92,18 @@
             android:paddingBottom="10dp">
 
             <View
+                android:id="@+id/separator"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/black" />
+                android:background="@color/divider" />
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cardViewTitle"
                 android:layout_width="wrap_content"
+                android:layout_below="@id/separator"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="4dp"
+                app:cardUseCompatPadding="true"
                 app:contentPadding="5dp">
 
                 <RelativeLayout
@@ -246,7 +249,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardViewTitle"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
+                app:cardUseCompatPadding="true"
                 android:visibility="gone"
                 app:cardCornerRadius="4dp"
                 app:contentPadding="5dp">
@@ -284,8 +288,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardViewVideos"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:visibility="gone"
+                app:cardUseCompatPadding="true"
                 app:cardCornerRadius="4dp"
                 app:contentPadding="5dp">
 
@@ -321,7 +326,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardViewCastCrew"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
+                app:cardUseCompatPadding="true"
                 android:paddingBottom="10dp"
                 android:visibility="gone"
                 app:cardCornerRadius="4dp"
@@ -358,15 +364,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardViewSimilarMovies"
-                android:layout_marginTop="10dp"
                 android:visibility="gone"
+                android:layout_marginTop="5dp"
+                app:cardUseCompatPadding="true"
                 app:cardCornerRadius="4dp"
                 app:contentPadding="5dp">
 
                 <RelativeLayout
                     android:id="@+id/layoutReviews"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_cast_height">
+                    android:layout_height="match_parent">
 
                     <com.moviesfeed.ui.activities.uicomponents.CustomTextView
                         android:id="@+id/txtReviews"
@@ -390,7 +397,5 @@
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
         </RelativeLayout>
-
-
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>
