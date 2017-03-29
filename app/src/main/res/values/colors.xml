@@ -7,7 +7,7 @@
     <color name="lightGray">#D3D3D3</color>
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#757575</color>
-    <color name="dividerColor">#BDBDBD</color>4
+    <color name="divider">#BDBDBD</color>4
     <color name="background_holo_light">#fff3f3f3</color>
 
 </resources>

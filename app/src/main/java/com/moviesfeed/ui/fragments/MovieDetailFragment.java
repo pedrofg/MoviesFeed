@@ -65,6 +65,8 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
 
         void openVideoUrl(Uri url);
 
+        void openReviewUrl(Uri url);
+
         void setToolbar(Toolbar toolbar);
     }
 
@@ -74,6 +76,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     private DividerItemDecoration dividerItemDecoration;
     private FeedAdapter rvSimilarMoviesAdapter;
     private MovieVideosAdapter rvVideosAdapter;
+    private ReviewsAdapter rvReviewsAdapter;
     private CustomLinearLayoutManager rvMovieImagesLayoutManager;
 
     @BindView(R.id.toolbarMovieDetail)
@@ -171,11 +174,13 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
         RecyclerItemClickListener itemClickListener = new RecyclerItemClickListener(context(), this);
         this.rvMovieVideos.addOnItemTouchListener(itemClickListener);
         this.rvSimilarMovies.addOnItemTouchListener(itemClickListener);
+        this.rvReviews.addOnItemTouchListener(itemClickListener);
 
         this.rvMovieVideos.setHasFixedSize(true);
         this.rvSimilarMovies.setHasFixedSize(true);
         this.rvMovieImages.setHasFixedSize(true);
         this.rvMovieCastCrew.setHasFixedSize(true);
+        this.rvReviews.setHasFixedSize(true);
 
         return fragmentView;
     }
@@ -279,9 +284,8 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     @Override
     public void showReviews(List<Review> reviewList) {
         this.rvReviews.setLayoutManager(getHorizontalLayoutManager());
-        this.rvReviews.addItemDecoration(this.dividerItemDecoration);
-        ReviewsAdapter reviewsAdapter = new ReviewsAdapter(context(), reviewList);
-        this.rvReviews.setAdapter(reviewsAdapter);
+        this.rvReviewsAdapter = new ReviewsAdapter(context(), reviewList);
+        this.rvReviews.setAdapter(rvReviewsAdapter);
         this.layoutReviews.setVisibility(View.VISIBLE);
     }
 
@@ -333,6 +337,12 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
 
 
     @Override
+    public void openReview(Uri url) {
+        this.callback.openReviewUrl(url);
+    }
+
+
+    @Override
     public void onResume() {
         super.onResume();
         this.presenter.resume();
@@ -375,8 +385,13 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
                 Movie movie = rvSimilarMoviesAdapter.getItem(position);
                 this.presenter.onSimilarMovieClicked(movie);
                 break;
+            case R.id.recyclerViewReviews:
+                Review review = rvReviewsAdapter.getItem(position);
+                this.presenter.onReviewClicked(review);
+                break;
         }
     }
+
 
     @OnClick(R.id.txtMovieDetailError)
     public void onClick(View v) {
