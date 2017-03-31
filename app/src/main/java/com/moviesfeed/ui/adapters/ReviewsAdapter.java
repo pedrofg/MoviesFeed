@@ -23,7 +23,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
 
     private List<Review> listReviews;
     private Context context;
-    public static final int MAX_CONTENT_LINES = 6;
+    public static final int MAX_CONTENT_LINES = 10;
 
     public ReviewsAdapter(Context context, List<Review> listReviews) {
         this.context = context;

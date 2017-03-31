@@ -9,6 +9,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -152,7 +153,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
         if (savedInstanceState == null) {
             this.presenter = new MovieDetailPresenter();
             this.presenter.init(context(), this);
-            this.dividerItemDecoration = new DividerItemDecoration(context().getDrawable(R.drawable.list_separator), false, false);
+            this.dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(context(), R.drawable.list_separator), false, false);
         }
     }
 
