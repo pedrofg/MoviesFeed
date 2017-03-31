@@ -3,40 +3,9 @@ package com.moviesfeed;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.moviesfeed.ui.activities.MovieDetailActivity;
-import com.moviesfeed.models.Cast;
-import com.moviesfeed.models.Credits;
-import com.moviesfeed.models.Crew;
-import com.moviesfeed.models.MovieDetail;
-import com.moviesfeed.models.MovieImages;
-import com.moviesfeed.models.MovieReviews;
-import com.moviesfeed.models.MovieVideos;
-import com.moviesfeed.models.SimilarMovies;
-import com.moviesfeed.ui.presenters.MovieDetailPresenter;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.Observable;
-
-import static com.moviesfeed.ui.presenters.MovieDetailPresenter.NOT_FOUND;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by Pedro on 2017-02-26.

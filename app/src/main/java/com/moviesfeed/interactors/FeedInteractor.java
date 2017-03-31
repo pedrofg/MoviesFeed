@@ -41,6 +41,7 @@ public class FeedInteractor {
     @Named(SchedulersModule.MAIN_THREAD_SCHEDULER)
     public Scheduler mainThreadScheduler;
 
+    public static final int FIRST_PAGE = 1;
     private Filters filter;
     private FeedRepository feedRepository;
     private Context context;
@@ -85,7 +86,6 @@ public class FeedInteractor {
 
     public void refreshMoviesFeed() {
         this.isSwipeToRefresh = true;
-        clearMemoryCache();
         loadMoviesFeedApi();
     }
 
@@ -131,7 +131,12 @@ public class FeedInteractor {
     private void loadMoviesFeedApi() {
         Observable<MoviesFeed> observable = null;
 
-        int page = moviesFeedCache == null ? 1 : moviesFeedCache.getPage();
+        int page;
+        if (moviesFeedCache == null || isSwipeToRefresh) {
+            page = FIRST_PAGE;
+        } else {
+            page = moviesFeedCache.getPage();
+        }
 
         if (filter == Filters.SEARCH) {
             observable = feedRepository.loadMoviesFeedBySearch(query, page).subscribeOn(ioScheduler).observeOn(mainThreadScheduler);
@@ -146,20 +151,26 @@ public class FeedInteractor {
         DisposableObserver<MoviesFeed> observer = new DisposableObserver<MoviesFeed>() {
             @Override
             public void onNext(MoviesFeed moviesFeedDownloaded) {
+                if (isSwipeToRefresh) {
+                    clearMemoryCache();
+                }
+
                 updateMemoryCache(moviesFeedDownloaded, false);
                 presenterCallback.onLoadSuccess(moviesFeedCache.cloneMoviesFeed());
                 updateDiskCache(moviesFeedCache);
+
+                isNextPage = false;
+                isSwipeToRefresh = false;
             }
 
             @Override
             public void onError(Throwable throwable) {
                 if (isNextPage) {
                     moviesFeedCache.setPage(moviesFeedCache.getPage() - 1);
-                    isNextPage = false;
                 }
 
-                if (isSwipeToRefresh)
-                    isSwipeToRefresh = false;
+                isNextPage = false;
+                isSwipeToRefresh = false;
 
                 boolean isNetworkError = false;
 
@@ -225,7 +236,6 @@ public class FeedInteractor {
         Observable<MoviesFeed> observable = Observable.fromCallable(() -> {
             if (isSwipeToRefresh) {
                 feedRepository.deleteMoviesFeedDb(moviesFeed.getId());
-                isSwipeToRefresh = false;
             }
             feedRepository.updateMoviesFeedDb(moviesFeed);
             return NOT_FOUND;
