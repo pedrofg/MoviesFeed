@@ -4,7 +4,7 @@
     <string name="email_creator">pedro92.gf@gmail.com</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="error_request_feed">An error has occurred.</string>
+    <string name="error_request_feed">Can\'t load results</string>
     <string name="error_request_feed_network">A network error has occurred.\nVerify your connection.</string>
     <string name="tap_here_try_again">\nTap here to try again.</string>
     <string name="please_try_again">Please try again.</string>

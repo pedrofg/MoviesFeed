@@ -61,6 +61,8 @@ import static com.moviesfeed.ui.activities.FeedActivity.INTENT_MOVIE_DETAIL_ID;
 public class MovieDetailFragment extends Fragment implements MovieDetailPresenter.MovieDetailPresenterCallback, RecyclerItemClickListener.OnItemClickListener, MovieImagesAdapter.ImagesAdapterCallback {
 
 
+
+
     public interface MovieDetailFragmentCallback {
         void openMovieDetail(int movieId);
 
@@ -68,9 +70,12 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
 
         void openReviewUrl(Uri url);
 
+        void openMovieHomepage(Uri url);
+
         void setToolbar(Toolbar toolbar);
     }
 
+    public static final int TXT_TITLE_MAX_LINES = 1;
     private MovieDetailPresenter presenter;
     private Unbinder unbinder;
     private MovieDetailFragmentCallback callback;
@@ -92,8 +97,8 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     TextView txtMovieRating;
     @BindView(R.id.txtMovieOverview)
     TextView txtMovieOverview;
-    @BindView(R.id.txtMovieHomepage)
-    TextView txtMovieHomepage;
+    @BindView(R.id.imgHomepage)
+    ImageView imgHomePage;
     @BindView(R.id.txtMovieGenres)
     TextView txtMovieGenres;
     @BindView(R.id.appBarLayout)
@@ -226,6 +231,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     @Override
     public void showMovieTitle(String title) {
         this.txtMovieTitle.setText(title);
+        this.txtMovieTitle.setMaxLines(TXT_TITLE_MAX_LINES);
     }
 
     @Override
@@ -253,9 +259,11 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     }
 
     @Override
-    public void showHomepage(String homepage) {
-        this.txtMovieHomepage.setText(homepage);
-        this.txtMovieHomepage.setVisibility(View.VISIBLE);
+    public void showHomepage(Uri homepage) {
+        this.imgHomePage.setVisibility(View.VISIBLE);
+        this.imgHomePage.setOnClickListener(v -> {
+            callback.openMovieHomepage(homepage);
+        });
     }
 
     @Override
@@ -395,7 +403,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
 
 
     @OnClick(R.id.txtMovieDetailError)
-    public void onClick(View v) {
+    public void onClickTxtError(View v) {
         this.presenter.tryAgain();
     }
 

@@ -51,6 +51,8 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     RecyclerView rvMoviesFeed;
     @BindView(R.id.txtError)
     TextView txtError;
+    @BindView(R.id.txtTryAgain)
+    TextView txtTryAgain;
     @BindView(R.id.layoutFeedError)
     View layoutError;
     @BindView(R.id.swipeRefresh)
@@ -191,6 +193,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
         this.txtError.setText(message);
     }
 
+
     @Override
     public Context context() {
         return this.getActivity().getApplicationContext();
@@ -267,7 +270,17 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
         this.swipeRefreshLayout.setRefreshing(false);
     }
 
-    @OnClick(R.id.txtError)
+    @Override
+    public void showTryAgain() {
+        this.txtTryAgain.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideTryAgain() {
+        this.txtTryAgain.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.txtTryAgain)
     public void onClick(View v) {
         this.presenter.tryAgain();
     }
