@@ -49,7 +49,7 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
 
         void showOverview(String overview);
 
-        void showHomepage(String homepage);
+        void showHomepage(Uri homepage);
 
         void showGenres(String genres);
 
@@ -184,7 +184,8 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
         this.callback.showOverview(movieDetail.getOverview());
 
         if (!TextUtils.isEmpty(movieDetail.getHomepage())) {
-            this.callback.showHomepage(movieDetail.getHomepage());
+            Uri url = Uri.parse(movieDetail.getHomepage());
+            this.callback.showHomepage(url);
         }
 
         if (movieDetail.getGenres().size() > 0) {

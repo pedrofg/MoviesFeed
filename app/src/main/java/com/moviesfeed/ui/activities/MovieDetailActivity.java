@@ -91,6 +91,12 @@ public class MovieDetailActivity extends AnimatedTransitionActivity implements M
     }
 
     @Override
+    public void openMovieHomepage(Uri url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, url);
+        startActivity(intent);
+    }
+
+    @Override
     public void setToolbar(Toolbar toolbar) {
         setToolbarSize(toolbar);
 

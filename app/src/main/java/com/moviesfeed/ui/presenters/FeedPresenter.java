@@ -40,6 +40,10 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
         void setEndlessScrollLoading();
 
         void stopRefreshing();
+
+        void showTryAgain();
+
+        void hideTryAgain();
     }
 
     private FeedInteractor feedInteractor;
@@ -120,6 +124,7 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
                 Log.i(FeedPresenter.class.getName(), "requestMoviesFeedSuccess() moviesFeed.getMovies().size() == 0");
                 callback.showError(callback.context().getString(R.string.no_movies_found));
                 callback.contentUpdated(true);
+                callback.hideTryAgain();
             } else {
                 Log.i(FeedPresenter.class.getName(), "requestMoviesFeedSuccess() clearOnScrollListeners");
                 callback.clearScrollListener();
@@ -146,7 +151,7 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
             callback.removeProgressBottomGrid();
             callback.addProgressBottomGrid(true);
         } else {
-            message.append(callback.context().getString(R.string.tap_here_try_again));
+            callback.showTryAgain();
             callback.showError(message.toString());
             callback.contentUpdated(true);
         }
