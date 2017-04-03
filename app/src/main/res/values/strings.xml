@@ -6,7 +6,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="error_request_feed">Can\'t load results</string>
     <string name="error_request_feed_network">A network error has occurred.\nVerify your connection.</string>
-    <string name="please_try_again">Please try again.</string>
     <string name="videos">Videos</string>
     <string name="cast_crew">Cast and Crew</string>
     <string name="tell_a_friend">Tell a Friend</string>
@@ -36,5 +35,6 @@
     <string name="war">War</string>
     <string name="similar_movies">Similar Movies</string>
     <string name="reviews">Reviews</string>
+    <string name="try_again">Try again</string>
 
 </resources>
