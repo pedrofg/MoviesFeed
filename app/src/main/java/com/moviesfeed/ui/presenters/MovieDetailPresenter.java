@@ -228,7 +228,6 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
     public void onLoadError(Throwable throwable, boolean isNetworkError) {
         StringBuilder message = new StringBuilder();
         message.append(isNetworkError ? callback.context().getString(R.string.error_request_feed_network) : callback.context().getString(R.string.error_request_feed));
-        message.append(callback.context().getString(R.string.tap_here_try_again));
         callback.showError(message.toString());
         callback.contentUpdated(true);
     }

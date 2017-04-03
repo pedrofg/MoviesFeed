@@ -58,8 +58,7 @@ import static com.moviesfeed.ui.activities.FeedActivity.INTENT_MOVIE_DETAIL_ID;
  * Created by Pedro on 2017-03-23.
  */
 
-public class MovieDetailFragment extends Fragment implements MovieDetailPresenter.MovieDetailPresenterCallback, RecyclerItemClickListener.OnItemClickListener, MovieImagesAdapter.ImagesAdapterCallback {
-
+public class MovieDetailFragment extends Fragment implements MovieDetailPresenter.MovieDetailPresenterCallback, RecyclerItemClickListener.OnItemClickListener, MovieImagesAdapter.ImagesAdapterCallback, FeedAdapter.OnFeedItemClicked {
 
 
 
@@ -179,7 +178,6 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
 
         RecyclerItemClickListener itemClickListener = new RecyclerItemClickListener(context(), this);
         this.rvMovieVideos.addOnItemTouchListener(itemClickListener);
-        this.rvSimilarMovies.addOnItemTouchListener(itemClickListener);
         this.rvReviews.addOnItemTouchListener(itemClickListener);
 
         this.rvMovieVideos.setHasFixedSize(true);
@@ -284,7 +282,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     @Override
     public void showSimilarMovies(List<Movie> movieList) {
         this.rvSimilarMovies.setLayoutManager(getHorizontalLayoutManager());
-        this.rvSimilarMoviesAdapter = new FeedAdapter(context());
+        this.rvSimilarMoviesAdapter = new FeedAdapter(context(), this);
         rvSimilarMoviesAdapter.setMovies(movieList);
         this.rvSimilarMovies.setAdapter(rvSimilarMoviesAdapter);
         this.layoutSimilarMovies.setVisibility(View.VISIBLE);
@@ -390,10 +388,6 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
                 Video video = rvVideosAdapter.getItem(position);
                 this.presenter.onVideoClicked(video);
                 break;
-            case R.id.recyclerViewSimilarMovies:
-                Movie movie = rvSimilarMoviesAdapter.getItem(position);
-                this.presenter.onSimilarMovieClicked(movie);
-                break;
             case R.id.recyclerViewReviews:
                 Review review = rvReviewsAdapter.getItem(position);
                 this.presenter.onReviewClicked(review);
@@ -401,8 +395,18 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
         }
     }
 
+    @Override
+    public void onFeedItemClicked(Movie movie) {
+        this.presenter.onSimilarMovieClicked(movie);
+    }
 
-    @OnClick(R.id.txtMovieDetailError)
+    @Override
+    public void onUpdateBtnClicked() {
+        //do nothing.
+    }
+
+
+    @OnClick(R.id.txtTryAgain)
     public void onClickTxtError(View v) {
         this.presenter.tryAgain();
     }
