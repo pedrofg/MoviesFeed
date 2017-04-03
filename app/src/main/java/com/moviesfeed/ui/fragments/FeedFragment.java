@@ -53,7 +53,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     TextView txtError;
     @BindView(R.id.txtTryAgain)
     TextView txtTryAgain;
-    @BindView(R.id.layoutFeedError)
+    @BindView(R.id.layoutError)
     View layoutError;
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout swipeRefreshLayout;

@@ -114,7 +114,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     RatingBar rbMovieRating;
     @BindView(R.id.layoutMovieRating)
     View layoutMovieRating;
-    @BindView(R.id.txtMovieDetailError)
+    @BindView(R.id.txtError)
     TextView txtMovieDetailError;
     @BindView(R.id.recyclerViewMovieVideos)
     RecyclerView rvMovieVideos;
@@ -124,7 +124,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     RecyclerView rvMovieCastCrew;
     @BindView(R.id.cardViewCastCrew)
     View layoutCastCrew;
-    @BindView(R.id.layoutDetailsError)
+    @BindView(R.id.layoutError)
     View layoutError;
     @BindView(R.id.recyclerViewSimilarMovies)
     RecyclerView rvSimilarMovies;
