@@ -28,10 +28,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int VIEW_ITEM = 1;
     private boolean isErrorProgress;
     private List<Movie> listMovies;
+    private OnFeedItemClicked onFeedItemClicked;
+
+    public interface OnFeedItemClicked {
+        void onFeedItemClicked(Movie movie);
+
+        void onUpdateBtnClicked();
+    }
 
 
-    public FeedAdapter(Context context) {
+    public FeedAdapter(Context context, OnFeedItemClicked onFeedItemClicked) {
         this.context = context;
+        this.onFeedItemClicked = onFeedItemClicked;
     }
 
     @Override
@@ -60,6 +68,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     .inflate(R.layout.progress_item, parent, false);
 
             vh = new ProgressViewHolder(v);
+
+            v.setOnFocusChangeListener((view, hasFocus) -> {
+                if (hasFocus) {
+                    ((ProgressViewHolder) vh).btnProgressUpdate.setImageDrawable(context.getDrawable(R.drawable.ic_update_clicked));
+                } else {
+                    ((ProgressViewHolder) vh).btnProgressUpdate.setImageDrawable(context.getDrawable(R.drawable.ic_update));
+                }
+            });
         }
         return vh;
     }
@@ -67,10 +83,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FeedViewHolder) {
-            final String url = MoviesApi.URL_MOVIE_POSTER + this.listMovies.get(position).getPosterPath();
+            FeedViewHolder feedViewHolder = (FeedViewHolder) holder;
 
-            ((FeedViewHolder) holder).layoutPlaceHolder.setVisibility(View.VISIBLE);
-            ((FeedViewHolder) holder).imgMoviePoster.setVisibility(View.GONE);
+            Movie movie = this.listMovies.get(position);
+
+            feedViewHolder.itemView.setOnClickListener(v -> {
+                this.onFeedItemClicked.onFeedItemClicked(movie);
+            });
+
+            final String url = MoviesApi.URL_MOVIE_POSTER + movie.getPosterPath();
+
+            feedViewHolder.layoutPlaceHolder.setVisibility(View.VISIBLE);
+            feedViewHolder.imgMoviePoster.setVisibility(View.GONE);
 
 
             ImageLoader.loadImageGlide(context, url, ((FeedViewHolder) holder).imgMoviePoster, new RoundedCornersTransformation(context, 10, 0), 0, false, true, new RequestListener() {
@@ -81,19 +105,26 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 @Override
                 public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
-                    ((FeedViewHolder) holder).layoutPlaceHolder.setVisibility(View.GONE);
-                    ((FeedViewHolder) holder).imgMoviePoster.setVisibility(View.VISIBLE);
+                    feedViewHolder.layoutPlaceHolder.setVisibility(View.GONE);
+                    feedViewHolder.imgMoviePoster.setVisibility(View.VISIBLE);
                     return false;
                 }
             });
 
         } else {
+
+            ProgressViewHolder progressViewHolder = (ProgressViewHolder) holder;
             if (this.isErrorProgress) {
-                ((ProgressViewHolder) holder).progressBar.setVisibility(View.GONE);
-                ((ProgressViewHolder) holder).btnProgressUpdate.setVisibility(View.VISIBLE);
+                progressViewHolder.progressBar.setVisibility(View.GONE);
+                progressViewHolder.btnProgressUpdate.setVisibility(View.VISIBLE);
+
+                progressViewHolder.btnProgressUpdate.setOnClickListener(v -> {
+                    this.onFeedItemClicked.onUpdateBtnClicked();
+                });
+
             } else {
-                ((ProgressViewHolder) holder).progressBar.setVisibility(View.VISIBLE);
-                ((ProgressViewHolder) holder).btnProgressUpdate.setVisibility(View.GONE);
+                progressViewHolder.progressBar.setVisibility(View.VISIBLE);
+                progressViewHolder.btnProgressUpdate.setVisibility(View.GONE);
             }
         }
 

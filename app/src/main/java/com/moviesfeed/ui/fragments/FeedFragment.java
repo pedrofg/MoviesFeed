@@ -19,7 +19,6 @@ import com.moviesfeed.api.Filters;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
 import com.moviesfeed.ui.activities.uicomponents.EndlessScrollListener;
-import com.moviesfeed.ui.activities.uicomponents.RecyclerItemClickListener;
 import com.moviesfeed.ui.adapters.FeedAdapter;
 import com.moviesfeed.ui.presenters.FeedPresenter;
 
@@ -29,7 +28,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class FeedFragment extends Fragment implements FeedPresenter.FeedPresenterCallback, RecyclerItemClickListener.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, EndlessScrollListener.RefreshList {
+public class FeedFragment extends Fragment implements FeedPresenter.FeedPresenterCallback, SwipeRefreshLayout.OnRefreshListener, EndlessScrollListener.RefreshList, FeedAdapter.OnFeedItemClicked {
+
 
 
     public interface FeedFragmentCallback {
@@ -80,7 +80,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
             Log.i(FeedFragment.class.getName(), "savedInstanceState == null");
             this.presenter = new FeedPresenter();
             this.presenter.init(context(), this);
-            this.adapter = new FeedAdapter(this.context());
+            this.adapter = new FeedAdapter(this.context(), this);
         }
     }
 
@@ -90,7 +90,6 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
         final View fragmentView = inflater.inflate(R.layout.fragment_feed, container, false);
         unbinder = ButterKnife.bind(this, fragmentView);
 
-        this.rvMoviesFeed.addOnItemTouchListener(new RecyclerItemClickListener(context(), this));
         this.rvMoviesFeed.setHasFixedSize(true);
 
         this.swipeRefreshLayout.setOnRefreshListener(this);
@@ -213,8 +212,13 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-        this.presenter.onMovieClicked(this.adapter.getItem(position));
+    public void onFeedItemClicked(Movie movie) {
+        this.presenter.onMovieClicked(movie);
+    }
+
+    @Override
+    public void onUpdateBtnClicked() {
+        this.presenter.requestNextPage();
     }
 
 

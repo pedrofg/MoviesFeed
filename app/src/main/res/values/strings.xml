@@ -6,7 +6,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="error_request_feed">Can\'t load results</string>
     <string name="error_request_feed_network">A network error has occurred.\nVerify your connection.</string>
-    <string name="tap_here_try_again">\nTap here to try again.</string>
     <string name="please_try_again">Please try again.</string>
     <string name="videos">Videos</string>
     <string name="cast_crew">Cast and Crew</string>
