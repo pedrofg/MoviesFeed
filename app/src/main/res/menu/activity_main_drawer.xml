@@ -7,18 +7,23 @@
         <item
             android:id="@+id/nav_popularity"
             android:checked="true"
+            android:icon="@drawable/nav_popularity_selector"
             android:title="@string/popularity" />
         <item
             android:id="@+id/nav_now_playing"
+            android:icon="@drawable/nav_now_playing_selector"
             android:title="@string/now_playing" />
         <item
             android:id="@+id/nav_top_rated"
+            android:icon="@drawable/nav_top_rated_selector"
             android:title="@string/top_rated" />
         <item
             android:id="@+id/nav_upcoming"
+            android:icon="@drawable/nav_upcoming_selector"
             android:title="@string/upcoming" />
         <item
             android:id="@+id/nav_revenue"
+            android:icon="@drawable/nav_revenue_selector"
             android:title="@string/revenue" />
     </group>
 
@@ -27,36 +32,47 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_action"
+            android:icon="@drawable/nav_action_selector"
             android:title="@string/action" />
         <item
             android:id="@+id/nav_animation"
+            android:icon="@drawable/nav_animation_selector"
             android:title="@string/animation" />
         <item
             android:id="@+id/nav_comedy"
+            android:icon="@drawable/nav_comedy_selector"
             android:title="@string/comedy" />
         <item
             android:id="@+id/nav_romance"
+            android:icon="@drawable/nav_romance_selector"
             android:title="@string/romance" />
         <item
             android:id="@+id/nav_drama"
+            android:icon="@drawable/nav_drama_selector"
             android:title="@string/drama" />
         <item
             android:id="@+id/nav_science_fiction"
+            android:icon="@drawable/nav_science_fiction_selector"
             android:title="@string/science_fiction" />
         <item
             android:id="@+id/nav_music"
+            android:icon="@drawable/nav_music_selector"
             android:title="@string/music" />
         <item
             android:id="@+id/nav_thriller"
+            android:icon="@drawable/nav_thriller_selector"
             android:title="@string/thriller" />
         <item
             android:id="@+id/nav_horror"
+            android:icon="@drawable/nav_horror_selector"
             android:title="@string/horror" />
         <item
             android:id="@+id/nav_documentary"
+            android:icon="@drawable/nav_documentary_selector"
             android:title="@string/documentary" />
         <item
             android:id="@+id/nav_war"
+            android:icon="@drawable/nav_war_selector"
             android:title="@string/war" />
     </group>
 
