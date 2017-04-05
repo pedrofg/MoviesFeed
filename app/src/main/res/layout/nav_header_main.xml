@@ -10,11 +10,10 @@
         android:layout_width="100dp"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:alpha=".50"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp"
+        android:alpha=".30"
+        android:layout_marginLeft="-10dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_popcorn" />
+        android:src="@drawable/ic_popcorn_falling" />
 
 
     <ImageView
