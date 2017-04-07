@@ -19,7 +19,7 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
 
         Context context();
 
-        void renderFeed(MoviesFeed moviesFeed);
+        void renderFeed(MoviesFeed moviesFeed, int insertedMovies);
 
         void viewMovie(Movie movie);
 
@@ -97,7 +97,7 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
 
 
     @Override
-    public void onLoadSuccess(MoviesFeed moviesFeed) {
+    public void onLoadSuccess(MoviesFeed moviesFeed, int insertedMovies) {
         Log.i(FeedPresenter.class.getName(), "onLoadSuccess()");
         if (isUpdating) {
             callback.createGrid();
@@ -109,12 +109,7 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
             this.isNextPage = false;
         }
 
-//        if (insertedMoviesCount != 0) {
-//            int positionStart = this.rvAdapter.getItemCount() - insertedMoviesCount;
-//            this.rvAdapter.notifyItemRangeInserted(positionStart, insertedMoviesCount);
-//        }
-
-        callback.renderFeed(moviesFeed);
+        callback.renderFeed(moviesFeed, insertedMovies);
         callback.contentUpdated(false);
 
         if (moviesFeed.getAllMoviesDownloaded()) {
@@ -128,7 +123,6 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
             } else {
                 Log.i(FeedPresenter.class.getName(), "requestMoviesFeedSuccess() clearOnScrollListeners");
                 callback.clearScrollListener();
-
             }
         } else if (callback.shouldLoadMoreItems()) {
             Log.i(FeedPresenter.class.getName(), "requestMoviesFeedSuccess() callback.shouldLoadMoreItems()");
@@ -143,6 +137,7 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
 
     @Override
     public void onLoadError(Throwable throwable, boolean isNetworkError) {
+        Log.i(FeedPresenter.class.getName(), "onLoadError() throwable: " + throwable.getMessage() + " isNetworkError: " + isNetworkError);
 
         StringBuilder message = new StringBuilder();
         message.append(isNetworkError ? callback.context().getString(R.string.error_request_feed_network) : callback.context().getString(R.string.error_request_feed));

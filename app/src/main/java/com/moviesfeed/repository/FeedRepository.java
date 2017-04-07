@@ -9,10 +9,13 @@ import com.moviesfeed.di.ApiModule;
 import com.moviesfeed.di.DaggerAppComponent;
 import com.moviesfeed.di.DatabaseModule;
 import com.moviesfeed.models.DaoSession;
+import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MovieDao;
 import com.moviesfeed.models.MoviesFeed;
 
 import org.greenrobot.greendao.query.QueryBuilder;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -61,10 +64,10 @@ public class FeedRepository {
         return isDbValid;
     }
 
-    public void updateMoviesFeedDb(MoviesFeed moviesFeed) {
+    public void updateMoviesFeedDb(MoviesFeed moviesFeed, List<Movie> newMovies) {
         if (verifyDb()) {
             daoSession.getMoviesFeedDao().insertOrReplace(moviesFeed);
-            daoSession.getMovieDao().insertOrReplaceInTx(moviesFeed.getMovies());
+            daoSession.getMovieDao().insertOrReplaceInTx(newMovies);
         }
     }
 

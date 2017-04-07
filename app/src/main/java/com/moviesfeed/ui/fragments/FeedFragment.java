@@ -80,7 +80,6 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
             Log.i(FeedFragment.class.getName(), "savedInstanceState == null");
             this.presenter = new FeedPresenter();
             this.presenter.init(context(), this);
-            this.adapter = new FeedAdapter(this.context(), this);
         }
     }
 
@@ -93,7 +92,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
         this.rvMoviesFeed.setHasFixedSize(true);
 
         this.swipeRefreshLayout.setOnRefreshListener(this);
-        this.swipeRefreshLayout.setColorSchemeResources(R.color.iconRed);
+        this.swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
 
         createGrid();
@@ -127,6 +126,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
         this.swipeRefreshLayout.setRefreshing(false);
         this.rvMoviesFeed.scrollToPosition(0);
 
+        this.adapter = new FeedAdapter(this.context(), this);
         this.rvMoviesFeed.setAdapter(adapter);
     }
 
@@ -199,9 +199,9 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     }
 
     @Override
-    public void renderFeed(MoviesFeed moviesFeed) {
+    public void renderFeed(MoviesFeed moviesFeed, int insertedMovies) {
         this.adapter.setMovies(moviesFeed.getMovies());
-        this.adapter.notifyDataSetChanged();
+        this.adapter.notifyItemRangeInserted(this.adapter.getItemCount() - insertedMovies, insertedMovies);
     }
 
     @Override
@@ -292,7 +292,8 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     @Override
     public void addProgressBottomGrid(boolean errorProgress) {
         this.endlessScrollListener.addProgressItem();
-        this.adapter.addProgress(errorProgress);
+        this.rvMoviesFeed.post(() -> adapter.addProgress(errorProgress));
+
     }
 
     @Override

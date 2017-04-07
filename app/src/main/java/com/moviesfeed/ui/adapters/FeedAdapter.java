@@ -140,7 +140,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (this.listMovies != null) {
             this.isErrorProgress = errorProgress;
             this.listMovies.add(null);
-            notifyItemInserted(getItemCount() - 1);
+            notifyDataSetChanged();
         }
     }
 
@@ -148,7 +148,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (this.listMovies != null && this.listMovies.size() > 0) {
             if (getItem(getItemCount() - 1) == null) {
                 this.listMovies.remove(getItemCount() - 1);
-                notifyItemRemoved(getItemCount());
+                notifyDataSetChanged();
             }
         }
     }
