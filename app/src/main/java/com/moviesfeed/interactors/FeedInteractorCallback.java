@@ -8,7 +8,7 @@ import com.moviesfeed.models.MoviesFeed;
 
 public interface FeedInteractorCallback {
 
-    void onLoadSuccess(MoviesFeed moviesFeed);
+    void onLoadSuccess(MoviesFeed moviesFeed, int amountMoviesByPage);
 
     void onLoadError(Throwable throwable, boolean isNetworkError);
 }

@@ -51,8 +51,9 @@ public class MoviesFeed {
         newMoviesFeed.setTotalPages(this.totalPages);
         newMoviesFeed.setAllMoviesDownloaded(this.allMoviesDownloaded);
         if (this.movies != null) {
-            newMoviesFeed.setMovies(new ArrayList<Movie>());
-            newMoviesFeed.getMovies().addAll(this.movies);
+            ArrayList<Movie> listMovies = new ArrayList<>();
+            listMovies.addAll(this.movies);
+            newMoviesFeed.setMovies(listMovies);
         }
         newMoviesFeed.setFilter(this.filter);
         return newMoviesFeed;

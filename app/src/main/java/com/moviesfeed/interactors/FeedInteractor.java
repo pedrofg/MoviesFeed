@@ -15,6 +15,7 @@ import com.moviesfeed.ui.presenters.Validator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,12 +37,15 @@ public class FeedInteractor {
 
     @Inject
     @Named(SchedulersModule.IO_SCHEDULER)
-    public Scheduler ioScheduler;
+    Scheduler ioScheduler;
     @Inject
     @Named(SchedulersModule.MAIN_THREAD_SCHEDULER)
-    public Scheduler mainThreadScheduler;
+    Scheduler mainThreadScheduler;
 
-    public static final int FIRST_PAGE = 1;
+    private static final int AMOUNT_MOVIES_BY_PAGE = 20;
+    private static final int FIRST_PAGE = 1;
+    private static final int MAX_PAGE = 100;
+
     private Filters filter;
     private FeedRepository feedRepository;
     private Context context;
@@ -50,6 +54,7 @@ public class FeedInteractor {
     private String query;
     private MoviesFeed moviesFeedCache;
     private boolean isNextPage, isSwipeToRefresh;
+    private int counterMoviesReadyToRender;
 
     public FeedInteractor(Context context, FeedInteractorCallback callback) {
         DaggerSchedulersComponent.builder()
@@ -110,7 +115,7 @@ public class FeedInteractor {
                     loadMoviesFeedApi();
                 } else {
                     updateMemoryCache(moviesFeed, true);
-                    presenterCallback.onLoadSuccess(moviesFeed.cloneMoviesFeed());
+                    presenterCallback.onLoadSuccess(moviesFeed.cloneMoviesFeed(), moviesFeed.getMovies().size());
                 }
             }
 
@@ -139,39 +144,51 @@ public class FeedInteractor {
         }
 
         if (filter == Filters.SEARCH) {
-            observable = feedRepository.loadMoviesFeedBySearch(query, page).subscribeOn(ioScheduler).observeOn(mainThreadScheduler);
+            observable = feedRepository.loadMoviesFeedBySearch(query, page);
         } else if (filter.getId() == Filters.REVENUE.getId()) {
-            observable = feedRepository.loadMoviesFeedByDiscover(filter.toString(), page).subscribeOn(ioScheduler).observeOn(mainThreadScheduler);
+            observable = feedRepository.loadMoviesFeedByDiscover(filter.toString(), page);
         } else if (filter.getId() > Filters.REVENUE.getId()) {
-            observable = feedRepository.loadMoviesFeedByGenre(Integer.valueOf(filter.toString()), getFormattedDate(), page).subscribeOn(ioScheduler).observeOn(mainThreadScheduler);
+            observable = feedRepository.loadMoviesFeedByGenre(Integer.valueOf(filter.toString()), getFormattedDate(), page);
         } else if (filter.getId() < Filters.REVENUE.getId()) {
-            observable = feedRepository.loadMoviesFeedByCategory(filter.toString(), page).subscribeOn(ioScheduler).observeOn(mainThreadScheduler);
+            observable = feedRepository.loadMoviesFeedByCategory(filter.toString(), page);
         }
+
+        observable = observable.map(moviesFeedDownloaded -> {
+            if (isSwipeToRefresh) {
+                clearMemoryCache();
+            }
+
+            List<Movie> filteredMovies = updateMemoryCache(moviesFeedDownloaded, false);
+            updateDiskCache(moviesFeedCache, filteredMovies);
+
+
+            counterMoviesReadyToRender += filteredMovies != null ? filteredMovies.size() : 0;
+
+            return moviesFeedDownloaded;
+        }).subscribeOn(ioScheduler).observeOn(mainThreadScheduler);
 
         DisposableObserver<MoviesFeed> observer = new DisposableObserver<MoviesFeed>() {
             @Override
             public void onNext(MoviesFeed moviesFeedDownloaded) {
-                if (isSwipeToRefresh) {
-                    clearMemoryCache();
+                Log.d(FeedInteractor.class.getName(), "onNext() moviesFeedCache size: " + moviesFeedCache.getMovies().size());
+                if (shouldDownloadNextPage()) {
+                    requestNextPage();
+                } else {
+                    Log.d(FeedInteractor.class.getName(), "counterMoviesReadyToRender: " + counterMoviesReadyToRender);
+                    presenterCallback.onLoadSuccess(moviesFeedCache.cloneMoviesFeed(), counterMoviesReadyToRender);
+                    counterMoviesReadyToRender = 0;
                 }
-
-                updateMemoryCache(moviesFeedDownloaded, false);
-                presenterCallback.onLoadSuccess(moviesFeedCache.cloneMoviesFeed());
-                updateDiskCache(moviesFeedCache);
-
-                isNextPage = false;
-                isSwipeToRefresh = false;
             }
 
             @Override
             public void onError(Throwable throwable) {
+                Log.d(FeedInteractor.class.getName(), "onError() throwable: " + throwable.getMessage());
                 if (isNextPage) {
                     moviesFeedCache.setPage(moviesFeedCache.getPage() - 1);
                 }
 
                 isNextPage = false;
                 isSwipeToRefresh = false;
-
                 boolean isNetworkError = false;
 
                 if (throwable instanceof IOException && !Util.isNetworkAvailable(context))
@@ -182,10 +199,18 @@ public class FeedInteractor {
 
             @Override
             public void onComplete() {
+                isNextPage = false;
+                isSwipeToRefresh = false;
             }
         };
 
         addDisposable(observable.subscribeWith(observer));
+    }
+
+    private boolean shouldDownloadNextPage() {
+        return counterMoviesReadyToRender < AMOUNT_MOVIES_BY_PAGE
+                && !moviesFeedCache.getAllMoviesDownloaded()
+                && moviesFeedCache.getPage() < MAX_PAGE;
     }
 
 
@@ -193,7 +218,7 @@ public class FeedInteractor {
         this.moviesFeedCache = null;
     }
 
-    private void updateMemoryCache(MoviesFeed moviesFeed, boolean isFromDb) {
+    private List<Movie> updateMemoryCache(MoviesFeed moviesFeed, boolean isFromDb) {
         if (isFromDb) {
             this.moviesFeedCache = moviesFeed;
         } else {
@@ -209,35 +234,46 @@ public class FeedInteractor {
 
             if (checkAllMoviesDownloaded(moviesFeed)) {
                 this.moviesFeedCache.setAllMoviesDownloaded(true);
-                Log.d(FeedInteractor.class.getName(), "updateMoviesFeedDb() checkAllMoviesDownloaded == true");
+                Log.d(FeedInteractor.class.getName(), "updateMemoryCache() checkAllMoviesDownloaded == true");
             }
 
             final List<Movie> filteredMovies = new ArrayList<>();
 
             if (moviesFeed.getMovies().size() > 0) {
-                for (Movie movie : moviesFeed.getMovies()) {
+                for (Iterator<Movie> iter = moviesFeed.getMovies().iterator(); iter.hasNext(); ) {
+                    Movie movie = iter.next();
                     if (Validator.validateMovie(movie)) {
                         movie.setMoviesFeedKey(this.moviesFeedCache.getId());
                         filteredMovies.add(movie);
                     }
                 }
 
-                Log.d(FeedInteractor.class.getName(), "updateMoviesFeedDb() filtered movies: " + filteredMovies.size());
+//                for (Movie movie : moviesFeed.getMovies()) {
+//                    if (Validator.validateMovie(movie)) {
+//                        movie.setMoviesFeedKey(this.moviesFeedCache.getId());
+//                        filteredMovies.add(movie);
+//                    }
+//                }
+
+                Log.d(FeedInteractor.class.getName(), "updateMemoryCache() filtered movies: " + filteredMovies.size());
             }
 
             this.moviesFeedCache.getMovies().addAll(filteredMovies);
 
-            Log.d(FeedInteractor.class.getName(), "updateMoviesFeedDb() page: " + moviesFeed.getPage());
+            Log.d(FeedInteractor.class.getName(), "updateMemoryCache() page: " + moviesFeed.getPage());
+
+            return filteredMovies;
         }
+        return null;
     }
 
-    private void updateDiskCache(MoviesFeed moviesFeed) {
+    private void updateDiskCache(MoviesFeed moviesFeed, List<Movie> filteredMovies) {
 
         Observable<MoviesFeed> observable = Observable.fromCallable(() -> {
             if (isSwipeToRefresh) {
                 feedRepository.deleteMoviesFeedDb(moviesFeed.getId());
             }
-            feedRepository.updateMoviesFeedDb(moviesFeed);
+            feedRepository.updateMoviesFeedDb(moviesFeed, filteredMovies);
             return NOT_FOUND;
         }).subscribeOn(ioScheduler)
                 .observeOn(mainThreadScheduler);
@@ -276,6 +312,6 @@ public class FeedInteractor {
     }
 
     public boolean hasCache() {
-        return moviesFeedCache != null ? true : false;
+        return moviesFeedCache != null;
     }
 }
