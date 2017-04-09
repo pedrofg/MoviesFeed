@@ -28,9 +28,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class FeedFragment extends Fragment implements FeedPresenter.FeedPresenterCallback, SwipeRefreshLayout.OnRefreshListener, EndlessScrollListener.RefreshList, FeedAdapter.OnFeedItemClicked {
-
-
+public class FeedFragment extends Fragment implements FeedPresenter.FeedPresenterCallback, SwipeRefreshLayout.OnRefreshListener, EndlessScrollListener.ScrollListener, FeedAdapter.OnFeedItemClicked {
 
     public interface FeedFragmentCallback {
         void onMovieClicked(Movie movie);
@@ -217,8 +215,8 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     }
 
     @Override
-    public void onUpdateBtnClicked() {
-        this.presenter.requestNextPage();
+    public void onBtnUpdateFeedClicked() {
+        this.presenter.onBtnUpdateFeedClicked();
     }
 
 
@@ -260,16 +258,6 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     }
 
     @Override
-    public boolean shouldLoadMoreItems() {
-        return this.endlessScrollListener.shouldLoadMoreItems(this.rvMoviesFeed);
-    }
-
-    @Override
-    public void setEndlessScrollLoading() {
-        this.endlessScrollListener.setLoading(true);
-    }
-
-    @Override
     public void stopRefreshing() {
         this.swipeRefreshLayout.setRefreshing(false);
     }
@@ -284,16 +272,23 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
         this.txtTryAgain.setVisibility(View.GONE);
     }
 
+
     @OnClick(R.id.txtTryAgain)
     public void onClick(View v) {
         this.presenter.tryAgain();
     }
 
     @Override
-    public void addProgressBottomGrid(boolean errorProgress) {
+    public void addProgressBottomGrid() {
         this.endlessScrollListener.addProgressItem();
-        this.rvMoviesFeed.post(() -> adapter.addProgress(errorProgress));
+        this.rvMoviesFeed.post(() -> adapter.addProgress());
 
+    }
+
+    @Override
+    public void addErrorBottomGrid() {
+        this.endlessScrollListener.addErrorItem();
+        this.rvMoviesFeed.post(() -> adapter.addError());
     }
 
     @Override

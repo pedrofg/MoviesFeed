@@ -4,7 +4,7 @@
     android:layout_height="100dp">
 
     <ImageView
-        android:id="@+id/itemProgressUpdateBtn"
+        android:id="@+id/itemUpdateFeed"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerInParent="true"

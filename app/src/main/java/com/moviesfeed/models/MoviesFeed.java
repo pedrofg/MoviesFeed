@@ -30,6 +30,7 @@ public class MoviesFeed {
     @Expose
     private int totalPages;
     private boolean allMoviesDownloaded;
+    private boolean limitMoviesReached;
 
     @Convert(converter = Filters.FiltersConverter.class, columnType = Long.class)
     private Filters filter;
@@ -50,6 +51,7 @@ public class MoviesFeed {
         newMoviesFeed.setPage(this.page);
         newMoviesFeed.setTotalPages(this.totalPages);
         newMoviesFeed.setAllMoviesDownloaded(this.allMoviesDownloaded);
+        newMoviesFeed.setLimitMoviesReached(this.limitMoviesReached);
         if (this.movies != null) {
             ArrayList<Movie> listMovies = new ArrayList<>();
             listMovies.addAll(this.movies);
@@ -65,13 +67,14 @@ public class MoviesFeed {
     }
 
 
-    @Generated(hash = 1916335549)
+    @Generated(hash = 975084110)
     public MoviesFeed(Long id, int page, int totalPages, boolean allMoviesDownloaded,
-                      Filters filter) {
+                      boolean limitMoviesReached, Filters filter) {
         this.id = id;
         this.page = page;
         this.totalPages = totalPages;
         this.allMoviesDownloaded = allMoviesDownloaded;
+        this.limitMoviesReached = limitMoviesReached;
         this.filter = filter;
     }
 
@@ -193,7 +196,7 @@ public class MoviesFeed {
     }
 
 
-    public boolean getAllMoviesDownloaded() {
+    public boolean isAllMoviesDownloaded() {
         return this.allMoviesDownloaded;
     }
 
@@ -203,14 +206,30 @@ public class MoviesFeed {
     }
 
 
+    public boolean isLimitMoviesReached() {
+        return limitMoviesReached;
+    }
+
+    public void setLimitMoviesReached(boolean limitMoviesReached) {
+        this.limitMoviesReached = limitMoviesReached;
+    }
+
+    public boolean getLimitMoviesReached() {
+        return this.limitMoviesReached;
+    }
+
+
+    public boolean getAllMoviesDownloaded() {
+        return this.allMoviesDownloaded;
+    }
+
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1783510636)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMoviesFeedDao() : null;
     }
-
-
 }
 
 
