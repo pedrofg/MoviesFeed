@@ -401,7 +401,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     }
 
     @Override
-    public void onUpdateBtnClicked() {
+    public void onBtnUpdateFeedClicked() {
         //do nothing.
     }
 

@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestListener;
 
 /**
@@ -35,6 +36,8 @@ public abstract class ImageLoader {
 
         if (!animate)
             request.dontAnimate();
+
+        request.diskCacheStrategy(DiskCacheStrategy.RESULT);
 
         if (callback != null)
             request.listener(callback);

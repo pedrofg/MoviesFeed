@@ -6,12 +6,14 @@ import android.widget.Toast;
 
 import com.moviesfeed.R;
 import com.moviesfeed.api.Filters;
+import com.moviesfeed.interactors.Errors;
 import com.moviesfeed.interactors.FeedInteractor;
 import com.moviesfeed.interactors.FeedInteractorCallback;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
 
 public class FeedPresenter implements Presenter, FeedInteractorCallback {
+
 
     public interface FeedPresenterCallback {
 
@@ -27,17 +29,15 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
 
         void removeProgressBottomGrid();
 
-        void addProgressBottomGrid(boolean errorProgress);
+        void addProgressBottomGrid();
+
+        void addErrorBottomGrid();
 
         void contentUpdated(boolean error);
 
         void updatingContent();
 
         void clearScrollListener();
-
-        boolean shouldLoadMoreItems();
-
-        void setEndlessScrollLoading();
 
         void stopRefreshing();
 
@@ -80,7 +80,7 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
         this.isNextPage = true;
         Log.d(FeedPresenter.class.getName(), "requestNextPage()");
         callback.removeProgressBottomGrid();
-        callback.addProgressBottomGrid(false);
+        callback.addProgressBottomGrid();
         this.feedInteractor.requestNextPage();
     }
 
@@ -93,6 +93,21 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
     public void navigationItemSelected(Filters filter) {
         callback.createGrid();
         requestMoviesFeed(filter);
+    }
+
+    public void onBtnUpdateFeedClicked() {
+        this.requestNextPage();
+    }
+
+    public void onMovieClicked(Movie movie) {
+        if (movie != null) {
+            callback.viewMovie(movie);
+        } else {
+            Log.i(FeedPresenter.class.getName(), "onItemClick movie == null / update item clicked");
+            //it means the user clicked on the update icon item
+            requestNextPage();
+        }
+
     }
 
 
@@ -112,7 +127,7 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
         callback.renderFeed(moviesFeed, insertedMovies);
         callback.contentUpdated(false);
 
-        if (moviesFeed.getAllMoviesDownloaded()) {
+        if (moviesFeed.isAllMoviesDownloaded() || moviesFeed.isLimitMoviesReached()) {
             Log.i(FeedPresenter.class.getName(), "requestMoviesFeedSuccess() allMoviesDownloaded = true");
 
             if (moviesFeed.getMovies().size() == 0) {
@@ -124,30 +139,24 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
                 Log.i(FeedPresenter.class.getName(), "requestMoviesFeedSuccess() clearOnScrollListeners");
                 callback.clearScrollListener();
             }
-        } else if (callback.shouldLoadMoreItems()) {
-            Log.i(FeedPresenter.class.getName(), "requestMoviesFeedSuccess() callback.shouldLoadMoreItems()");
-
-            callback.setEndlessScrollLoading();
-
-            this.requestNextPage();
         }
 
 
     }
 
     @Override
-    public void onLoadError(Throwable throwable, boolean isNetworkError) {
-        Log.i(FeedPresenter.class.getName(), "onLoadError() throwable: " + throwable.getMessage() + " isNetworkError: " + isNetworkError);
+    public void onLoadError(Throwable throwable, Errors error) {
+        Log.e(FeedPresenter.class.getName(), "onLoadError() throwable: " + throwable.getMessage() + " error: " + error.toString());
 
-        StringBuilder message = new StringBuilder();
-        message.append(isNetworkError ? callback.context().getString(R.string.error_request_feed_network) : callback.context().getString(R.string.error_request_feed));
+        String message = getFriendlyMessage(error);
+
         if (feedInteractor.hasCache()) {
             Toast.makeText(callback.context(), message, Toast.LENGTH_LONG).show();
             callback.removeProgressBottomGrid();
-            callback.addProgressBottomGrid(true);
+            callback.addErrorBottomGrid();
         } else {
             callback.showTryAgain();
-            callback.showError(message.toString());
+            callback.showError(message);
             callback.contentUpdated(true);
         }
 
@@ -158,16 +167,20 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
     }
 
 
-    public void onMovieClicked(Movie movie) {
-        if (movie != null) {
-            callback.viewMovie(movie);
-        } else {
-            Log.i(FeedPresenter.class.getName(), "onItemClick movie == null / update item clicked");
-            //it means the user clicked on the update icon item
-            requestNextPage();
+    private String getFriendlyMessage(Errors error) {
+        int messageId = R.string.error_request_feed;
+
+        if (error.equals(Errors.TOO_MANY_REQUEST)) {
+            messageId = R.string.error_request_feed_too_many_requests;
+        } else if (error.equals(Errors.NETWORK)) {
+            messageId = R.string.error_request_feed_network;
+        } else if (error.equals(Errors.LIMIT_MOVIES_REACHED)) {
+            messageId = R.string.error_request_feed_limit_movies_reached;
         }
 
+        return callback.context().getString(messageId);
     }
+
 
     @Override
     public void resume() {

@@ -10,5 +10,5 @@ public interface FeedInteractorCallback {
 
     void onLoadSuccess(MoviesFeed moviesFeed, int amountMoviesByPage);
 
-    void onLoadError(Throwable throwable, boolean isNetworkError);
+    void onLoadError(Throwable throwable, Errors error);
 }

@@ -26,6 +26,7 @@ import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
+import retrofit2.HttpException;
 
 import static com.moviesfeed.repository.FeedRepository.NOT_FOUND;
 
@@ -43,8 +44,9 @@ public class FeedInteractor {
     Scheduler mainThreadScheduler;
 
     private static final int AMOUNT_MOVIES_BY_PAGE = 20;
+    private static final int LIMIT_MOVIES_DOWNLOADED = 1000;
     private static final int FIRST_PAGE = 1;
-    private static final int MAX_PAGE = 100;
+    private static final int HTTP_TOO_MANY_REQUEST_ERROR = 429;
 
     private Filters filter;
     private FeedRepository feedRepository;
@@ -121,7 +123,7 @@ public class FeedInteractor {
 
             @Override
             public void onError(Throwable throwable) {
-                presenterCallback.onLoadError(throwable, false);
+                presenterCallback.onLoadError(throwable, Errors.GENERIC);
             }
 
             @Override
@@ -134,6 +136,8 @@ public class FeedInteractor {
 
 
     private void loadMoviesFeedApi() {
+        if (validateCanDownloadMovie()) {
+
         Observable<MoviesFeed> observable = null;
 
         int page;
@@ -182,19 +186,25 @@ public class FeedInteractor {
 
             @Override
             public void onError(Throwable throwable) {
-                Log.d(FeedInteractor.class.getName(), "onError() throwable: " + throwable.getMessage());
+                Log.e(FeedInteractor.class.getName(), "onError() throwable: " + throwable.getMessage());
                 if (isNextPage) {
                     moviesFeedCache.setPage(moviesFeedCache.getPage() - 1);
                 }
 
                 isNextPage = false;
                 isSwipeToRefresh = false;
-                boolean isNetworkError = false;
 
-                if (throwable instanceof IOException && !Util.isNetworkAvailable(context))
-                    isNetworkError = true;
+                Errors error = Errors.GENERIC;
+                if (throwable instanceof IOException && !Util.isNetworkAvailable(context)) {
+                    error = Errors.NETWORK;
+                } else if (throwable instanceof HttpException) {
+                    HttpException httpException = (HttpException) throwable;
+                    boolean isTooManyRequest = httpException.code() == HTTP_TOO_MANY_REQUEST_ERROR;
 
-                presenterCallback.onLoadError(throwable, isNetworkError);
+                    error = isTooManyRequest ? Errors.TOO_MANY_REQUEST : Errors.GENERIC;
+                }
+
+                presenterCallback.onLoadError(throwable, error);
             }
 
             @Override
@@ -205,12 +215,28 @@ public class FeedInteractor {
         };
 
         addDisposable(observable.subscribeWith(observer));
+        }
+    }
+
+    private boolean validateCanDownloadMovie() {
+        boolean proceed = true;
+
+        if (moviesFeedCache != null && moviesFeedCache.isLimitMoviesReached()) {
+            presenterCallback.onLoadError(null, Errors.LIMIT_MOVIES_REACHED);
+            proceed = false;
+        } else if (!Util.isNetworkAvailable(context)) {
+            presenterCallback.onLoadError(null, Errors.NETWORK);
+            proceed = false;
+        }
+
+
+        return proceed;
     }
 
     private boolean shouldDownloadNextPage() {
         return counterMoviesReadyToRender < AMOUNT_MOVIES_BY_PAGE
-                && !moviesFeedCache.getAllMoviesDownloaded()
-                && moviesFeedCache.getPage() < MAX_PAGE;
+                && !moviesFeedCache.isAllMoviesDownloaded()
+                && !moviesFeedCache.isLimitMoviesReached();
     }
 
 
@@ -247,24 +273,25 @@ public class FeedInteractor {
                         filteredMovies.add(movie);
                     }
                 }
-
-//                for (Movie movie : moviesFeed.getMovies()) {
-//                    if (Validator.validateMovie(movie)) {
-//                        movie.setMoviesFeedKey(this.moviesFeedCache.getId());
-//                        filteredMovies.add(movie);
-//                    }
-//                }
-
                 Log.d(FeedInteractor.class.getName(), "updateMemoryCache() filtered movies: " + filteredMovies.size());
             }
 
             this.moviesFeedCache.getMovies().addAll(filteredMovies);
+
+            if (checkLimitMoviesDownloaded()) {
+                this.moviesFeedCache.setLimitMoviesReached(true);
+                Log.d(FeedInteractor.class.getName(), "updateMemoryCache() checkLimitMoviesDownloaded == true");
+            }
 
             Log.d(FeedInteractor.class.getName(), "updateMemoryCache() page: " + moviesFeed.getPage());
 
             return filteredMovies;
         }
         return null;
+    }
+
+    private boolean checkLimitMoviesDownloaded() {
+        return this.moviesFeedCache.getMovies().size() >= LIMIT_MOVIES_DOWNLOADED;
     }
 
     private void updateDiskCache(MoviesFeed moviesFeed, List<Movie> filteredMovies) {

@@ -26,15 +26,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     public static final int VIEW_PROGRESS = 0;
     public static final int VIEW_ITEM = 1;
-    private boolean isErrorProgress;
+    private boolean isProgress;
     private List<Movie> listMovies;
     private OnFeedItemClicked onFeedItemClicked;
 
     public interface OnFeedItemClicked {
         void onFeedItemClicked(Movie movie);
 
-        void onUpdateBtnClicked();
+        void onBtnUpdateFeedClicked();
     }
+
 
 
     public FeedAdapter(Context context, OnFeedItemClicked onFeedItemClicked) {
@@ -71,9 +72,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             v.setOnFocusChangeListener((view, hasFocus) -> {
                 if (hasFocus) {
-                    ((ProgressViewHolder) vh).btnProgressUpdate.setImageDrawable(context.getDrawable(R.drawable.ic_update_clicked));
+                    ((ProgressViewHolder) vh).btnUpdateFeed.setImageDrawable(context.getDrawable(R.drawable.ic_update_clicked));
                 } else {
-                    ((ProgressViewHolder) vh).btnProgressUpdate.setImageDrawable(context.getDrawable(R.drawable.ic_update));
+                    ((ProgressViewHolder) vh).btnUpdateFeed.setImageDrawable(context.getDrawable(R.drawable.ic_update));
                 }
             });
         }
@@ -96,38 +97,40 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             feedViewHolder.layoutPlaceHolder.setVisibility(View.VISIBLE);
             feedViewHolder.imgMoviePoster.setVisibility(View.GONE);
 
-
-            ImageLoader.loadImageGlide(context, url, ((FeedViewHolder) holder).imgMoviePoster, new RoundedCornersTransformation(context, 10, 0), 0, false, true, new RequestListener() {
-                @Override
-                public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
-                    feedViewHolder.layoutPlaceHolder.setVisibility(View.GONE);
-                    feedViewHolder.imgMoviePoster.setVisibility(View.VISIBLE);
-                    return false;
-                }
-            });
+            loadThumbnail(feedViewHolder, url);
 
         } else {
 
             ProgressViewHolder progressViewHolder = (ProgressViewHolder) holder;
-            if (this.isErrorProgress) {
-                progressViewHolder.progressBar.setVisibility(View.GONE);
-                progressViewHolder.btnProgressUpdate.setVisibility(View.VISIBLE);
-
-                progressViewHolder.btnProgressUpdate.setOnClickListener(v -> {
-                    this.onFeedItemClicked.onUpdateBtnClicked();
-                });
-
-            } else {
+            if (this.isProgress) {
                 progressViewHolder.progressBar.setVisibility(View.VISIBLE);
-                progressViewHolder.btnProgressUpdate.setVisibility(View.GONE);
+                progressViewHolder.btnUpdateFeed.setVisibility(View.GONE);
+            } else {
+                progressViewHolder.progressBar.setVisibility(View.GONE);
+                progressViewHolder.btnUpdateFeed.setVisibility(View.VISIBLE);
+
+                progressViewHolder.btnUpdateFeed.setOnClickListener(v -> {
+                    this.onFeedItemClicked.onBtnUpdateFeedClicked();
+                });
             }
         }
 
+    }
+
+    private void loadThumbnail(FeedViewHolder feedViewHolder, String url) {
+        ImageLoader.loadImageGlide(context, url, feedViewHolder.imgMoviePoster, new RoundedCornersTransformation(context, 10, 0), 0, false, true, new RequestListener() {
+            @Override
+            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+                feedViewHolder.layoutPlaceHolder.setVisibility(View.GONE);
+                feedViewHolder.imgMoviePoster.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -136,9 +139,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    public void addProgress(boolean errorProgress) {
+    public void addProgress() {
+        this.isProgress = true;
+        addIconBottom();
+    }
+
+    public void addError() {
+        this.isProgress = false;
+        addIconBottom();
+    }
+
+    private void addIconBottom() {
         if (this.listMovies != null) {
-            this.isErrorProgress = errorProgress;
             this.listMovies.add(null);
             notifyDataSetChanged();
         }
@@ -169,8 +181,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     static class ProgressViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.itemProgressLoading)
         ProgressBar progressBar;
-        @BindView(R.id.itemProgressUpdateBtn)
-        ImageView btnProgressUpdate;
+        @BindView(R.id.itemUpdateFeed)
+        ImageView btnUpdateFeed;
 
         public ProgressViewHolder(View view) {
             super(view);
