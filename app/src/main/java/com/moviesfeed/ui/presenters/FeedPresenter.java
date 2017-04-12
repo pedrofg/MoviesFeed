@@ -1,6 +1,7 @@
 package com.moviesfeed.ui.presenters;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,7 +14,6 @@ import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
 
 public class FeedPresenter implements Presenter, FeedInteractorCallback {
-
 
     public interface FeedPresenterCallback {
 
@@ -46,6 +46,8 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
         void hideTryAgain();
     }
 
+    //Delay implemented to show progress bar when tryAgain()
+    private static final int DELAY_TRY_AGAIN = 500;
     private FeedInteractor feedInteractor;
     private FeedPresenterCallback callback;
     private boolean isUpdating, isNextPage;
@@ -87,7 +89,9 @@ public class FeedPresenter implements Presenter, FeedInteractorCallback {
     public void tryAgain() {
         Log.d(FeedPresenter.class.getName(), "tryAgain()");
         callback.updatingContent();
-        this.feedInteractor.tryAgain();
+        new Handler().postDelayed(() -> {
+            this.feedInteractor.tryAgain();
+        }, DELAY_TRY_AGAIN);
     }
 
     public void navigationItemSelected(Filters filter) {

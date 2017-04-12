@@ -294,7 +294,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     @Override
     public void removeProgressBottomGrid() {
         this.endlessScrollListener.removeProgressItem();
-        this.adapter.removeProgress();
+        this.rvMoviesFeed.post(() -> adapter.removeProgress());
     }
 
 }
