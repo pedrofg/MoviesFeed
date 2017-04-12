@@ -1,11 +1,13 @@
 package com.moviesfeed.interactors;
 
+import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.util.Log;
 
 import com.moviesfeed.api.Filters;
 import com.moviesfeed.di.DaggerSchedulersComponent;
 import com.moviesfeed.di.SchedulersModule;
+import com.moviesfeed.interactors.exceptions.LimitMoviesReachedException;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
 import com.moviesfeed.repository.FeedRepository;
@@ -222,10 +224,10 @@ public class FeedInteractor {
         boolean proceed = true;
 
         if (moviesFeedCache != null && moviesFeedCache.isLimitMoviesReached()) {
-            presenterCallback.onLoadError(null, Errors.LIMIT_MOVIES_REACHED);
+            presenterCallback.onLoadError(new LimitMoviesReachedException(), Errors.LIMIT_MOVIES_REACHED);
             proceed = false;
         } else if (!Util.isNetworkAvailable(context)) {
-            presenterCallback.onLoadError(null, Errors.NETWORK);
+            presenterCallback.onLoadError(new NetworkErrorException(), Errors.NETWORK);
             proceed = false;
         }
 
