@@ -2,6 +2,7 @@ package com.moviesfeed.interactors;
 
 import android.accounts.NetworkErrorException;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 import com.moviesfeed.api.Filters;
@@ -49,6 +50,8 @@ public class FeedInteractor {
     private static final int LIMIT_MOVIES_DOWNLOADED = 1000;
     private static final int FIRST_PAGE = 1;
     private static final int HTTP_TOO_MANY_REQUEST_ERROR = 429;
+    //Delay implemented to avoid errors when scrolling too fast.
+    private static final int DELAY_TO_PROCESS = 500;
 
     private Filters filter;
     private FeedRepository feedRepository;
@@ -83,7 +86,8 @@ public class FeedInteractor {
     public void requestNextPage() {
         this.moviesFeedCache.setPage(this.moviesFeedCache.getPage() + 1);
         this.isNextPage = true;
-        loadMoviesFeedApi();
+        new Handler().postDelayed(this::loadMoviesFeedApi, DELAY_TO_PROCESS);
+
     }
 
     public void searchMovieFeed(String query) {
@@ -99,11 +103,13 @@ public class FeedInteractor {
     }
 
     public void tryAgain() {
-        if (this.filter == Filters.SEARCH) {
-            searchMovieFeed(this.query);
-        } else {
-            loadMoviesFeedApi();
-        }
+        new Handler().postDelayed(() -> {
+            if (this.filter == Filters.SEARCH) {
+                searchMovieFeed(this.query);
+            } else {
+                loadMoviesFeedApi();
+            }
+        }, DELAY_TO_PROCESS);
     }
 
 
