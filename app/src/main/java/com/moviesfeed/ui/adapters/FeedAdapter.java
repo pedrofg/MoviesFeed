@@ -152,7 +152,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private void addIconBottom() {
         if (this.listMovies != null) {
             this.listMovies.add(null);
-            notifyDataSetChanged();
+            notifyItemInserted(getItemCount());
         }
     }
 
@@ -160,7 +160,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (this.listMovies != null && this.listMovies.size() > 0) {
             if (getItem(getItemCount() - 1) == null) {
                 this.listMovies.remove(getItemCount() - 1);
-                notifyDataSetChanged();
+                notifyItemRemoved(getItemCount());
             }
         }
     }
