@@ -3,21 +3,15 @@ package com.moviesfeed.ui.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.transition.ChangeBounds;
-import android.transition.ChangeImageTransform;
-import android.transition.TransitionManager;
-import android.transition.TransitionSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +52,7 @@ import static com.moviesfeed.ui.activities.FeedActivity.INTENT_MOVIE_DETAIL_ID;
  * Created by Pedro on 2017-03-23.
  */
 
-public class MovieDetailFragment extends Fragment implements MovieDetailPresenter.MovieDetailPresenterCallback, RecyclerItemClickListener.OnItemClickListener, MovieImagesAdapter.ImagesAdapterCallback, FeedAdapter.OnFeedItemClicked, CastCrewAdapter.OnCastCrewItemClicked {
+public class MovieDetailFragment extends DetailsFragment implements MovieDetailPresenter.MovieDetailPresenterCallback, RecyclerItemClickListener.OnItemClickListener, MovieImagesAdapter.ImagesAdapterCallback, FeedAdapter.OnFeedItemClicked, CastCrewAdapter.OnCastCrewItemClicked {
 
 
     public interface MovieDetailFragmentCallback {
@@ -315,22 +309,22 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
 
     @Override
     public void updateToolbarTitle(String title) {
-        this.toolbar.setTitle(title);
+        super.updateToolbarTitle(this.toolbar, title);
     }
 
     @Override
     public String getToolbarTitle() {
-        return this.toolbar.getTitle().toString();
+        return super.getToolbarTitle(this.toolbar);
     }
 
     @Override
     public int getToolbarHeight() {
-        return this.toolbar.getMeasuredHeight();
+        return super.getToolbarHeight(this.toolbar);
     }
 
     @Override
     public void updateToolbarBackground(int alpha) {
-        this.toolbar.getBackground().mutate().setAlpha(alpha);
+        super.updateToolbarBackground(this.toolbar, alpha);
     }
 
     @Override
@@ -429,37 +423,12 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
 
     @Override
     public void animImagePoster(ImageView imageView, int height, ImageView.ScaleType scaleType) {
-        TransitionManager.beginDelayedTransition(viewRoot, new TransitionSet()
-                .addTransition(new ChangeBounds())
-                .addTransition(new ChangeImageTransform()));
-
-        ViewGroup.LayoutParams params = imageView.getLayoutParams();
-        CoordinatorLayout.LayoutParams paramsContainer = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-
-
-        params.height = height;
-        paramsContainer.height = height;
-
-        imageView.setLayoutParams(params);
-        imageView.setScaleType(scaleType);
-
+        super.animImagePoster(this.viewRoot, imageView, this.appBarLayout, height, scaleType);
     }
 
     @Override
     public void setScrollsEnable(boolean enable) {
-        CoordinatorLayout.LayoutParams paramsContainer = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-
-        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) paramsContainer.getBehavior();
-        if (behavior != null) {
-            behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
-                @Override
-                public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                    return enable;
-                }
-            });
-        }
-
-        this.rvMovieImagesLayoutManager.setScrollEnabled(enable);
+        super.setScrollsEnable(enable, this.appBarLayout, this.rvMovieImagesLayoutManager);
     }
 
     @Override

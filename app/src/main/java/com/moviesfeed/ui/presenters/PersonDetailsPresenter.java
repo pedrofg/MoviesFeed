@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.moviesfeed.R;
 import com.moviesfeed.interactors.PersonDetailsInteractor;
@@ -16,21 +14,18 @@ import com.moviesfeed.models.persondetails.PersonCast;
 import com.moviesfeed.models.persondetails.PersonCrew;
 import com.moviesfeed.models.persondetails.PersonImage;
 import com.moviesfeed.ui.activities.uicomponents.AppBarStateChangeListener;
-import com.moviesfeed.ui.activities.uicomponents.AppBarStateChangeListener.State;
 
 import java.util.List;
 
 /**
  * Created by Pedro on 2017-04-16.
  */
-public class PersonDetailsPresenter implements Presenter, PersonDetailsInteractorCallback {
+public class PersonDetailsPresenter extends DetailsPresenter implements PersonDetailsInteractorCallback {
 
 
-    public interface PersonPresenterCallback {
+    public interface PersonPresenterCallback extends DetailsPresenter.DetailsPresenterCallback {
 
         void showError(String message);
-
-        Context context();
 
         void contentUpdated(boolean error);
 
@@ -48,42 +43,21 @@ public class PersonDetailsPresenter implements Presenter, PersonDetailsInteracto
 
         void showPersonImages(List<PersonImage> personImageList);
 
-        void updateToolbarTitle(String title);
-
-        String getToolbarTitle();
-
-        int getToolbarHeight();
-
-        void updateToolbarBackground(int alpha);
-
         void openMovieDetails(int movieId);
-
-        void animImagePoster(ImageView imageView, int height, ImageView.ScaleType scaleType);
-
-        void setScrollsEnable(boolean blocked);
 
         void hideLayoutInfo();
     }
 
     private PersonDetailsInteractor personDetailsInteractor;
     private PersonPresenterCallback callback;
-    private int MAX_ALPHA = 255;
 
     public void appBarLayoutStateChanged(AppBarLayout appBarLayout, AppBarStateChangeListener.State state, int verticalOffset) {
-        if (state == State.COLLAPSED && this.personDetailsInteractor.hasCache())
-            callback.updateToolbarTitle(this.personDetailsInteractor.getPersonName());
-        else if (!TextUtils.isEmpty(callback.getToolbarTitle())) {
-            callback.updateToolbarTitle("");
-        }
-        //measuring for alpha
-        int toolBarHeight = callback.getToolbarHeight();
-        int appBarHeight = appBarLayout.getMeasuredHeight();
-        Float f = ((((float) appBarHeight - toolBarHeight) + verticalOffset) / ((float) appBarHeight - toolBarHeight)) * MAX_ALPHA;
-        callback.updateToolbarBackground(MAX_ALPHA - Math.round(f));
+        super.appBarLayoutStateChanged(appBarLayout, state, verticalOffset, this.personDetailsInteractor.getPersonName());
     }
 
     public void init(Context context, PersonPresenterCallback callback) {
         this.callback = callback;
+        setCallback(callback);
         this.personDetailsInteractor = new PersonDetailsInteractor(context, this);
         this.personDetailsInteractor.init();
     }
@@ -103,25 +77,6 @@ public class PersonDetailsPresenter implements Presenter, PersonDetailsInteracto
 
     public void onPersonMovieItemClicked(int movieID) {
         this.callback.openMovieDetails(movieID);
-    }
-
-    public void onImagePosterClicked(ImageView imageView) {
-
-        boolean isZoomed;
-        int imgDefaultHeight = (int) callback.context().getResources().getDimension(R.dimen.movie_detail_img_backdrop_height);
-
-        isZoomed = imageView.getHeight() != imgDefaultHeight;
-
-        int height = isZoomed ? imgDefaultHeight
-                : ViewGroup.LayoutParams.MATCH_PARENT;
-
-        ImageView.ScaleType scaleType = isZoomed ? ImageView.ScaleType.FIT_XY
-                : ImageView.ScaleType.CENTER_CROP;
-
-
-        callback.animImagePoster(imageView, height, scaleType);
-
-        callback.setScrollsEnable(isZoomed);
     }
 
     @Override
