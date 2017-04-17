@@ -13,33 +13,34 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.moviesfeed.R;
-import com.moviesfeed.ui.fragments.MovieDetailFragment;
+import com.moviesfeed.ui.fragments.PersonDetailsFragment;
 
 import static com.moviesfeed.ui.activities.FeedActivity.INTENT_MOVIE_DETAIL_ID;
-import static com.moviesfeed.ui.activities.PersonDetailsActivity.INTENT_PERSON_DETAILS_ID;
 
 
-public class MovieDetailActivity extends AnimatedTransitionActivity implements MovieDetailFragment.MovieDetailFragmentCallback {
+public class PersonDetailsActivity extends AnimatedTransitionActivity implements PersonDetailsFragment.PersonDetailsFragmentCallback {
 
-    private MovieDetailFragment movieDetailFragment;
+
+    public static final String INTENT_PERSON_DETAILS_ID = "INTENT_PERSON_DETAILS_ID";
+    private PersonDetailsFragment personFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_details);
+        setContentView(R.layout.activity_person_details);
 
         setFragmentNegativeMarginTop();
 
         if (savedInstanceState == null) {
-            this.movieDetailFragment = new MovieDetailFragment();
-            this.movieDetailFragment.setArguments(getIntent().getExtras());
-            addFragment(R.id.fragmentContainer, this.movieDetailFragment);
+            this.personFragment = new PersonDetailsFragment();
+            this.personFragment.setArguments(getIntent().getExtras());
+            addFragment(R.id.personFragmentContainer, this.personFragment);
         }
     }
 
     private void setFragmentNegativeMarginTop() {
         //Set the status bar height as negative margin top of the fragment container.
-        View frameLayout = this.findViewById(R.id.fragmentContainer);
+        View frameLayout = this.findViewById(R.id.personFragmentContainer);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) frameLayout.getLayoutParams();
         layoutParams.setMargins(0, -getStatusBarHeight(), 0, 0);
         frameLayout.setLayoutParams(layoutParams);
@@ -72,46 +73,6 @@ public class MovieDetailActivity extends AnimatedTransitionActivity implements M
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void openMovieDetail(int movieId) {
-        Intent i = new Intent(this, MovieDetailActivity.class);
-        i.putExtra(INTENT_MOVIE_DETAIL_ID, movieId);
-        startActivity(i);
-    }
-
-    @Override
-    public void openVideoUrl(Uri url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        startActivity(intent);
-    }
-
-    @Override
-    public void openReviewUrl(Uri url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        startActivity(intent);
-    }
-
-    @Override
-    public void openMovieHomepage(Uri url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        startActivity(intent);
-    }
-
-    @Override
-    public void openPersonDetails(int personID) {
-        Intent i = new Intent(this, PersonDetailsActivity.class);
-        i.putExtra(INTENT_PERSON_DETAILS_ID, personID);
-        startActivity(i);
-    }
-
-    @Override
-    public void setToolbar(Toolbar toolbar) {
-        setToolbarSize(toolbar);
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-    }
 
     private void setToolbarSize(Toolbar toolbar) {
         CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
@@ -131,5 +92,27 @@ public class MovieDetailActivity extends AnimatedTransitionActivity implements M
 
         //set padding top to adjust views positions inside the toolbar.
         toolbar.setPadding(0, statusBarHeight, 0, 0);
+    }
+
+    @Override
+    public void openMovieDetail(int movieId) {
+        Intent i = new Intent(this, MovieDetailActivity.class);
+        i.putExtra(INTENT_MOVIE_DETAIL_ID, movieId);
+        startActivity(i);
+    }
+
+    @Override
+    public void setToolbar(Toolbar toolbar) {
+        setToolbarSize(toolbar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public void openPersonHomepage(Uri url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, url);
+        startActivity(intent);
     }
 }

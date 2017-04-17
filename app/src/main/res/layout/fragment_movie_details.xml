@@ -100,7 +100,7 @@
                         android:layout_marginRight="5dp"
                         android:textColor="@android:color/black"
                         android:layout_toLeftOf="@+id/imgHomepage"
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         app:typeface="Roboto-Regular.ttf" />
 
                         <ImageView
@@ -147,7 +147,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@android:color/black"
-                                    android:textSize="18dp"
+                                    android:textSize="16dp"
                                     app:typeface="Roboto-Light.ttf" />
 
                                 <RatingBar
@@ -193,7 +193,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@android:color/black"
-                                android:textSize="18dp"
+                                android:textSize="16dp"
                                 android:visibility="gone"
                                 app:typeface="Roboto-Light.ttf" />
 
@@ -206,7 +206,7 @@
                                 android:layout_marginLeft="5dp"
                                 android:layout_toRightOf="@id/txtMovieYear"
                                 android:textColor="@android:color/black"
-                                android:textSize="18dp"
+                                android:textSize="16dp"
                                 android:visibility="gone"
                                 app:typeface="Roboto-Light.ttf" />
                         </LinearLayout>
@@ -222,7 +222,7 @@
                             android:layout_toLeftOf="@id/layoutRatingAndGenres"
                             android:textColor="@android:color/black"
                             android:textIsSelectable="true"
-                            android:textSize="18dp"
+                            android:textSize="16dp"
                             app:typeface="Roboto-Light.ttf" />
 
                     </RelativeLayout>

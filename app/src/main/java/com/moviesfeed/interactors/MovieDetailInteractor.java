@@ -76,7 +76,7 @@ public class MovieDetailInteractor {
     }
 
     public boolean hasCache() {
-        return this.movieDetailCache != null ? true : false;
+        return this.movieDetailCache != null;
     }
 
     public String getMovieTitle() {

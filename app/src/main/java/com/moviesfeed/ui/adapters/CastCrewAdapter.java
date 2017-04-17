@@ -34,11 +34,17 @@ public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieC
     private Context context;
     private List<Cast> listCast;
     private List<Crew> listCrew;
+    private OnCastCrewItemClicked onCastCrewItemClicked;
 
-    public CastCrewAdapter(Context context, List<Cast> listCast, List<Crew> listcrew) {
+    public interface OnCastCrewItemClicked {
+        void onCastCrewItemClicked(int id);
+    }
+
+    public CastCrewAdapter(Context context, List<Cast> listCast, List<Crew> listcrew, OnCastCrewItemClicked onCastCrewItemClicked) {
         this.context = context;
         this.listCast = listCast;
         this.listCrew = listcrew;
+        this.onCastCrewItemClicked = onCastCrewItemClicked;
     }
 
 
@@ -57,13 +63,14 @@ public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieC
         String title = "";
         String subTitle = "";
         String url = "";
-
+        int id;
         //position + 1 because list.size()
         if (this.listCast.size() >= position + 1) {
             Cast cast = this.listCast.get(position);
             title = cast.getName();
             subTitle = context.getString(R.string.as) + cast.getCharacter();
             url = cast.getProfilePath();
+            id = cast.getId();
         } else {
             //- listCast.size() to position starts from the beginning of listCrew.
             Crew crew = this.listCrew.get(position - this.listCast.size());
@@ -71,6 +78,7 @@ public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieC
             title = crew.getName();
             subTitle = crew.getJob();
             url = crew.getProfilePath();
+            id = crew.getId();
         }
 
         holder.txtMovieCastName.setMaxLines(MAX_TEXT_LINE);
@@ -80,6 +88,10 @@ public class CastCrewAdapter extends RecyclerView.Adapter<CastCrewAdapter.MovieC
         holder.txtMovieCastAs.setText(subTitle);
 
         loadImage(url, holder);
+
+        holder.itemView.setOnClickListener(v -> {
+            this.onCastCrewItemClicked.onCastCrewItemClicked(id);
+        });
     }
 
     @Override

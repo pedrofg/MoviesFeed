@@ -2,6 +2,7 @@ package com.moviesfeed.di;
 
 import com.moviesfeed.repository.FeedRepository;
 import com.moviesfeed.repository.MovieDetailRepository;
+import com.moviesfeed.repository.PersonDetailsRepository;
 
 import javax.inject.Singleton;
 
@@ -17,5 +18,7 @@ public interface AppComponent {
 
     void inject(FeedRepository feedRepository);
 
-    void inject(MovieDetailRepository feedRepository);
+    void inject(MovieDetailRepository movieDetailRepository);
+
+    void inject(PersonDetailsRepository personDetailsRepository);
 }
