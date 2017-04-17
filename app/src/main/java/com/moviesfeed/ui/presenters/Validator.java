@@ -6,6 +6,8 @@ import com.moviesfeed.models.Cast;
 import com.moviesfeed.models.Crew;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.Video;
+import com.moviesfeed.models.persondetails.PersonCast;
+import com.moviesfeed.models.persondetails.PersonCrew;
 
 /**
  * Created by Pedro on 2017-02-11.
@@ -46,6 +48,24 @@ public abstract class Validator {
         if (TextUtils.isEmpty(crew.getProfilePath()) ||
                 TextUtils.isEmpty(crew.getName()) ||
                 TextUtils.isEmpty(crew.getJob())) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean validatePersonCast(PersonCast personCast) {
+        if (TextUtils.isEmpty(personCast.getPosterPath()) ||
+                TextUtils.isEmpty(personCast.getCharacter()) ||
+                TextUtils.isEmpty(personCast.getOriginalTitle())) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean validatePersonCrew(PersonCrew personCrew) {
+        if (TextUtils.isEmpty(personCrew.getPosterPath()) ||
+                TextUtils.isEmpty(personCrew.getJob()) ||
+                TextUtils.isEmpty(personCrew.getOriginalTitle())) {
             return false;
         }
         return true;

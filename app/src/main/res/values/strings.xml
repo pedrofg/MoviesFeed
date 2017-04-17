@@ -38,5 +38,9 @@
     <string name="try_again">Try again</string>
     <string name="error_request_feed_too_many_requests">Too many requests have been sent within a given time span</string>
     <string name="error_request_feed_limit_movies_reached">The limit of movies downloaded for this category reached.</string>
+    <string name="known_for">Known for</string>
+    <string name="biography">Biography</string>
+    <string name="birthday">Birthday: </string>
+    <string name="birthplace">Birthplace:</string>
 
 </resources>

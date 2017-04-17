@@ -2,6 +2,7 @@ package com.moviesfeed.api;
 
 import com.moviesfeed.models.MovieDetail;
 import com.moviesfeed.models.MoviesFeed;
+import com.moviesfeed.models.persondetails.Person;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -53,5 +54,9 @@ public interface MoviesApi {
 
     @GET("/3/search/movie?api_key=" + KEY + "&include_adult=false")
     Observable<MoviesFeed> getSearchMovie(@Query("query") String query, @Query("page") int page);
+
+    @GET("/3/person/{id}?api_key=" + KEY + "&append_to_response=movie_credits,images")
+    Observable<Person> getPersonDetails(@Path("id") int personId);
+
 
 }

@@ -58,8 +58,7 @@ import static com.moviesfeed.ui.activities.FeedActivity.INTENT_MOVIE_DETAIL_ID;
  * Created by Pedro on 2017-03-23.
  */
 
-public class MovieDetailFragment extends Fragment implements MovieDetailPresenter.MovieDetailPresenterCallback, RecyclerItemClickListener.OnItemClickListener, MovieImagesAdapter.ImagesAdapterCallback, FeedAdapter.OnFeedItemClicked {
-
+public class MovieDetailFragment extends Fragment implements MovieDetailPresenter.MovieDetailPresenterCallback, RecyclerItemClickListener.OnItemClickListener, MovieImagesAdapter.ImagesAdapterCallback, FeedAdapter.OnFeedItemClicked, CastCrewAdapter.OnCastCrewItemClicked {
 
 
     public interface MovieDetailFragmentCallback {
@@ -70,6 +69,8 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
         void openReviewUrl(Uri url);
 
         void openMovieHomepage(Uri url);
+
+        void openPersonDetails(int personID);
 
         void setToolbar(Toolbar toolbar);
     }
@@ -164,7 +165,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View fragmentView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        final View fragmentView = inflater.inflate(R.layout.fragment_movie_details, container, false);
         this.unbinder = ButterKnife.bind(this, fragmentView);
 
         this.callback.setToolbar(toolbar);
@@ -274,7 +275,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
     public void showCastAndCrew(List<Cast> castList, List<Crew> crewList) {
         this.rvMovieCastCrew.setLayoutManager(getHorizontalLayoutManager());
         this.rvMovieCastCrew.addItemDecoration(this.dividerItemDecoration);
-        CastCrewAdapter adapter = new CastCrewAdapter(context(), castList, crewList);
+        CastCrewAdapter adapter = new CastCrewAdapter(context(), castList, crewList, this);
         this.rvMovieCastCrew.setAdapter(adapter);
         this.layoutCastCrew.setVisibility(View.VISIBLE);
     }
@@ -342,6 +343,11 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
         this.callback.openMovieDetail(movieId);
     }
 
+    @Override
+    public void openPersonDetails(int personID) {
+        this.callback.openPersonDetails(personID);
+    }
+
 
     @Override
     public void openReview(Uri url) {
@@ -369,10 +375,8 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
-        this.rvSimilarMovies.setAdapter(null);
-        this.rvMovieVideos.setAdapter(null);
         this.unbinder.unbind();
+        super.onDestroyView();
     }
 
     @Override
@@ -446,12 +450,14 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
         CoordinatorLayout.LayoutParams paramsContainer = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
 
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) paramsContainer.getBehavior();
-        behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
-            @Override
-            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                return enable;
-            }
-        });
+        if (behavior != null) {
+            behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+                @Override
+                public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                    return enable;
+                }
+            });
+        }
 
         this.rvMovieImagesLayoutManager.setScrollEnabled(enable);
     }
@@ -461,4 +467,8 @@ public class MovieDetailFragment extends Fragment implements MovieDetailPresente
         this.presenter.onImagePosterClicked(imageView);
     }
 
+    @Override
+    public void onCastCrewItemClicked(int id) {
+        this.presenter.onCastCrewClicked(id);
+    }
 }

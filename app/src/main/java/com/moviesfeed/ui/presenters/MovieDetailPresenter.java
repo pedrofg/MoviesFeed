@@ -29,6 +29,7 @@ import java.util.List;
  */
 public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCallback {
 
+
     public interface MovieDetailPresenterCallback {
 
         void showError(String message);
@@ -80,6 +81,8 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
         void setScrollsEnable(boolean blocked);
 
         void openReview(Uri url);
+
+        void openPersonDetails(int id);
     }
 
     private MovieDetailInteractor movieDetailInteractor;
@@ -145,6 +148,10 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
     public void onReviewClicked(Review review) {
         Uri url = Uri.parse(review.getUrl());
         this.callback.openReview(url);
+    }
+
+    public void onCastCrewClicked(int id) {
+        callback.openPersonDetails(id);
     }
 
     public void onImagePosterClicked(ImageView imageView) {
