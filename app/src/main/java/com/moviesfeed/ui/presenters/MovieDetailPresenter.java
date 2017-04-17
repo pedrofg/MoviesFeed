@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.moviesfeed.R;
 import com.moviesfeed.interactors.MovieDetailInteractor;
@@ -27,14 +25,12 @@ import java.util.List;
 /**
  * Created by Pedro on 8/24/2016.
  */
-public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCallback {
+public class MovieDetailPresenter extends DetailsPresenter implements MovieDetailInteractorCallback {
 
 
-    public interface MovieDetailPresenterCallback {
+    public interface MovieDetailPresenterCallback extends DetailsPresenter.DetailsPresenterCallback {
 
         void showError(String message);
-
-        Context context();
 
         void contentUpdated(boolean error);
 
@@ -64,21 +60,9 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
 
         void showImages(List<MovieBackdrop> imageList);
 
-        void updateToolbarTitle(String title);
-
-        String getToolbarTitle();
-
-        int getToolbarHeight();
-
-        void updateToolbarBackground(int alpha);
-
         void openVideoUrl(Uri url);
 
         void openMovieDetail(int movieId);
-
-        void animImagePoster(ImageView imageView, int height, ImageView.ScaleType scaleType);
-
-        void setScrollsEnable(boolean blocked);
 
         void openReview(Uri url);
 
@@ -87,21 +71,11 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
 
     private MovieDetailInteractor movieDetailInteractor;
     private MovieDetailPresenterCallback callback;
-    private int MAX_ALPHA = 255;
     private String MINUTES = "m";
 
 
     public void appBarLayoutStateChanged(AppBarLayout appBarLayout, State state, int verticalOffset) {
-        if (state == State.COLLAPSED && this.movieDetailInteractor.hasCache())
-            callback.updateToolbarTitle(this.movieDetailInteractor.getMovieTitle());
-        else if (!TextUtils.isEmpty(callback.getToolbarTitle())) {
-            callback.updateToolbarTitle("");
-        }
-        //measuring for alpha
-        int toolBarHeight = callback.getToolbarHeight();
-        int appBarHeight = appBarLayout.getMeasuredHeight();
-        Float f = ((((float) appBarHeight - toolBarHeight) + verticalOffset) / ((float) appBarHeight - toolBarHeight)) * MAX_ALPHA;
-        callback.updateToolbarBackground(MAX_ALPHA - Math.round(f));
+        super.appBarLayoutStateChanged(appBarLayout, state, verticalOffset, this.movieDetailInteractor.getMovieTitle());
     }
 
     private String getGenresText(List<Genre> genres) {
@@ -120,6 +94,7 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
 
     public void init(Context context, MovieDetailPresenterCallback callback) {
         this.callback = callback;
+        setCallback(callback);
         this.movieDetailInteractor = new MovieDetailInteractor(context, this);
         this.movieDetailInteractor.init();
     }
@@ -153,26 +128,6 @@ public class MovieDetailPresenter implements Presenter, MovieDetailInteractorCal
     public void onCastCrewClicked(int id) {
         callback.openPersonDetails(id);
     }
-
-    public void onImagePosterClicked(ImageView imageView) {
-
-        boolean isZoomed;
-        int imgDefaultHeight = (int) callback.context().getResources().getDimension(R.dimen.movie_detail_img_backdrop_height);
-
-        isZoomed = imageView.getHeight() != imgDefaultHeight;
-
-        int height = isZoomed ? imgDefaultHeight
-                : ViewGroup.LayoutParams.MATCH_PARENT;
-
-        ImageView.ScaleType scaleType = isZoomed ? ImageView.ScaleType.FIT_XY
-                : ImageView.ScaleType.CENTER_CROP;
-
-
-        callback.animImagePoster(imageView, height, scaleType);
-
-        callback.setScrollsEnable(isZoomed);
-    }
-
 
     @Override
     public void onLoadSuccess(MovieDetail movieDetail) {

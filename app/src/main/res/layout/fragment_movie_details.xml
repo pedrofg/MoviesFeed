@@ -256,7 +256,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/videos"
                         android:textColor="@android:color/black"
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         app:typeface="Roboto-Regular.ttf" />
 
                     <android.support.v7.widget.RecyclerView
@@ -299,7 +299,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/cast_crew"
                         android:textColor="@android:color/black"
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         app:typeface="Roboto-Regular.ttf" />
 
                     <android.support.v7.widget.RecyclerView
@@ -342,7 +342,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/similar_movies"
                         android:textColor="@android:color/black"
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         app:typeface="Roboto-Regular.ttf" />
 
                     <android.support.v7.widget.RecyclerView
@@ -384,7 +384,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/reviews"
                         android:textColor="@android:color/black"
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         app:typeface="Roboto-Regular.ttf" />
 
                     <com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager
