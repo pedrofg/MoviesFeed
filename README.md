@@ -21,5 +21,3 @@ https://github.com/mockito/mockito
 https://github.com/bumptech/glide
 
 https://github.com/lsjwzh/RecyclerViewPager
-
-![Demo](https://cloud.githubusercontent.com/assets/8161635/23390250/d7422776-fd3a-11e6-94bf-f8d6e0f6a7f6.gif)
