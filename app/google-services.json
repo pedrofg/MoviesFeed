@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "381853120683",
+    "firebase_url": "https://moviesfeed-ff2b4.firebaseio.com",
+    "project_id": "moviesfeed-ff2b4",
+    "storage_bucket": "moviesfeed-ff2b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381853120683:android:c7ad8bf0d755ff2a",
+        "android_client_info": {
+          "package_name": "com.moviesfeed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "381853120683-3ggveb0joc0dvmpq38hq0pgaauusteks.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moviesfeed",
+            "certificate_hash": "0666882128072811e9cecc48b2772986319297ab"
+          }
+        },
+        {
+          "client_id": "381853120683-nurcu8bk9e7d6k37ujndc9lpe3j4j7m1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbqqF22GuoLdQd0ToGWnDXzlaSwI7eGQw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "381853120683-nurcu8bk9e7d6k37ujndc9lpe3j4j7m1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
