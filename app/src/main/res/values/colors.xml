@@ -8,6 +8,6 @@
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#757575</color>
     <color name="divider">#BDBDBD</color>4
-    <color name="background_holo_light">#fff3f3f3</color>
+    <color name="background_holo_light">#F3F3F3</color>
 
 </resources>

@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.moviesfeed.R;
 import com.moviesfeed.api.Filters;
 import com.moviesfeed.models.Movie;
@@ -55,6 +57,8 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     View layoutError;
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.feedAdView)
+    AdView adView;
 
     public FeedFragment() {
         setRetainInstance(true);
@@ -92,7 +96,6 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
         this.swipeRefreshLayout.setOnRefreshListener(this);
         this.swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
-
         createGrid();
 
         return fragmentView;
@@ -102,9 +105,10 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         if (savedInstanceState == null) {
             this.loadFeed(Filters.POPULARITY);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
         }
     }
 
