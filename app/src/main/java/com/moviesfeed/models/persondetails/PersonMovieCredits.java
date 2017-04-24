@@ -31,6 +31,9 @@ public class PersonMovieCredits {
     @Expose
     private List<PersonCast> personCasts;
 
+    @ToMany(referencedJoinProperty = "personCreditsKey")
+    private List<PersonCreditsScreen> personCreditsScreenList;
+
     /**
      * Used to resolve relations
      */
@@ -159,6 +162,10 @@ public class PersonMovieCredits {
         this.personCasts = personCasts;
     }
 
+    public void setPersonCreditsScreenList(List<PersonCreditsScreen> personCreditsScreenList) {
+        this.personCreditsScreenList = personCreditsScreenList;
+    }
+
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
@@ -180,6 +187,39 @@ public class PersonMovieCredits {
             }
         }
         return personCasts;
+    }
+
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1199462918)
+    public List<PersonCreditsScreen> getPersonCreditsScreenList() {
+        if (personCreditsScreenList == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            PersonCreditsScreenDao targetDao = daoSession.getPersonCreditsScreenDao();
+            List<PersonCreditsScreen> personCreditsScreenListNew = targetDao
+                    ._queryPersonMovieCredits_PersonCreditsScreenList(id);
+            synchronized (this) {
+                if (personCreditsScreenList == null) {
+                    personCreditsScreenList = personCreditsScreenListNew;
+                }
+            }
+        }
+        return personCreditsScreenList;
+    }
+
+
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
+    @Generated(hash = 210515420)
+    public synchronized void resetPersonCreditsScreenList() {
+        personCreditsScreenList = null;
     }
 
 }

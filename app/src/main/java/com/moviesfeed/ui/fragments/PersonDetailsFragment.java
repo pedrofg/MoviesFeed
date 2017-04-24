@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,14 +21,12 @@ import android.widget.TextView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.moviesfeed.R;
-import com.moviesfeed.models.persondetails.PersonCast;
-import com.moviesfeed.models.persondetails.PersonCrew;
+import com.moviesfeed.models.persondetails.PersonCreditsScreen;
 import com.moviesfeed.models.persondetails.PersonImage;
-import com.moviesfeed.ui.components.AppBarStateChangeListener;
-import com.moviesfeed.ui.components.CustomLinearLayoutManager;
-import com.moviesfeed.ui.components.DividerItemDecoration;
 import com.moviesfeed.ui.adapters.PersonImagesAdapter;
 import com.moviesfeed.ui.adapters.PersonMoviesAdapter;
+import com.moviesfeed.ui.components.AppBarStateChangeListener;
+import com.moviesfeed.ui.components.CustomLinearLayoutManager;
 import com.moviesfeed.ui.presenters.PersonDetailsPresenter;
 
 import java.util.List;
@@ -58,7 +55,6 @@ public class PersonDetailsFragment extends DetailsFragment implements PersonDeta
 
     private Unbinder unbinder;
     private PersonDetailsFragmentCallback callback;
-    private DividerItemDecoration dividerItemDecoration;
     private CustomLinearLayoutManager rvMovieImagesLayoutManager;
     private PersonDetailsPresenter presenter;
 
@@ -126,7 +122,6 @@ public class PersonDetailsFragment extends DetailsFragment implements PersonDeta
         if (savedInstanceState == null) {
             this.presenter = new PersonDetailsPresenter();
             this.presenter.init(context(), this);
-            this.dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(context(), R.drawable.list_separator), false, false);
         }
     }
 
@@ -302,10 +297,9 @@ public class PersonDetailsFragment extends DetailsFragment implements PersonDeta
     }
 
     @Override
-    public void showPersonMovies(List<PersonCast> personCastList, List<PersonCrew> personCrewList) {
+    public void showPersonMovies(List<PersonCreditsScreen> personCreditsScreenList) {
         this.rvPersonMovies.setLayoutManager(getHorizontalLayoutManager());
-        this.rvPersonMovies.addItemDecoration(this.dividerItemDecoration);
-        PersonMoviesAdapter adapter = new PersonMoviesAdapter(context(), personCastList, personCrewList, this);
+        PersonMoviesAdapter adapter = new PersonMoviesAdapter(context(), personCreditsScreenList, this);
         this.rvPersonMovies.setAdapter(adapter);
         this.layoutPersonMovies.setVisibility(View.VISIBLE);
     }

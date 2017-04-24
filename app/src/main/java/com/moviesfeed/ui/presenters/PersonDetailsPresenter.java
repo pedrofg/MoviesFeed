@@ -10,8 +10,7 @@ import com.moviesfeed.R;
 import com.moviesfeed.interactors.PersonDetailsInteractor;
 import com.moviesfeed.interactors.PersonDetailsInteractorCallback;
 import com.moviesfeed.models.persondetails.Person;
-import com.moviesfeed.models.persondetails.PersonCast;
-import com.moviesfeed.models.persondetails.PersonCrew;
+import com.moviesfeed.models.persondetails.PersonCreditsScreen;
 import com.moviesfeed.models.persondetails.PersonImage;
 import com.moviesfeed.ui.components.AppBarStateChangeListener;
 
@@ -39,13 +38,13 @@ public class PersonDetailsPresenter extends DetailsPresenter implements PersonDe
 
         void showHomepage(Uri homepage);
 
-        void showPersonMovies(List<PersonCast> personCastList, List<PersonCrew> personCrewList);
-
         void showPersonImages(List<PersonImage> personImageList);
 
         void openMovieDetails(int movieId);
 
         void hideLayoutInfo();
+
+        void showPersonMovies(List<PersonCreditsScreen> personCreditsScreenList);
     }
 
     private PersonDetailsInteractor personDetailsInteractor;
@@ -104,11 +103,10 @@ public class PersonDetailsPresenter extends DetailsPresenter implements PersonDe
             callback.hideLayoutInfo();
 
         if (person.getPersonMovieCredits() != null &&
-                (person.getPersonMovieCredits().getPersonCasts() != null || person.getPersonMovieCredits().getPersonCrews() != null) &&
-                (person.getPersonMovieCredits().getPersonCasts().size() > 0 || person.getPersonMovieCredits().getPersonCrews().size() > 0)) {
-            this.callback.showPersonMovies(person.getPersonMovieCredits().getPersonCasts(), person.getPersonMovieCredits().getPersonCrews());
+                person.getPersonMovieCredits().getPersonCreditsScreenList() != null &&
+                person.getPersonMovieCredits().getPersonCreditsScreenList().size() > 0) {
+            this.callback.showPersonMovies(person.getPersonMovieCredits().getPersonCreditsScreenList());
         }
-
 
         if (person.getPersonImages() != null &&
                 person.getPersonImages().getPersonImageList() != null &&

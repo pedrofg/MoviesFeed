@@ -63,6 +63,16 @@
             android:textSize="14dp"
             card_view:typeface="Roboto-Thin.ttf" />
 
+        <com.moviesfeed.ui.components.CustomTextView
+            android:id="@+id/txtPersonMovieDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtPersonMovieAs"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/black"
+            android:textSize="14dp"
+            card_view:typeface="Roboto-Thin.ttf" />
+
     </RelativeLayout>
 
 
