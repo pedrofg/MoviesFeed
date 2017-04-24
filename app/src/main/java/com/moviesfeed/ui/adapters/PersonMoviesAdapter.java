@@ -13,8 +13,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.moviesfeed.R;
 import com.moviesfeed.api.MoviesApi;
-import com.moviesfeed.models.persondetails.PersonCast;
-import com.moviesfeed.models.persondetails.PersonCrew;
+import com.moviesfeed.models.persondetails.PersonCreditsScreen;
 import com.moviesfeed.ui.components.ImageLoader;
 
 import java.util.List;
@@ -32,19 +31,17 @@ public class PersonMoviesAdapter extends RecyclerView.Adapter<PersonMoviesAdapte
 
     public static final int MAX_TEXT_LINE = 2;
     private Context context;
-    private List<PersonCast> personCastList;
-    private List<PersonCrew> personCrewList;
+    private List<PersonCreditsScreen> personCreditsScreenList;
     private OnPersonMovieItemClicked onPersonMovieItemClicked;
+
+    public PersonMoviesAdapter(Context context, List<PersonCreditsScreen> personCreditsScreenList, OnPersonMovieItemClicked onPersonMovieItemClicked) {
+        this.context = context;
+        this.personCreditsScreenList = personCreditsScreenList;
+        this.onPersonMovieItemClicked = onPersonMovieItemClicked;
+    }
 
     public interface OnPersonMovieItemClicked {
         void onPersonMovieItemClicked(int movieID);
-    }
-
-    public PersonMoviesAdapter(Context context, List<PersonCast> personCastList, List<PersonCrew> personCrewList, OnPersonMovieItemClicked onPersonMovieItemClicked) {
-        this.context = context;
-        this.personCastList = personCastList;
-        this.personCrewList = personCrewList;
-        this.onPersonMovieItemClicked = onPersonMovieItemClicked;
     }
 
 
@@ -58,31 +55,23 @@ public class PersonMoviesAdapter extends RecyclerView.Adapter<PersonMoviesAdapte
 
     @Override
     public void onBindViewHolder(PersonMoviesViewHolder holder, int position) {
+        PersonCreditsScreen personCreditsScreen = this.personCreditsScreenList.get(position);
+
+        String url = MoviesApi.URL_MOVIE_POSTER + personCreditsScreen.getPosterPath();
+        int id = personCreditsScreen.getIdTmdb();
+        String date = "";
+        if (!TextUtils.isEmpty(personCreditsScreen.getReleaseDate()))
+            date = personCreditsScreen.getReleaseDate().substring(0, 4);
+
         String job = "";
-        String url = "";
-        int id;
-        //position + 1 because list.size()
-        if (this.personCastList.size() >= position + 1) {
-            PersonCast cast = this.personCastList.get(position);
+        if (personCreditsScreen.getKnownForCharacter())
+            job = context.getString(R.string.as);
 
-            if (!TextUtils.isEmpty(cast.getCharacter()))
-                job = context.getString(R.string.as) + cast.getCharacter();
-
-            url = cast.getPosterPath();
-            id = cast.getIdTmdb();
-        } else {
-            //- listCast.size() to position starts from the beginning of listCrew.
-            PersonCrew crew = this.personCrewList.get(position - this.personCastList.size());
-
-            job = crew.getJob();
-            url = crew.getPosterPath();
-            id = crew.getIdTmdb();
-        }
-
-        url = MoviesApi.URL_MOVIE_POSTER + url;
+        job += personCreditsScreen.getKnownFor();
 
         holder.txtJob.setMaxLines(MAX_TEXT_LINE);
         holder.txtJob.setText(job);
+        holder.txtDate.setText(date);
 
 
         holder.layoutPlaceHolder.setVisibility(View.VISIBLE);
@@ -113,7 +102,7 @@ public class PersonMoviesAdapter extends RecyclerView.Adapter<PersonMoviesAdapte
 
     @Override
     public int getItemCount() {
-        return this.personCastList.size() + this.personCrewList.size();
+        return this.personCreditsScreenList.size();
     }
 
 
@@ -124,6 +113,8 @@ public class PersonMoviesAdapter extends RecyclerView.Adapter<PersonMoviesAdapte
         View layoutPlaceHolder;
         @BindView(R.id.txtPersonMovieAs)
         TextView txtJob;
+        @BindView(R.id.txtPersonMovieDate)
+        TextView txtDate;
 
 
         public PersonMoviesViewHolder(View view) {

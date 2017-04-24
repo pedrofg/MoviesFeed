@@ -45,8 +45,7 @@ public class PersonDetailsRepository {
     public void updatePersonDetailsDB(Person person) {
         if (verifyDb()) {
             Log.d(PersonDetailsRepository.class.getName(), "daoSession != null");
-            daoSession.getPersonCastDao().insertOrReplaceInTx(person.getPersonMovieCredits().getPersonCasts());
-            daoSession.getPersonCrewDao().insertOrReplaceInTx(person.getPersonMovieCredits().getPersonCrews());
+            daoSession.getPersonCreditsScreenDao().insertOrReplaceInTx(person.getPersonMovieCredits().getPersonCreditsScreenList());
             daoSession.getPersonMovieCreditsDao().insertOrReplace(person.getPersonMovieCredits());
             daoSession.getPersonImageDao().insertOrReplaceInTx(person.getPersonImages().getPersonImageList());
             daoSession.getPersonImagesDao().insertOrReplaceInTx(person.getPersonImages());
@@ -63,8 +62,7 @@ public class PersonDetailsRepository {
             if (person != null) {
                 Log.d(MovieDetailPresenter.class.getName(), "loadPersonDetailsDB() personID: " + personID);
                 person.getPersonImages().getPersonImageList();
-                person.getPersonMovieCredits().getPersonCrews();
-                person.getPersonMovieCredits().getPersonCasts();
+                person.getPersonMovieCredits().getPersonCreditsScreenList();
                 return person;
             } else {
                 return PERSON_NOT_FOUND;

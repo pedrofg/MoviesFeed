@@ -13,5 +13,5 @@
     <dimen name="layout_cast_height">240dp</dimen>
     <dimen name="movie_detail_title_margin_bottom">10dp</dimen>
     <dimen name="movie_detail_img_backdrop_height">300dp</dimen>
-    <dimen name="person_movie_item_height">220dp</dimen>
+    <dimen name="person_movie_item_height">240dp</dimen>
 </resources>

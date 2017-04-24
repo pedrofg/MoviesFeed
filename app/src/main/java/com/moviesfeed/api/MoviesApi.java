@@ -18,6 +18,7 @@ public interface MoviesApi {
     String KEY = "";
     String URL_MOVIE_POSTER = "http://image.tmdb.org/t/p/w300/";
     String URL_MOVIE_BACKGROUND = "http://image.tmdb.org/t/p/w1000/";
+    String DATE_PATTERN = "yyyy-MM-dd";
 
     String FILTER_POPULARITY = "popular";
     String FILTER_UPCOMING = "upcoming";

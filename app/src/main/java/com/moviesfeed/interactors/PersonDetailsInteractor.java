@@ -7,6 +7,7 @@ import com.moviesfeed.di.DaggerSchedulersComponent;
 import com.moviesfeed.di.SchedulersModule;
 import com.moviesfeed.models.persondetails.Person;
 import com.moviesfeed.models.persondetails.PersonCast;
+import com.moviesfeed.models.persondetails.PersonCreditsScreen;
 import com.moviesfeed.models.persondetails.PersonCrew;
 import com.moviesfeed.models.persondetails.PersonImage;
 import com.moviesfeed.models.persondetails.PersonImages;
@@ -15,8 +16,12 @@ import com.moviesfeed.ui.presenters.Util;
 import com.moviesfeed.ui.presenters.Validator;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,6 +32,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
+import static com.moviesfeed.api.MoviesApi.DATE_PATTERN;
 import static com.moviesfeed.repository.PersonDetailsRepository.PERSON_NOT_FOUND;
 
 /**
@@ -134,30 +140,11 @@ public class PersonDetailsInteractor {
             }
 
             if (person.getPersonMovieCredits() != null) {
-
-                List<PersonCast> personCastList = person.getPersonMovieCredits().getPersonCasts();
-                if (personCastList != null) {
-                    List<PersonCast> filteredCastList = new ArrayList<>();
-                    for (PersonCast personCast : personCastList) {
-                        if (Validator.validatePersonCast(personCast)) {
-                            personCast.setPersonCreditsKey(person.getPersonMovieCreditsID());
-                            filteredCastList.add(personCast);
-                        }
+                List<PersonCreditsScreen> personCreditsScreenList = person.getPersonMovieCredits().getPersonCreditsScreenList();
+                if (personCreditsScreenList != null) {
+                    for (PersonCreditsScreen personCreditScreen : personCreditsScreenList) {
+                        personCreditScreen.setPersonCreditsKey(person.getPersonMovieCreditsID());
                     }
-                    person.getPersonMovieCredits().setPersonCasts(filteredCastList);
-                }
-
-
-                List<PersonCrew> personCrewList = person.getPersonMovieCredits().getPersonCrews();
-                if (personCrewList != null) {
-                    List<PersonCrew> filteredCrewList = new ArrayList<>();
-                    for (PersonCrew personCrew : personCrewList) {
-                        if (Validator.validatePersonCrew(personCrew)) {
-                            personCrew.setPersonCreditsKey(person.getPersonMovieCreditsID());
-                            filteredCrewList.add(personCrew);
-                        }
-                    }
-                    person.getPersonMovieCredits().setPersonCrews(filteredCrewList);
                 }
             }
         }
@@ -165,10 +152,76 @@ public class PersonDetailsInteractor {
         this.personDetailsCache = person;
     }
 
+    private Person addPersonCreditScreen(Person person) throws ParseException {
+        List<PersonCreditsScreen> personCreditsScreenList;
+
+        if (person.getPersonMovieCredits() != null) {
+            List<PersonCast> personCastList = person.getPersonMovieCredits().getPersonCasts();
+            List<PersonCrew> personCrewList = person.getPersonMovieCredits().getPersonCrews();
+            personCreditsScreenList = new ArrayList<>();
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_PATTERN, Locale.ENGLISH);
+
+            if (personCastList != null && personCastList.size() > 0) {
+                for (PersonCast personCast : personCastList) {
+                    if (Validator.validatePersonCast(personCast)) {
+                        PersonCreditsScreen personCreditScreen = new PersonCreditsScreen();
+                        personCreditScreen.setIdTmdb(personCast.getIdTmdb());
+
+                        if (personCast.getCharacter() != null)
+                            personCreditScreen.setKnownFor(personCast.getCharacter());
+
+                        if (personCast.getPosterPath() != null)
+                            personCreditScreen.setPosterPath(personCast.getPosterPath());
+
+                        if (personCast.getReleaseDate() != null) {
+                            personCreditScreen.setReleaseDate(personCast.getReleaseDate());
+                            long releaseDateMs = simpleDateFormat.parse(personCreditScreen.getReleaseDate()).getTime();
+                            personCreditScreen.setReleaseDateMs(releaseDateMs);
+                        }
+
+                        personCreditScreen.setKnownForCharacter(true);
+                        personCreditsScreenList.add(personCreditScreen);
+                    }
+                }
+            }
+            if (personCrewList != null && personCrewList.size() > 0) {
+                for (PersonCrew personCrew : personCrewList) {
+                    if (Validator.validatePersonCrew(personCrew)) {
+                        PersonCreditsScreen personCreditScreen = new PersonCreditsScreen();
+                        personCreditScreen.setIdTmdb(personCrew.getIdTmdb());
+
+                        if (personCrew.getPosterPath() != null)
+                            personCreditScreen.setPosterPath(personCrew.getPosterPath());
+
+                        if (personCrew.getJob() != null)
+                            personCreditScreen.setKnownFor(personCrew.getJob());
+
+                        if (personCrew.getReleaseDate() != null) {
+                            personCreditScreen.setReleaseDate(personCrew.getReleaseDate());
+                            long releaseDateMs = simpleDateFormat.parse(personCreditScreen.getReleaseDate()).getTime();
+                            personCreditScreen.setReleaseDateMs(releaseDateMs);
+                        }
+
+                        personCreditsScreenList.add(personCreditScreen);
+                    }
+                }
+            }
+
+            if (personCreditsScreenList.size() > 0) {
+                Collections.sort(personCreditsScreenList);
+            }
+
+            person.getPersonMovieCredits().setPersonCreditsScreenList(personCreditsScreenList);
+        }
+
+        return person;
+    }
+
     private void loadPersonDetailsApi() {
 
         Observable<Person> observable = personDetailsRepository.loadPersonDetailsApi(this.personID)
-                .subscribeOn(ioScheduler).observeOn(mainThreadScheduler);
+                .map(this::addPersonCreditScreen).subscribeOn(ioScheduler).observeOn(mainThreadScheduler);
 
         DisposableObserver<Person> observer = new DisposableObserver<Person>() {
             @Override
@@ -180,7 +233,7 @@ public class PersonDetailsInteractor {
 
             @Override
             public void onError(Throwable throwable) {
-
+                throwable.printStackTrace();
                 boolean isNetworkError = false;
 
                 if (throwable instanceof IOException && !Util.isNetworkAvailable(context))
