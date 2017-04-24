@@ -16,8 +16,8 @@ https://github.com/JakeWharton/butterknife
 
 https://github.com/google/dagger
 
-https://github.com/mockito/mockito
-
 https://github.com/bumptech/glide
 
 https://github.com/lsjwzh/RecyclerViewPager
+
+https://www.themoviedb.org/documentation/api
