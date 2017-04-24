@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.moviesfeed.R;
 import com.moviesfeed.models.persondetails.PersonCast;
 import com.moviesfeed.models.persondetails.PersonCrew;
@@ -100,6 +102,9 @@ public class PersonDetailsFragment extends DetailsFragment implements PersonDeta
     View layoutTitle;
     @BindView(R.id.layoutError)
     View layoutError;
+    @BindView(R.id.personDetailsAdView)
+    AdView adView;
+
 
     public PersonDetailsFragment() {
         setRetainInstance(true);
@@ -152,6 +157,8 @@ public class PersonDetailsFragment extends DetailsFragment implements PersonDeta
 
         if (savedInstanceState == null) {
             this.presenter.requestPersonDetails(getArguments().getInt(INTENT_PERSON_DETAILS_ID));
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
         }
     }
 

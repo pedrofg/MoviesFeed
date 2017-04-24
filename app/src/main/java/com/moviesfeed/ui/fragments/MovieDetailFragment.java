@@ -20,6 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager;
 import com.moviesfeed.R;
 import com.moviesfeed.models.Cast;
@@ -131,6 +133,8 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
     View layoutReviews;
     @BindView(R.id.viewRoot)
     CoordinatorLayout viewRoot;
+    @BindView(R.id.movieDetailsAdView)
+    AdView adView;
 
     public MovieDetailFragment() {
         setRetainInstance(true);
@@ -190,6 +194,8 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
 
         if (savedInstanceState == null) {
             this.presenter.requestMovieDetail(getArguments().getInt(INTENT_MOVIE_DETAIL_ID));
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
         }
     }
 

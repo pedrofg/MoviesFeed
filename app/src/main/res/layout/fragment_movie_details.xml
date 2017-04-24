@@ -65,7 +65,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="10dp">
+            android:paddingBottom="60dp">
 
             <View
                 android:id="@+id/separator"
@@ -402,6 +402,17 @@
                         app:rvp_triggerOffset="0.1" />
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
+
         </RelativeLayout>
+
     </android.support.v4.widget.NestedScrollView>
+
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/movieDetailsAdView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:adSize="BANNER"
+        app:adUnitId="@string/test_banner_ad_unit_id" />
 </android.support.design.widget.CoordinatorLayout>
