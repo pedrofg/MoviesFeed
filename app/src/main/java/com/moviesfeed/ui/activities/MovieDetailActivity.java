@@ -24,13 +24,16 @@ public class MovieDetailActivity extends DetailsActivity implements MovieDetailF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
-        setFragmentNegativeMarginTop(R.id.fragmentContainer);
-
         if (savedInstanceState == null) {
             this.movieDetailFragment = new MovieDetailFragment();
             this.movieDetailFragment.setArguments(getIntent().getExtras());
             addFragment(R.id.fragmentContainer, this.movieDetailFragment);
         }
+    }
+
+    @Override
+    public void setNegativeMarginToolbar() {
+        setFragmentNegativeMarginTop(R.id.fragmentContainer);
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {
@@ -87,7 +90,9 @@ public class MovieDetailActivity extends DetailsActivity implements MovieDetailF
         setToolbarSize(toolbar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 }

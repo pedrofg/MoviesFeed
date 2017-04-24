@@ -72,6 +72,10 @@ public class MovieDetailPresenter extends DetailsPresenter implements MovieDetai
         void showBudget(String budget);
 
         void showRevenue(String revenue);
+
+        void setNegativeMarginToolbar();
+
+        void addAppBarLayoutOffsetListener();
     }
 
     private MovieDetailInteractor movieDetailInteractor;
@@ -199,6 +203,10 @@ public class MovieDetailPresenter extends DetailsPresenter implements MovieDetai
 
         if (movieDetail.getImages().getBackdrops() != null && movieDetail.getImages().getBackdrops().size() > 0) {
             this.callback.showImages(movieDetail.getImages().getBackdrops());
+            this.callback.setNegativeMarginToolbar();
+            this.callback.addAppBarLayoutOffsetListener();
+        } else {
+            this.callback.updateToolbarTitle(movieDetail.getTitle());
         }
 
         this.callback.contentUpdated(false);

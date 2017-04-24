@@ -41,7 +41,6 @@ import com.moviesfeed.ui.components.DividerItemDecoration;
 import com.moviesfeed.ui.components.RecyclerItemClickListener;
 import com.moviesfeed.ui.presenters.MovieDetailPresenter;
 
-import java.text.NumberFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -70,6 +69,8 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
         void openPersonDetails(int personID);
 
         void setToolbar(Toolbar toolbar);
+
+        void setNegativeMarginToolbar();
     }
 
     public static final int TXT_TITLE_MAX_LINES = 1;
@@ -177,13 +178,6 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
 
         this.callback.setToolbar(toolbar);
 
-        this.appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
-            @Override
-            public void onStateChanged(AppBarLayout appBarLayout, State state, int verticalOffset) {
-                presenter.appBarLayoutStateChanged(appBarLayout, state, verticalOffset);
-            }
-        });
-
         RecyclerItemClickListener itemClickListener = new RecyclerItemClickListener(context(), this);
         this.rvMovieVideos.addOnItemTouchListener(itemClickListener);
         this.rvReviews.addOnItemTouchListener(itemClickListener);
@@ -195,6 +189,16 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
         this.rvReviews.setHasFixedSize(true);
 
         return fragmentView;
+    }
+
+    @Override
+    public void addAppBarLayoutOffsetListener() {
+        this.appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state, int verticalOffset) {
+                presenter.appBarLayoutStateChanged(appBarLayout, state, verticalOffset);
+            }
+        });
     }
 
     @Override
@@ -320,6 +324,11 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
         this.rvMovieImagesLayoutManager = new CustomLinearLayoutManager(context(), LinearLayoutManager.HORIZONTAL);
         this.rvMovieImages.setLayoutManager(this.rvMovieImagesLayoutManager);
         this.rvMovieImages.setAdapter(new MovieImagesAdapter(context(), imageList, this));
+    }
+
+    @Override
+    public void setNegativeMarginToolbar() {
+        this.callback.setNegativeMarginToolbar();
     }
 
     @Override
