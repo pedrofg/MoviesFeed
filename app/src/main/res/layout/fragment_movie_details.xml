@@ -225,6 +225,67 @@
                             android:textSize="16dp"
                             app:typeface="Roboto-Light.ttf" />
 
+                        <RelativeLayout
+                            android:id="@+id/layoutBudget"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/txtMovieOverview"
+                            android:layout_marginTop="10dp"
+                            android:visibility="gone">
+
+
+                            <com.moviesfeed.ui.components.CustomTextView
+                                android:id="@+id/txtBudget"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/budget"
+                                android:textColor="@android:color/black"
+                                android:textSize="14dp"
+                                app:typeface="Roboto-Regular.ttf" />
+
+                            <com.moviesfeed.ui.components.CustomTextView
+                                android:id="@+id/txtMovieBudget"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:layout_toEndOf="@id/txtBudget"
+                                android:textColor="@android:color/black"
+                                android:textSize="14dp"
+                                app:typeface="Roboto-Light.ttf" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/layoutRevenue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/layoutBudget"
+                            android:layout_marginTop="10dp"
+                            android:visibility="gone">
+
+                            <com.moviesfeed.ui.components.CustomTextView
+                                android:id="@+id/txtRevenue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/revenue_movie_details"
+                                android:textColor="@android:color/black"
+                                android:textIsSelectable="true"
+                                android:textSize="14dp"
+                                app:typeface="Roboto-Regular.ttf" />
+
+                            <com.moviesfeed.ui.components.CustomTextView
+                                android:id="@+id/txtMovieRevenue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:layout_toEndOf="@id/txtRevenue"
+                                android:textColor="@android:color/black"
+                                android:textIsSelectable="true"
+                                android:textSize="14dp"
+                                app:typeface="Roboto-Light.ttf" />
+
+                        </RelativeLayout>
+
                     </RelativeLayout>
                 </RelativeLayout>
 

@@ -19,6 +19,7 @@ import com.moviesfeed.models.Review;
 import com.moviesfeed.models.Video;
 import com.moviesfeed.ui.components.AppBarStateChangeListener.State;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 
@@ -67,6 +68,10 @@ public class MovieDetailPresenter extends DetailsPresenter implements MovieDetai
         void openReview(Uri url);
 
         void openPersonDetails(int id);
+
+        void showBudget(String budget);
+
+        void showRevenue(String revenue);
     }
 
     private MovieDetailInteractor movieDetailInteractor;
@@ -129,6 +134,11 @@ public class MovieDetailPresenter extends DetailsPresenter implements MovieDetai
         callback.openPersonDetails(id);
     }
 
+    public String formatCurrency(long currency) {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        return formatter.format(currency);
+    }
+
     @Override
     public void onLoadSuccess(MovieDetail movieDetail) {
         this.callback.showMovieTitle(movieDetail.getTitle());
@@ -144,6 +154,14 @@ public class MovieDetailPresenter extends DetailsPresenter implements MovieDetai
         }
 
         this.callback.showOverview(movieDetail.getOverview());
+
+        if (movieDetail.getBudget() > 0) {
+            this.callback.showBudget(formatCurrency(movieDetail.getBudget()));
+        }
+
+        if (movieDetail.getRevenue() > 0) {
+            this.callback.showRevenue(formatCurrency(movieDetail.getRevenue()));
+        }
 
         if (!TextUtils.isEmpty(movieDetail.getHomepage())) {
             Uri url = Uri.parse(movieDetail.getHomepage());
