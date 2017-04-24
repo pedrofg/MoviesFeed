@@ -30,7 +30,7 @@
     </RelativeLayout>
 
 
-    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+    <com.moviesfeed.ui.components.CustomTextView
         android:id="@+id/txtMovieCastCrewName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         android:textSize="16dp"
         app:typeface="Roboto-Light.ttf" />
 
-    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+    <com.moviesfeed.ui.components.CustomTextView
         android:id="@+id/txtMovieCastCrewAs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

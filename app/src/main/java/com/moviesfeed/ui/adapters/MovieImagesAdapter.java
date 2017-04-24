@@ -13,7 +13,7 @@ import com.bumptech.glide.request.target.Target;
 import com.moviesfeed.R;
 import com.moviesfeed.api.MoviesApi;
 import com.moviesfeed.models.MovieBackdrop;
-import com.moviesfeed.ui.activities.uicomponents.ImageLoader;
+import com.moviesfeed.ui.components.ImageLoader;
 
 import java.util.List;
 

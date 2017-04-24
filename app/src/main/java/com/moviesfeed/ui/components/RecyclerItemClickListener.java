@@ -1,4 +1,4 @@
-package com.moviesfeed.ui.activities.uicomponents;
+package com.moviesfeed.ui.components;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

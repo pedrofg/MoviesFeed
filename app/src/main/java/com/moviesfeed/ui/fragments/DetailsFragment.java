@@ -12,7 +12,7 @@ import android.transition.TransitionSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.moviesfeed.ui.activities.uicomponents.CustomLinearLayoutManager;
+import com.moviesfeed.ui.components.CustomLinearLayoutManager;
 
 
 /**

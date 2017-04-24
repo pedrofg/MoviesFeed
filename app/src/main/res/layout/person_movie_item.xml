@@ -52,7 +52,7 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+        <com.moviesfeed.ui.components.CustomTextView
             android:id="@+id/txtPersonMovieAs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

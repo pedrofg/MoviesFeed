@@ -92,7 +92,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                    <com.moviesfeed.ui.components.CustomTextView
                         android:id="@+id/txtMovieTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
                                 android:padding="10dp"
                                 android:visibility="gone">
 
-                                <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                                <com.moviesfeed.ui.components.CustomTextView
                                     android:id="@+id/txtMovieRating"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -163,7 +163,7 @@
 
                             </LinearLayout>
 
-                            <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                            <com.moviesfeed.ui.components.CustomTextView
                                 android:id="@+id/txtMovieGenres"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -188,7 +188,7 @@
                             android:layout_toLeftOf="@id/layoutRatingAndGenres"
                             android:orientation="horizontal">
 
-                            <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                            <com.moviesfeed.ui.components.CustomTextView
                                 android:id="@+id/txtMovieYear"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -197,7 +197,7 @@
                                 android:visibility="gone"
                                 app:typeface="Roboto-Light.ttf" />
 
-                            <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                            <com.moviesfeed.ui.components.CustomTextView
                                 android:id="@+id/txtMovieRuntime"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -212,7 +212,7 @@
                         </LinearLayout>
 
 
-                        <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                        <com.moviesfeed.ui.components.CustomTextView
                             android:id="@+id/txtMovieOverview"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -250,7 +250,7 @@
                     android:layout_below="@id/layoutSubContent"
                     android:paddingBottom="5dp">
 
-                    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                    <com.moviesfeed.ui.components.CustomTextView
                         android:id="@+id/txtVideos"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -293,7 +293,7 @@
                     android:layout_height="@dimen/layout_cast_height"
                     android:layout_below="@id/cardViewVideos">
 
-                    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                    <com.moviesfeed.ui.components.CustomTextView
                         android:id="@+id/txtCastCrew"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -336,7 +336,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_height="wrap_content">
 
-                    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                    <com.moviesfeed.ui.components.CustomTextView
                         android:id="@+id/txtSimilarMovies"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -378,7 +378,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_height="match_parent">
 
-                    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                    <com.moviesfeed.ui.components.CustomTextView
                         android:id="@+id/txtReviews"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

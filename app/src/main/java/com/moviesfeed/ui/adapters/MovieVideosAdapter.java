@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.moviesfeed.R;
-import com.moviesfeed.ui.activities.uicomponents.ImageLoader;
+import com.moviesfeed.ui.components.ImageLoader;
 import com.moviesfeed.models.Video;
 
 import java.util.List;
