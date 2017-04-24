@@ -43,6 +43,9 @@
     <string name="birthday">Birthday: </string>
     <string name="birthplace">Birthplace:</string>
     <string name="feed_banner_ad_unit_id">ca-app-pub-6469946228125641/9434325410</string>
+    <string name="movie_details_banner_ad_unit_id">ca-app-pub-6469946228125641/3754391814</string>
+    <string name="person_details_banner_ad_unit_id">ca-app-pub-6469946228125641/6707858211</string>
     <string name="test_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
 
 </resources>
