@@ -14,7 +14,7 @@
         android:adjustViewBounds="true"
         android:src="@drawable/error_background" />
 
-    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+    <com.moviesfeed.ui.components.CustomTextView
         android:id="@+id/txtError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
         android:textSize="18dp"
         app:typeface="Roboto-Light.ttf" />
 
-    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+    <com.moviesfeed.ui.components.CustomTextView
         android:id="@+id/txtTryAgain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

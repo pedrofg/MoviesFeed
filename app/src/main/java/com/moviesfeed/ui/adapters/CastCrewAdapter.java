@@ -15,7 +15,7 @@ import com.moviesfeed.R;
 import com.moviesfeed.api.MoviesApi;
 import com.moviesfeed.models.Cast;
 import com.moviesfeed.models.Crew;
-import com.moviesfeed.ui.activities.uicomponents.ImageLoader;
+import com.moviesfeed.ui.components.ImageLoader;
 
 import java.util.List;
 

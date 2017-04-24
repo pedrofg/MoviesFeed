@@ -17,7 +17,7 @@ import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.MovieDetail;
 import com.moviesfeed.models.Review;
 import com.moviesfeed.models.Video;
-import com.moviesfeed.ui.activities.uicomponents.AppBarStateChangeListener.State;
+import com.moviesfeed.ui.components.AppBarStateChangeListener.State;
 
 import java.util.List;
 

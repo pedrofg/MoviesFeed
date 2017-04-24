@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.moviesfeed.R;
-import com.moviesfeed.ui.activities.uicomponents.AppBarStateChangeListener;
+import com.moviesfeed.ui.components.AppBarStateChangeListener;
 
 /**
  * Created by Pedro on 2017-04-17.

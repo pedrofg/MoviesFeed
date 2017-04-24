@@ -96,7 +96,7 @@
                         android:layout_height="wrap_content"
                         android:visibility="gone">
 
-                        <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                        <com.moviesfeed.ui.components.CustomTextView
                             android:id="@+id/txtBiography"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
 
                     </RelativeLayout>
 
-                    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                    <com.moviesfeed.ui.components.CustomTextView
                         android:id="@+id/txtPersonBiography"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
                         android:visibility="gone">
 
 
-                        <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                        <com.moviesfeed.ui.components.CustomTextView
                             android:id="@+id/txtBirthday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                             android:textSize="14dp"
                             app:typeface="Roboto-Regular.ttf" />
 
-                        <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                        <com.moviesfeed.ui.components.CustomTextView
                             android:id="@+id/txtPersonBirthday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -171,7 +171,7 @@
                         android:layout_marginTop="10dp"
                         android:visibility="gone">
 
-                        <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                        <com.moviesfeed.ui.components.CustomTextView
                             android:id="@+id/txtBirthplace"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
                             android:textSize="14dp"
                             app:typeface="Roboto-Regular.ttf" />
 
-                        <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                        <com.moviesfeed.ui.components.CustomTextView
                             android:id="@+id/txtPersonBirthplace"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -218,7 +218,7 @@
                     android:layout_marginRight="5dp"
                     android:paddingBottom="5dp">
 
-                    <com.moviesfeed.ui.activities.uicomponents.CustomTextView
+                    <com.moviesfeed.ui.components.CustomTextView
                         android:id="@+id/txtPersonKnownFor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

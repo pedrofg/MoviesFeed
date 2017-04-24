@@ -13,7 +13,7 @@ import com.moviesfeed.models.persondetails.Person;
 import com.moviesfeed.models.persondetails.PersonCast;
 import com.moviesfeed.models.persondetails.PersonCrew;
 import com.moviesfeed.models.persondetails.PersonImage;
-import com.moviesfeed.ui.activities.uicomponents.AppBarStateChangeListener;
+import com.moviesfeed.ui.components.AppBarStateChangeListener;
 
 import java.util.List;
 

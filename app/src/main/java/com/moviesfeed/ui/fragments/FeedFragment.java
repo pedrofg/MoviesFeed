@@ -20,8 +20,8 @@ import com.moviesfeed.R;
 import com.moviesfeed.api.Filters;
 import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MoviesFeed;
-import com.moviesfeed.ui.activities.uicomponents.EndlessScrollListener;
 import com.moviesfeed.ui.adapters.FeedAdapter;
+import com.moviesfeed.ui.components.EndlessScrollListener;
 import com.moviesfeed.ui.presenters.FeedPresenter;
 
 import butterknife.BindView;
@@ -41,6 +41,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     private Unbinder unbinder;
     private FeedFragmentCallback callback;
     private EndlessScrollListener endlessScrollListener;
+    private GridLayoutManager gridLayoutManager;
 
     public static final int GRID_COLUMNS = 3;
     public static final int GRID_FILL_ALL_COLUMNS = 1;
@@ -116,13 +117,13 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     public void createGrid() {
         Log.i(FeedFragment.class.getName(), "createGrid()");
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(context(), GRID_COLUMNS);
-        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup);
-        this.rvMoviesFeed.setLayoutManager(gridLayoutManager);
+        this.gridLayoutManager = new GridLayoutManager(context(), GRID_COLUMNS);
+        this.gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup);
+        this.rvMoviesFeed.setLayoutManager(this.gridLayoutManager);
 
 
         this.rvMoviesFeed.clearOnScrollListeners();
-        this.endlessScrollListener = new EndlessScrollListener(gridLayoutManager, this);
+        this.endlessScrollListener = new EndlessScrollListener(this.gridLayoutManager, this);
         this.rvMoviesFeed.addOnScrollListener(endlessScrollListener);
 
         this.swipeRefreshLayout.setRefreshing(false);
@@ -285,14 +286,23 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     @Override
     public void addProgressBottomGrid() {
         this.endlessScrollListener.addProgressItem();
-        this.rvMoviesFeed.post(() -> adapter.addProgress());
+        this.rvMoviesFeed.post(() -> {
+            adapter.addProgress();
+        });
 
     }
 
     @Override
     public void addErrorBottomGrid() {
         this.endlessScrollListener.addErrorItem();
-        this.rvMoviesFeed.post(() -> adapter.addError());
+        this.rvMoviesFeed.post(() -> {
+            adapter.addError();
+
+            int lastItemPosition = rvMoviesFeed.getAdapter().getItemCount() - 1;
+            if (this.gridLayoutManager.findLastVisibleItemPosition() + 1 == lastItemPosition) {
+                rvMoviesFeed.scrollToPosition(lastItemPosition);
+            }
+        });
     }
 
     @Override
