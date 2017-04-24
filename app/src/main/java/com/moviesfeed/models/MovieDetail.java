@@ -1,5 +1,8 @@
 package com.moviesfeed.models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -8,10 +11,6 @@ import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-
 import java.util.List;
 
 @Entity
@@ -19,7 +18,7 @@ public class MovieDetail {
 
     @SerializedName("budget")
     @Expose
-    private int budget;
+    private long budget;
     @SerializedName("homepage")
     @Expose
     private String homepage;
@@ -104,10 +103,10 @@ public class MovieDetail {
     @Generated(hash = 1855526851)
     private transient Long movieReviews__resolvedKey;
 
-    @Generated(hash = 325877183)
-    public MovieDetail(int budget, String homepage, Long id, String imdbId, String overview, String posterPath,
-                       String releaseDate, long revenue, int runtime, String title, double voteAverage, Long imagesId, Long videosId,
-                       Long creditsId, Long similarId, Long reviewId) {
+    @Generated(hash = 1377003673)
+    public MovieDetail(long budget, String homepage, Long id, String imdbId, String overview, String posterPath, String releaseDate,
+            long revenue, int runtime, String title, double voteAverage, Long imagesId, Long videosId, Long creditsId, Long similarId,
+            Long reviewId) {
         this.budget = budget;
         this.homepage = homepage;
         this.id = id;
@@ -128,20 +127,6 @@ public class MovieDetail {
 
     @Generated(hash = 850277392)
     public MovieDetail() {
-    }
-
-    /**
-     * @return The budget
-     */
-    public int getBudget() {
-        return budget;
-    }
-
-    /**
-     * @param budget The budget
-     */
-    public void setBudget(int budget) {
-        this.budget = budget;
     }
 
 
@@ -567,6 +552,14 @@ public class MovieDetail {
             }
         }
         return movieReviews;
+    }
+
+    public long getBudget() {
+        return this.budget;
+    }
+
+    public void setBudget(long budget) {
+        this.budget = budget;
     }
 
     /** called by internal mechanisms, do not call yourself. */

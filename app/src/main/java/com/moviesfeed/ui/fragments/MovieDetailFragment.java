@@ -30,17 +30,18 @@ import com.moviesfeed.models.Movie;
 import com.moviesfeed.models.MovieBackdrop;
 import com.moviesfeed.models.Review;
 import com.moviesfeed.models.Video;
-import com.moviesfeed.ui.components.AppBarStateChangeListener;
-import com.moviesfeed.ui.components.CustomLinearLayoutManager;
-import com.moviesfeed.ui.components.DividerItemDecoration;
-import com.moviesfeed.ui.components.RecyclerItemClickListener;
 import com.moviesfeed.ui.adapters.CastCrewAdapter;
 import com.moviesfeed.ui.adapters.FeedAdapter;
 import com.moviesfeed.ui.adapters.MovieImagesAdapter;
 import com.moviesfeed.ui.adapters.MovieVideosAdapter;
 import com.moviesfeed.ui.adapters.ReviewsAdapter;
+import com.moviesfeed.ui.components.AppBarStateChangeListener;
+import com.moviesfeed.ui.components.CustomLinearLayoutManager;
+import com.moviesfeed.ui.components.DividerItemDecoration;
+import com.moviesfeed.ui.components.RecyclerItemClickListener;
 import com.moviesfeed.ui.presenters.MovieDetailPresenter;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -135,6 +136,14 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
     CoordinatorLayout viewRoot;
     @BindView(R.id.movieDetailsAdView)
     AdView adView;
+    @BindView(R.id.txtMovieBudget)
+    TextView txtMovieBudget;
+    @BindView(R.id.txtMovieRevenue)
+    TextView txtMovieRevenue;
+    @BindView(R.id.layoutBudget)
+    View layoutBudget;
+    @BindView(R.id.layoutRevenue)
+    View layoutRevenue;
 
     public MovieDetailFragment() {
         setRetainInstance(true);
@@ -346,6 +355,18 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
     @Override
     public void openPersonDetails(int personID) {
         this.callback.openPersonDetails(personID);
+    }
+
+    @Override
+    public void showBudget(String budget) {
+        this.layoutBudget.setVisibility(View.VISIBLE);
+        this.txtMovieBudget.setText(budget);
+    }
+
+    @Override
+    public void showRevenue(String revenue) {
+        this.layoutRevenue.setVisibility(View.VISIBLE);
+        this.txtMovieRevenue.setText(revenue);
     }
 
 
