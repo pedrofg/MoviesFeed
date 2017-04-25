@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="grid_movie_thumbnail_height">180dp</dimen>
+    <dimen name="grid_movie_thumbnail_width">110dp</dimen>
+    <dimen name="person_movie_item_height">240dp</dimen>
+</resources>

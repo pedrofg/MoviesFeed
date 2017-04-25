@@ -475,5 +475,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:adSize="BANNER"
-        app:adUnitId="@string/test_banner_ad_unit_id" />
+        app:adUnitId="@string/movie_details_banner_ad_unit_id" />
 </android.support.design.widget.CoordinatorLayout>

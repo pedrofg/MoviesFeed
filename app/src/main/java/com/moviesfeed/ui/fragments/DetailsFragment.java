@@ -5,14 +5,14 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
-import android.transition.ChangeBounds;
-import android.transition.ChangeImageTransform;
-import android.transition.TransitionManager;
-import android.transition.TransitionSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.moviesfeed.ui.components.CustomLinearLayoutManager;
+import com.transitionseverywhere.ChangeBounds;
+import com.transitionseverywhere.ChangeImageTransform;
+import com.transitionseverywhere.TransitionManager;
+import com.transitionseverywhere.TransitionSet;
 
 
 /**
