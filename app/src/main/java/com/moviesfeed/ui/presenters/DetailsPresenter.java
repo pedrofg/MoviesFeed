@@ -58,7 +58,7 @@ public abstract class DetailsPresenter implements Presenter {
         boolean isZoomed;
         int imgDefaultHeight = (int) callback.context().getResources().getDimension(R.dimen.movie_detail_img_backdrop_height);
 
-        isZoomed = imageView.getHeight() != imgDefaultHeight;
+        isZoomed = imageView.getScaleType() == ImageView.ScaleType.CENTER_CROP;
 
         int height = isZoomed ? imgDefaultHeight
                 : ViewGroup.LayoutParams.MATCH_PARENT;

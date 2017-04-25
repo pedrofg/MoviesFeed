@@ -1,6 +1,7 @@
 package com.moviesfeed.ui.fragments;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -131,6 +132,14 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
 
         this.adapter = new FeedAdapter(this.context(), this);
         this.rvMoviesFeed.setAdapter(adapter);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            setProgressBarColor();
+        }
+    }
+
+    private void setProgressBarColor() {
+        this.progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
 

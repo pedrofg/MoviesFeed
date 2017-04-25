@@ -51,7 +51,7 @@ public class FeedInteractor {
     private static final int FIRST_PAGE = 1;
     private static final int HTTP_TOO_MANY_REQUEST_ERROR = 429;
     //Delay implemented to avoid errors when scrolling too fast.
-    private static final int DELAY_TO_PROCESS = 500;
+    private static final int DELAY_TO_PROCESS = 300;
 
     private Filters filter;
     private FeedRepository feedRepository;
@@ -87,7 +87,6 @@ public class FeedInteractor {
         this.moviesFeedCache.setPage(this.moviesFeedCache.getPage() + 1);
         this.isNextPage = true;
         new Handler().postDelayed(this::loadMoviesFeedApi, DELAY_TO_PROCESS);
-
     }
 
     public void searchMovieFeed(String query) {

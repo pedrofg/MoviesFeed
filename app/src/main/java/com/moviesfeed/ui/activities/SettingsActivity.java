@@ -33,10 +33,12 @@ public class SettingsActivity extends AnimatedTransitionActivity {
 
     @OnClick(R.id.btnTellAFriend)
     public void btnTellAFriendClickListener(View view) {
+        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT,
-                getString(R.string.tell_a_friend_message));
+                getString(R.string.tell_a_friend_message) + " " + "https://play.google.com/store/apps/details?id=" + appPackageName);
         sendIntent.setType("text/plain");
         startActivity(sendIntent);
     }

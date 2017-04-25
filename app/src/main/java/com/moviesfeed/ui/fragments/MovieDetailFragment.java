@@ -1,7 +1,10 @@
 package com.moviesfeed.ui.fragments;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -188,7 +191,20 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
         this.rvMovieCastCrew.setHasFixedSize(true);
         this.rvReviews.setHasFixedSize(true);
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            setRatingBarColor();
+        }
         return fragmentView;
+    }
+
+    private void setRatingBarColor() {
+        LayerDrawable stars = (LayerDrawable) rbMovieRating.getProgressDrawable();
+        //starFullySelected
+        stars.getDrawable(2).setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        //starPartiallySelected
+        stars.getDrawable(1).setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        //starNotSelected
+        stars.getDrawable(0).setColorFilter(getResources().getColor(android.R.color.transparent), PorterDuff.Mode.SRC_ATOP);
     }
 
     @Override
