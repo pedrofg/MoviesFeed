@@ -23,6 +23,6 @@ https://github.com/lsjwzh/RecyclerViewPager
 https://www.themoviedb.org/documentation/api
 
 
-  <a href='https://play.google.com/store/apps/details?id=com.moviesfeed&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>  
-  <img height="42" width="42" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/>
-  </a>
+<a href='https://play.google.com/store/apps/details?id=com.moviesfeed&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'> 
+    <img height="100" width="100" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/>
+</a>
