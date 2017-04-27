@@ -1,6 +1,8 @@
 package com.moviesfeed.ui.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,13 +73,21 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             v.setOnFocusChangeListener((view, hasFocus) -> {
                 if (hasFocus) {
-                    ((ProgressViewHolder) vh).btnUpdateFeed.setImageDrawable(context.getDrawable(R.drawable.ic_update_clicked));
+                    ((ProgressViewHolder) vh).btnUpdateFeed.setImageDrawable(getDrawable(R.drawable.ic_update_clicked));
                 } else {
-                    ((ProgressViewHolder) vh).btnUpdateFeed.setImageDrawable(context.getDrawable(R.drawable.ic_update));
+                    ((ProgressViewHolder) vh).btnUpdateFeed.setImageDrawable(getDrawable(R.drawable.ic_update));
                 }
             });
         }
         return vh;
+    }
+
+    public Drawable getDrawable(int id) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return context.getDrawable(id);
+        } else {
+            return context.getResources().getDrawable(id);
+        }
     }
 
     @Override

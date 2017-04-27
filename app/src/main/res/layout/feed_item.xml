@@ -5,11 +5,11 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="4dp"
-    card_view:cardUseCompatPadding="true"
-    card_view:contentPadding="5dp">
+    card_view:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:layout_width="@dimen/grid_movie_thumbnail_width"
+        android:padding="5dp"
         android:layout_height="@dimen/grid_movie_thumbnail_height">
 
         <ImageView
@@ -37,12 +37,12 @@
 
             <ImageView
                 android:id="@+id/imgPlaceHolder"
-                android:layout_width="100dp"
+                android:layout_width="match_parent"
                 android:layout_height="100dp"
+                android:layout_margin="5dp"
                 android:layout_above="@id/movieItemProgressBar"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
                 android:src="@drawable/ic_placeholder" />
         </RelativeLayout>
     </RelativeLayout>
