@@ -19,9 +19,22 @@
         android:background="@color/background_holo_light">
 
         <TextView
-            android:id="@+id/btnTellAFriend"
+            android:id="@+id/btnRateThisApp"
             style="@style/txtSettingsStyle"
             android:layout_marginTop="20dp"
+            android:text="@string/rate_this_app" />
+
+        <View
+            android:id="@+id/separatorRateThisApp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/btnRateThisApp"
+            android:background="@color/iconRed" />
+
+        <TextView
+            android:id="@+id/btnTellAFriend"
+            style="@style/txtSettingsStyle"
+            android:layout_below="@id/separatorRateThisApp"
             android:text="@string/tell_a_friend" />
 
         <View

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.moviesfeed.R;
 import com.moviesfeed.ui.components.AppBarStateChangeListener;
 
 /**
@@ -53,10 +52,9 @@ public abstract class DetailsPresenter implements Presenter {
         callback.updateToolbarBackground(MAX_ALPHA - Math.round(f));
     }
 
-    public void onImagePosterClicked(ImageView imageView) {
+    public void onImagePosterClicked(ImageView imageView, int imgDefaultHeight) {
 
         boolean isZoomed;
-        int imgDefaultHeight = (int) callback.context().getResources().getDimension(R.dimen.movie_detail_img_backdrop_height);
 
         isZoomed = imageView.getScaleType() == ImageView.ScaleType.CENTER_CROP;
 
