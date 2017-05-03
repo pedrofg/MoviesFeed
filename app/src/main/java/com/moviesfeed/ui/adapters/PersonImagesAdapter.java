@@ -42,7 +42,7 @@ public class PersonImagesAdapter extends RecyclerView.Adapter<PersonImagesAdapte
 
     @Override
     public PersonImagesViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_detail_images_rv_item, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.person_detail_images_rv_item, viewGroup, false);
 
         PersonImagesViewHolder viewHolder = new PersonImagesViewHolder(view);
         return viewHolder;
@@ -80,9 +80,9 @@ public class PersonImagesAdapter extends RecyclerView.Adapter<PersonImagesAdapte
 
 
     class PersonImagesViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.imgMovieBackdrop)
+        @BindView(R.id.imgPersonPoster)
         ImageView imgPerson;
-        @BindView(R.id.progressMovieBackdrop)
+        @BindView(R.id.progressPersonPoster)
         ProgressBar progressItem;
 
 
