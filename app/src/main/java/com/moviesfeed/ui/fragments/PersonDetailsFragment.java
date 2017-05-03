@@ -313,7 +313,8 @@ public class PersonDetailsFragment extends DetailsFragment implements PersonDeta
 
     @Override
     public void onImageViewClicked(ImageView imageView) {
-        this.presenter.onImagePosterClicked(imageView);
+        int imgDefaultHeight = (int) getResources().getDimension(R.dimen.person_img_poster_height);
+        this.presenter.onImagePosterClicked(imageView, imgDefaultHeight);
     }
 
 

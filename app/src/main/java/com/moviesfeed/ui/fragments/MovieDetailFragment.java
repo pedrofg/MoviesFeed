@@ -485,7 +485,8 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
 
     @Override
     public void onImageViewClicked(ImageView imageView) {
-        this.presenter.onImagePosterClicked(imageView);
+        int imgDefaultHeight = (int) getResources().getDimension(R.dimen.movie_detail_img_backdrop_height);
+        this.presenter.onImagePosterClicked(imageView, imgDefaultHeight);
     }
 
     @Override

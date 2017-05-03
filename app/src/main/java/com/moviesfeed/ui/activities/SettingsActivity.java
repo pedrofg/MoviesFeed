@@ -1,6 +1,9 @@
 package com.moviesfeed.ui.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -30,6 +33,25 @@ public class SettingsActivity extends AnimatedTransitionActivity {
 
     }
 
+    @OnClick(R.id.btnRateThisApp)
+    public void btnRateThisAppClickListener(View view) {
+
+        Uri uri = Uri.parse("market://details?id=" + getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        int flags = Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            flags |= Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
+        }
+        goToMarket.addFlags(flags);
+
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
+        }
+    }
 
     @OnClick(R.id.btnTellAFriend)
     public void btnTellAFriendClickListener(View view) {

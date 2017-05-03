@@ -48,6 +48,7 @@
     <string name="test_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="budget">Budget:</string>
     <string name="revenue_movie_details">Revenue:</string>
+    <string name="rate_this_app">Give us your Feedback</string>
 
 
 </resources>
