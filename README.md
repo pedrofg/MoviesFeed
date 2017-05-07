@@ -18,6 +18,8 @@ https://github.com/google/dagger
 
 https://github.com/bumptech/glide
 
+https://github.com/orfjackal/retrolambda
+
 https://github.com/lsjwzh/RecyclerViewPager
 
 https://www.themoviedb.org/documentation/api
