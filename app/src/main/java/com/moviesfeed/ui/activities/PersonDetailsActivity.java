@@ -26,11 +26,9 @@ public class PersonDetailsActivity extends DetailsActivity implements PersonDeta
 
         setFragmentNegativeMarginTop(R.id.personFragmentContainer);
 
-        if (savedInstanceState == null) {
-            this.personFragment = new PersonDetailsFragment();
-            this.personFragment.setArguments(getIntent().getExtras());
-            addFragment(R.id.personFragmentContainer, this.personFragment);
-        }
+        this.personFragment = new PersonDetailsFragment();
+        this.personFragment.setArguments(getIntent().getExtras());
+        addFragment(R.id.personFragmentContainer, this.personFragment);
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {

@@ -119,7 +119,7 @@ public class PersonDetailsFragment extends DetailsFragment implements PersonDeta
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null || this.presenter == null) {
             this.presenter = new PersonDetailsPresenter();
             this.presenter.init(context(), this);
         }
@@ -150,11 +150,9 @@ public class PersonDetailsFragment extends DetailsFragment implements PersonDeta
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (savedInstanceState == null) {
-            this.presenter.requestPersonDetails(getArguments().getInt(INTENT_PERSON_DETAILS_ID));
-            AdRequest adRequest = new AdRequest.Builder().build();
-            adView.loadAd(adRequest);
-        }
+        this.presenter.requestPersonDetails(getArguments().getInt(INTENT_PERSON_DETAILS_ID));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
 

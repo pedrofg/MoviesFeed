@@ -12,7 +12,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
     <FrameLayout
-        android:id="@+id/fragmentContainer"
+        android:id="@+id/fragmentFeedContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar" />

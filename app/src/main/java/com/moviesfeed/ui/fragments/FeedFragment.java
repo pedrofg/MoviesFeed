@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,10 +77,9 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(FeedFragment.class.getName(), "onCreate()");
 
-        if (savedInstanceState == null) {
-            Log.i(FeedFragment.class.getName(), "savedInstanceState == null");
+
+        if (savedInstanceState == null || this.presenter == null) {
             this.presenter = new FeedPresenter();
             this.presenter.init(context(), this);
         }
@@ -106,17 +104,13 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (savedInstanceState == null) {
-            this.loadFeed(Filters.POPULARITY);
-            AdRequest adRequest = new AdRequest.Builder().build();
-            adView.loadAd(adRequest);
-        }
+        this.loadFeed(Filters.POPULARITY);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     @Override
     public void createGrid() {
-        Log.i(FeedFragment.class.getName(), "createGrid()");
 
         this.gridLayoutManager = new GridLayoutManager(context(), GRID_COLUMNS);
         this.gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup);
@@ -164,28 +158,24 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
 
     @Override
     public void onResume() {
-        Log.i(FeedFragment.class.getName(), "onResume()");
         super.onResume();
         this.presenter.resume();
     }
 
     @Override
     public void onPause() {
-        Log.i(FeedFragment.class.getName(), "onPause()");
         super.onPause();
         this.presenter.pause();
     }
 
     @Override
     public void onDestroy() {
-        Log.i(FeedFragment.class.getName(), "onDestroy()");
         super.onDestroy();
         this.presenter.destroy();
     }
 
     @Override
     public void onDestroyView() {
-        Log.i(FeedFragment.class.getName(), "onDestroyView()");
         super.onDestroyView();
         this.rvMoviesFeed.setAdapter(null);
         this.unbinder.unbind();
@@ -193,7 +183,6 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
 
     @Override
     public void onDetach() {
-        Log.i(FeedFragment.class.getName(), "onDetach()");
         super.onDetach();
         this.callback = null;
     }

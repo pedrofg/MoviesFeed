@@ -166,7 +166,7 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null || this.presenter == null) {
             this.presenter = new MovieDetailPresenter();
             this.presenter.init(context(), this);
             this.dividerItemDecoration = new DividerItemDecoration(ContextCompat.getDrawable(context(), R.drawable.list_separator), false, false);
