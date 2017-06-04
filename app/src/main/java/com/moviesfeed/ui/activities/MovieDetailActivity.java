@@ -24,16 +24,14 @@ public class MovieDetailActivity extends DetailsActivity implements MovieDetailF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
-        if (savedInstanceState == null) {
-            this.movieDetailFragment = new MovieDetailFragment();
-            this.movieDetailFragment.setArguments(getIntent().getExtras());
-            addFragment(R.id.fragmentContainer, this.movieDetailFragment);
-        }
+        this.movieDetailFragment = new MovieDetailFragment();
+        this.movieDetailFragment.setArguments(getIntent().getExtras());
+        addFragment(R.id.fragmentDetailsContainer, this.movieDetailFragment);
     }
 
     @Override
     public void setNegativeMarginToolbar() {
-        setFragmentNegativeMarginTop(R.id.fragmentContainer);
+        setFragmentNegativeMarginTop(R.id.fragmentDetailsContainer);
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {

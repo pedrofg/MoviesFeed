@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -48,7 +47,6 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.Feed
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(FeedActivity.class.getName(), "onCreate()");
         setContentView(R.layout.activity_feed_root);
         ButterKnife.bind(this);
 
@@ -69,34 +67,29 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.Feed
 
         this.checkedMenuItem = R.id.nav_popularity;
 
-        if (savedInstanceState == null) {
-            Log.i(FeedActivity.class.getName(), "savedInstanceState == null");
-            feedFragment = new FeedFragment();
-            addFragment(R.id.fragmentContainer, feedFragment);
-        }
+        feedFragment = new FeedFragment();
+        addFragment(R.id.fragmentFeedContainer, feedFragment);
+
+
     }
 
     @Override
     protected void onResume() {
-        Log.i(FeedActivity.class.getName(), "onResume()");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.i(FeedActivity.class.getName(), "onPause()");
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        Log.i(FeedActivity.class.getName(), "onStop()");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.i(FeedActivity.class.getName(), "onDestroy()");
         super.onDestroy();
     }
 
@@ -125,14 +118,12 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.Feed
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.i(FeedActivity.class.getName(), "onNewIntent() " + intent.getAction());
         handleIntent(intent);
     }
 
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            Log.i(FeedActivity.class.getName(), "handleIntent() ACTION_SEARCH query: " + query);
 
             feedFragment.searchMovieFeed(query);
             if (this.checkedMenuItem != 0) {
@@ -185,7 +176,6 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.Feed
             } else if (id == R.id.nav_war) {
                 filter = Filters.WAR;
             }
-            Log.i(FeedActivity.class.getName(), "onNavigationItemSelected() filter: " + filter.toString());
 
             this.toolbar.setTitle(menuItem.getTitle());
             this.feedFragment.navigationItemSelected(filter);
@@ -243,7 +233,6 @@ public class FeedActivity extends AppCompatActivity implements FeedFragment.Feed
 
     @Override
     public void onMovieClicked(Movie movie) {
-        Log.i(FeedActivity.class.getName(), "onItemClick, Movie Title: " + movie.getTitle());
         Intent intent = new Intent(this, MovieDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(INTENT_MOVIE_DETAIL_ID, movie.getIdTmdb());
