@@ -28,9 +28,10 @@ https://www.themoviedb.org/documentation/api
 <a href='https://play.google.com/store/apps/details?id=com.moviesfeed&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'> 
     <img height="100" width="250" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/>
 </a>
-sfas
-a
+
+
 App based on the Andrasfoid-CleanArchitecture
+</br>
 https://github.com/android10/Android-CleanArchitecture
 
 <img height="250" width="600" alt='Android Clean Architecture' src='https://user-images.githubusercontent.com/8161635/27249061-aadfcd78-52da-11e7-8458-07b66ca23a7c.png'/>
