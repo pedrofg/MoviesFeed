@@ -32,4 +32,5 @@ sfas
 a
 App based on the Andrasfoid-CleanArchitecture
 https://github.com/android10/Android-CleanArchitecture
-https://user-images.githubusercontent.com/8161635/27249061-aadfcd78-52da-11e7-8458-07b66ca23a7c.pnghttps://user-images.githubusercontent.com/8161635/27249061-aadfcd78-52da-11e7-8458-07b66ca23a7c.pnghttps://user-images.githubusercontent.com/8161635/27249061-aadfcd78-52da-11e7-8458-07b66ca23a7c.pnghttps://user-images.githubusercontent.com/8161635/27249061-aadfcd78-52da-11e7-8458-07b66ca23a7c.png
+
+<img height="250" width="600" alt='Android Clean Architecture' src='https://user-images.githubusercontent.com/8161635/27249061-aadfcd78-52da-11e7-8458-07b66ca23a7c.png'/>
