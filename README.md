@@ -30,7 +30,7 @@ https://www.themoviedb.org/documentation/api
 </a>
 
 
-App based on the Andrasfoid-CleanArchitecture
+App based on the Android-CleanArchitecture
 </br>
 https://github.com/android10/Android-CleanArchitecture
 
