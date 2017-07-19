@@ -81,7 +81,6 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
     private Unbinder unbinder;
     private MovieDetailFragmentCallback callback;
     private DividerItemDecoration dividerItemDecoration;
-    private FeedAdapter rvSimilarMoviesAdapter;
     private MovieVideosAdapter rvVideosAdapter;
     private ReviewsAdapter rvReviewsAdapter;
     private CustomLinearLayoutManager rvMovieImagesLayoutManager;
@@ -312,7 +311,8 @@ public class MovieDetailFragment extends DetailsFragment implements MovieDetailP
     @Override
     public void showSimilarMovies(List<Movie> movieList) {
         this.rvSimilarMovies.setLayoutManager(getHorizontalLayoutManager());
-        this.rvSimilarMoviesAdapter = new FeedAdapter(context(), this);
+        float widthLayoutRoot = this.getResources().getDimension(R.dimen.grid_movie_thumbnail_width);
+        FeedAdapter rvSimilarMoviesAdapter = new FeedAdapter(context(), this, (int) widthLayoutRoot);
         rvSimilarMoviesAdapter.setMovies(movieList);
         this.rvSimilarMovies.setAdapter(rvSimilarMoviesAdapter);
         this.layoutSimilarMovies.setVisibility(View.VISIBLE);

@@ -15,9 +15,9 @@ buildscript {
 android {
     signingConfigs {
         config {
-            keyAlias 'MoviesFeedKey'
+            keyAlias ''
             keyPassword ''
-            storeFile file('C:/Users/Pedro/keystores/android.jks')
+            storeFile file('fakepath')
             storePassword ''
         }
     }

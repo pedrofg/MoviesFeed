@@ -31,6 +31,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private boolean isProgress;
     private List<Movie> listMovies;
     private OnFeedItemClicked onFeedItemClicked;
+    private int widthLayoutRoot;
 
     public interface OnFeedItemClicked {
         void onFeedItemClicked(Movie movie);
@@ -39,9 +40,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    public FeedAdapter(Context context, OnFeedItemClicked onFeedItemClicked) {
+    public FeedAdapter(Context context, OnFeedItemClicked onFeedItemClicked, int widthLayoutRoot) {
         this.context = context;
         this.onFeedItemClicked = onFeedItemClicked;
+        this.widthLayoutRoot = widthLayoutRoot;
     }
 
     @Override
@@ -94,6 +96,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FeedViewHolder) {
             FeedViewHolder feedViewHolder = (FeedViewHolder) holder;
+
+            if (this.widthLayoutRoot != 0) {
+                feedViewHolder.layoutRoot.getLayoutParams().width = widthLayoutRoot;
+            }
 
             Movie movie = this.listMovies.get(position);
 
@@ -180,6 +186,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ImageView imgMoviePoster;
         @BindView(R.id.layoutPlaceHolder)
         View layoutPlaceHolder;
+        @BindView(R.id.movieItemLayoutRoot)
+        View layoutRoot;
 
         public FeedViewHolder(View view) {
             super(view);
