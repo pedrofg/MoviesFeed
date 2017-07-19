@@ -124,7 +124,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedPresente
         this.swipeRefreshLayout.setRefreshing(false);
         this.rvMoviesFeed.scrollToPosition(0);
 
-        this.adapter = new FeedAdapter(this.context(), this);
+        this.adapter = new FeedAdapter(this.context(), this, 0);
         this.rvMoviesFeed.setAdapter(adapter);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

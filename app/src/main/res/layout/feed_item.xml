@@ -8,6 +8,7 @@
     card_view:cardUseCompatPadding="true">
 
     <RelativeLayout
+        android:id="@+id/movieItemLayoutRoot"
         android:layout_width="match_parent"
         android:padding="5dp"
         android:layout_height="@dimen/grid_movie_thumbnail_height">
