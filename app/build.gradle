@@ -27,8 +27,9 @@ android {
         applicationId "com.moviesfeed"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 6
-        versionName "1.2.5"
+        versionCode 7
+        versionName "1.2.6"
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         release {
@@ -68,6 +69,26 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.9'
+
+
+    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2') {
+        exclude module: 'support-annotations'
+        exclude module: 'support-v4'
+        exclude module: 'support-v13'
+        exclude module: 'recyclerview-v7'
+        exclude module: 'design'
+    }
+
+
+    androidTestCompile('com.android.support.test.espresso:espresso-intents:2.2.2') {
+        exclude module: 'support-annotations'
+        exclude module: 'support-v4'
+        exclude module: 'support-v13'
+        exclude module: 'recyclerview-v7'
+        exclude module: 'design'
+    }
+
+
 }
 
 
