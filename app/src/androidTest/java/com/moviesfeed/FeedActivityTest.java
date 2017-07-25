@@ -10,6 +10,7 @@ import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.widget.AutoCompleteTextView;
 
 import com.moviesfeed.ui.activities.FeedActivity;
 import com.moviesfeed.ui.activities.MovieDetailActivity;
@@ -23,6 +24,8 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerActions.open;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -71,6 +74,24 @@ public class FeedActivityTest {
         intended(hasComponent(MovieDetailActivity.class.getName()));
     }
 
+    @Test
+    public void searchMovie() throws InterruptedException {
+        onView(withId(R.id.action_search)).perform(click());
+
+        onView(isAssignableFrom(AutoCompleteTextView.class)).perform(typeText("batman"));
+        onView(isAssignableFrom(AutoCompleteTextView.class))
+                .perform(pressImeActionButton());
+
+        onView(withId(R.id.progressBar)).check(matches(isDisplayed()));
+
+        //Wait for the download finish and load the screen.
+        Thread.sleep(2000);
+
+        onView(withId(R.id.rvMoviesFeed)).check(matches(isDisplayed()));
+        onView(withId(R.id.layoutError)).check(matches(not(isDisplayed())));
+    }
+
+
     /*
         Open drawer -> Check if it is displayed
         Click on drawer sub menu,
@@ -83,11 +104,11 @@ public class FeedActivityTest {
         openDrawer();
 
         onView(withId(R.id.nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.nav_now_playing));
+                .perform(NavigationViewActions.navigateTo(R.id.nav_top_rated));
 
 
         String nowPlayingText = InstrumentationRegistry.getTargetContext()
-                .getString(R.string.now_playing);
+                .getString(R.string.top_rated);
 
         matchToolbarTitle(nowPlayingText).check(matches(isDisplayed()));
 
